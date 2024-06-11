@@ -7,31 +7,32 @@ import { SearchState } from './search';
 
 /** This represents the global Helix state used across the board */
 export type HelixState = {
-  typeSubscription: Disposable | undefined;
-  mode: Mode;
-  keysPressed: string[];
-  numbersPressed: string[];
-  resolveCount: () => number;
-  registers: {
-    contentsList: (string | undefined)[];
-    linewise: boolean;
-  };
-  symbolProvider: SymbolProvider;
-  editorState: {
-    activeEditor: TextEditor | undefined;
-    previousEditor: TextEditor | undefined;
-    lastModifiedDocument: TextDocument | undefined;
-  };
-  commandLine: CommandLine;
-  searchState: SearchState;
-  /**
-   * The current range we're searching in when calling select
-   * This is better kept on the global state as it's used for multiple things
-   */
-  currentSelection: Range | null;
-  repeatLastMotion: (vimState: HelixState, editor: TextEditor) => void;
-  lastPutRanges: {
-    ranges: (Range | undefined)[];
-    linewise: boolean;
-  };
+	typeSubscriptionDisposable: Disposable | undefined;
+	typeSubscription: ((vimState: HelixState, char: string) => void);
+	mode: Mode;
+	keysPressed: string[];
+	numbersPressed: string[];
+	resolveCount: () => number;
+	registers: {
+		contentsList: (string | undefined)[];
+		linewise: boolean;
+	};
+	symbolProvider: SymbolProvider;
+	editorState: {
+		activeEditor: TextEditor | undefined;
+		previousEditor: TextEditor | undefined;
+		lastModifiedDocument: TextDocument | undefined;
+	};
+	commandLine: CommandLine;
+	searchState: SearchState;
+	/**
+	 * The current range we're searching in when calling select
+	 * This is better kept on the global state as it's used for multiple things
+	 */
+	currentSelection: Range | null;
+	repeatLastMotion: (vimState: HelixState, editor: TextEditor) => void;
+	lastPutRanges: {
+		ranges: (Range | undefined)[];
+		linewise: boolean;
+	};
 };

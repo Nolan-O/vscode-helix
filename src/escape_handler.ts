@@ -5,7 +5,7 @@ import { enterNormalMode, setModeCursorStyle } from './modes';
 import { Mode } from './modes_types';
 import * as positionUtils from './position_utils';
 import { typeHandler } from './type_handler';
-import { addTypeSubscription } from './type_subscription';
+import { setTypeSubscription } from './type_subscription';
 
 export function escapeHandler(vimState: HelixState): void {
   const editor = vscode.window.activeTextEditor;
@@ -20,7 +20,7 @@ export function escapeHandler(vimState: HelixState): void {
 
     enterNormalMode(vimState);
     setModeCursorStyle(vimState.mode, editor);
-    addTypeSubscription(vimState, typeHandler);
+    setTypeSubscription(vimState, typeHandler);
   } else if (vimState.mode === Mode.Normal) {
     // Clear multiple cursors
     if (editor.selections.length > 1) {

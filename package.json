@@ -50,244 +50,1834 @@
     ],
     "keybindings": [
       {
-        "key": "shift+5",
-        "command": "editor.action.selectAll",
-        "when": "editorTextFocus && (extension.helixKeymap.normalMode || extension.helixKeymap.visualMode)"
-      },
-      {
-        "key": "shift+j",
-        "command": "editor.action.joinLines",
-        "when": "editorTextFocus && (extension.helixKeymap.normalMode || extension.helixKeymap.visualMode)"
-      },
-      {
-        "key": "Escape",
-        "command": "extension.helixKeymap.escapeKey",
+        "key": "escape",
+        "command": "extension.helixKeymap.escape",
         "when": "editorTextFocus"
       },
       {
-        "key": "Escape",
-        "command": "closeMarkersNavigation",
-        "when": "editorFocus && markersNavigationVisible"
-      },
-      {
-        "key": "ctrl+f",
-        "command": "extension.helixKeymap.scrollDownPage",
-        "when": "editorTextFocus && (extension.helixKeymap.normalMode || extension.helixKeymap.visualMode)"
-      },
-      {
-        "key": "ctrl+b",
-        "command": "extension.helixKeymap.scrollUpPage",
-        "when": "editorTextFocus && (extension.helixKeymap.normalMode || extension.helixKeymap.visualMode)"
-      },
-      {
-        "key": "ctrl+w",
-        "command": "extension.helixKeymap.enterWindowMode",
-        "when": "editorTextFocus && (extension.helixKeymap.normalMode || extension.helixKeymap.visualMode)"
-      },
-      {
         "key": "backspace",
-        "command": "extension.helixKeymap.backspaceSearchMode",
-        "when": "editorTextFocus && (extension.helixKeymap.searchMode || extension.helixKeymap.selectMode)"
-      },
-      {
-        "key": "enter",
-        "command": "extension.helixKeymap.exitSearchMode",
-        "when": "editorTextFocus && (extension.helixKeymap.searchMode || extension.helixKeymap.selectMode)"
-      },
-      {
-        "key": "up",
-        "command": "extension.helixKeymap.previousSearchResult",
-        "when": "editorTextFocus && (extension.helixKeymap.searchMode || extension.helixKeymap.selectMode)"
-      },
-      {
-        "key": "down",
-        "command": "extension.helixKeymap.nextSearchResult",
-        "when": "editorTextFocus && (extension.helixKeymap.searchMode || extension.helixKeymap.selectMode)"
-      },
-      {
-        "key": "alt+o",
-        "command": "editor.action.smartSelect.expand",
-        "when": "editorTextFocus && (extension.helixKeymap.normalMode || extension.helixKeymap.visualMode)"
-      },
-      {
-        "key": "alt+i",
-        "command": "editor.action.smartSelect.shrink",
-        "when": "editorTextFocus && (extension.helixKeymap.normalMode || extension.helixKeymap.visualMode)"
-      },
-      {
-        "key": "ctrl+i",
-        "command": "workbench.action.navigateForward",
-        "when": "(extension.helixKeymap.normalMode || extension.helixKeymap.visualMode)"
-      },
-      {
-        "key": "ctrl+d",
-        "command": "extension.helixKeymap.scrollDownHalfPage",
-        "when": "(extension.helixKeymap.normalMode || extension.helixKeymap.visualMode)"
-      },
-      {
-        "key": "ctrl+u",
-        "command": "extension.helixKeymap.scrollUpHalfPage",
-        "when": "(extension.helixKeymap.normalMode || extension.helixKeymap.visualMode)"
-      },
-      {
-        "key": "ctrl+o",
-        "command": "workbench.action.navigateBack",
-        "when": "(extension.helixKeymap.normalMode || extension.helixKeymap.visualMode)"
-      },
-      {
-        "key": "ctrl+n",
-        "command": "workbench.action.quickOpenSelectNext",
-        "when": "inQuickOpen && (extension.helixKeymap.normalMode || extension.helixKeymap.visualMode)"
-      },
-      {
-        "key": "ctrl+p",
-        "command": "workbench.action.quickOpenSelectPrevious",
-        "when": "inQuickOpen && (extension.helixKeymap.normalMode || extension.helixKeymap.visualMode)"
-      },
-      {
-        "key": "ctrl+o",
-        "command": "-workbench.action.files.openFile",
-        "when": "true"
-      },
-      {
-        "key": "ctrl+i",
-        "command": "-editor.action.triggerSuggest",
-        "when": "true"
-      },
-      {
-        "key": "ctrl+n",
-        "command": "-workbench.action.files.newUntitledFile",
-        "when": "true"
-      },
-      {
-        "key": "ctrl+n",
-        "command": "selectNextCodeAction",
-        "when": "codeActionMenuVisible"
-      },
-      {
-        "key": "ctrl+p",
-        "command": "selectPrevCodeAction",
-        "when": "codeActionMenuVisible"
-      },
-      {
-        "key": "ctrl+n",
-        "command": "selectNextSuggestion",
-        "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus"
-      },
-      {
-        "key": "ctrl+p",
-        "command": "selectPrevSuggestion",
-        "when": "suggestWidgetMultipleSuggestions && suggestWidgetVisible && textInputFocus"
-      },
-      {
-        "key": "alt+;",
-        "command": "extension.helixKeymap.flipSelection",
-        "when": "!extension.helixKeymap.insertMode && editorTextFocus"
-      },
-      {
-        "key": "alt+k",
-        "command": "editor.action.moveLinesUpAction",
-        "when": "editorTextFocus && !extension.helixKeymap.insertMode"
-      },
-      {
-        "key": "alt+j",
-        "command": "editor.action.moveLinesDownAction",
-        "when": "editorTextFocus && !extension.helixKeymap.insertMode"
-      },
-      {
-        "key": "alt+d",
-        "command": "editor.action.addSelectionToNextFindMatch",
-        "when": "editorTextFocus && !extension.helixKeymap.insertMode"
-      },
-      {
-        "key": "alt+m",
-        "command": "editor.action.moveSelectionToNextFindMatch",
-        "when": "editorTextFocus && !extension.helixKeymap.insertMode"
-      },
-      {
-        "key": "ctrl+v",
-        "command": "extension.helixKeymap.clipboardPasteAction",
-        "when": "editorTextFocus && extension.helixKeymap.searchMode"
-      },
-      {
-        "key": "j",
-        "command": "list.focusDown",
-        "when": "listFocus && !inputFocus && (extension.helixKeymap.normalMode || extension.helixKeymap.visualMode)"
-      },
-      {
-        "key": "k",
-        "command": "list.focusUp",
-        "when": "listFocus && !inputFocus && (extension.helixKeymap.normalMode || extension.helixKeymap.visualMode)"
-      },
-      {
-        "key": "l",
-        "command": "list.expand",
-        "when": "listFocus && !inputFocus && (extension.helixKeymap.normalMode || extension.helixKeymap.visualMode)"
-      },
-      {
-        "key": "h",
-        "command": "list.collapse",
-        "when": "listFocus && !inputFocus && (extension.helixKeymap.normalMode || extension.helixKeymap.visualMode)"
-      },
-      {
-        "key": "alt+.",
-        "command": "extension.helixKeymap.repeatLastMotion",
-        "when": "editorTextFocus && (extension.helixKeymap.normalMode || extension.helixKeymap.visualMode)"
-      },
-      {
-        "key": "ctrl+w",
-        "command": "deleteWordLeft",
-        "when": "editorTextFocus && extension.helixKeymap.insertMode"
-      },
-      {
-        "key": "alt+d",
-        "command": "deleteWordRight",
-        "when": "editorTextFocus && extension.helixKeymap.insertMode"
-      },
-      {
-        "key": "alt+d",
-        "command": "deleteWordRight",
-        "when": "editorTextFocus && extension.helixKeymap.insertMode"
-      },
-      {
-        "key": "ctrl+u",
-        "command": "deleteAllLeft",
-        "when": "editorTextFocus && extension.helixKeymap.insertMode"
-      },
-      {
-        "key": "ctrl+l",
-        "command": "deleteAllRight",
-        "when": "editorTextFocus && extension.helixKeymap.insertMode"
-      },
-      {
-        "key": "ctrl+d",
-        "command": "deleteRight",
-        "when": "editorTextFocus && extension.helixKeymap.insertMode"
-      },
-      {
-        "key": "ctrl+h",
-        "command": "deleteLeft",
-        "when": "editorTextFocus && extension.helixKeymap.insertMode"
-      },
-      {
-        "key": "ctrl+x",
-        "command": "acceptSelectedSuggestion",
-        "when": "suggestWidgetHasFocusedSuggestion && suggestWidgetVisible && extension.helixKeymap.insertMode"
-      },
-      {
-        "key": "alt+OEM_8",
-        "command": "extension.helixKeymap.switchToUppercase",
-        "when": "editorTextFocus && (extension.helixKeymap.normalMode || extension.helixKeymap.visualMode)"
+        "command": "extension.helixKeymap.backspace",
+        "when": "editorTextFocus"
       },
       {
         "key": "ctrl+a",
-        "command": "extension.helixKeymap.increment",
-        "when": "editorTextFocus && (extension.helixKeymap.normalMode || extension.helixKeymap.visualMode)"
+        "command": "extension.helixKeymap.ctrl_a",
+        "when": "editorTextFocus && Ca"
+      },
+      {
+        "key": "ctrl+b",
+        "command": "extension.helixKeymap.ctrl_b",
+        "when": "editorTextFocus && Cb"
+      },
+      {
+        "key": "ctrl+c",
+        "command": "extension.helixKeymap.ctrl_c",
+        "when": "editorTextFocus && Cc"
+      },
+      {
+        "key": "ctrl+d",
+        "command": "extension.helixKeymap.ctrl_d",
+        "when": "editorTextFocus && Cd"
+      },
+      {
+        "key": "ctrl+e",
+        "command": "extension.helixKeymap.ctrl_e",
+        "when": "editorTextFocus && Ce"
+      },
+      {
+        "key": "ctrl+f",
+        "command": "extension.helixKeymap.ctrl_f",
+        "when": "editorTextFocus && Cf"
+      },
+      {
+        "key": "ctrl+g",
+        "command": "extension.helixKeymap.ctrl_g",
+        "when": "editorTextFocus && Cg"
+      },
+      {
+        "key": "ctrl+h",
+        "command": "extension.helixKeymap.ctrl_h",
+        "when": "editorTextFocus && Ch"
+      },
+      {
+        "key": "ctrl+i",
+        "command": "extension.helixKeymap.ctrl_i",
+        "when": "editorTextFocus && Ci"
+      },
+      {
+        "key": "ctrl+j",
+        "command": "extension.helixKeymap.ctrl_j",
+        "when": "editorTextFocus && Cj"
+      },
+      {
+        "key": "ctrl+k",
+        "command": "extension.helixKeymap.ctrl_k",
+        "when": "editorTextFocus && Ck"
+      },
+      {
+        "key": "ctrl+l",
+        "command": "extension.helixKeymap.ctrl_l",
+        "when": "editorTextFocus && Cl"
+      },
+      {
+        "key": "ctrl+m",
+        "command": "extension.helixKeymap.ctrl_m",
+        "when": "editorTextFocus && Cm"
+      },
+      {
+        "key": "ctrl+n",
+        "command": "extension.helixKeymap.ctrl_n",
+        "when": "editorTextFocus && Cn"
+      },
+      {
+        "key": "ctrl+o",
+        "command": "extension.helixKeymap.ctrl_o",
+        "when": "editorTextFocus && Co"
+      },
+      {
+        "key": "ctrl+p",
+        "command": "extension.helixKeymap.ctrl_p",
+        "when": "editorTextFocus && Cp"
+      },
+      {
+        "key": "ctrl+q",
+        "command": "extension.helixKeymap.ctrl_q",
+        "when": "editorTextFocus && Cq"
+      },
+      {
+        "key": "ctrl+r",
+        "command": "extension.helixKeymap.ctrl_r",
+        "when": "editorTextFocus && Cr"
+      },
+      {
+        "key": "ctrl+s",
+        "command": "extension.helixKeymap.ctrl_s",
+        "when": "editorTextFocus && Cs"
+      },
+      {
+        "key": "ctrl+t",
+        "command": "extension.helixKeymap.ctrl_t",
+        "when": "editorTextFocus && Ct"
+      },
+      {
+        "key": "ctrl+u",
+        "command": "extension.helixKeymap.ctrl_u",
+        "when": "editorTextFocus && Cu"
+      },
+      {
+        "key": "ctrl+v",
+        "command": "extension.helixKeymap.ctrl_v",
+        "when": "editorTextFocus && Cv"
+      },
+      {
+        "key": "ctrl+w",
+        "command": "extension.helixKeymap.ctrl_w",
+        "when": "editorTextFocus && Cw"
       },
       {
         "key": "ctrl+x",
-        "command": "extension.helixKeymap.decrement",
-        "when": "editorTextFocus && (extension.helixKeymap.normalMode || extension.helixKeymap.visualMode)"
+        "command": "extension.helixKeymap.ctrl_x",
+        "when": "editorTextFocus && Cx"
+      },
+      {
+        "key": "ctrl+y",
+        "command": "extension.helixKeymap.ctrl_y",
+        "when": "editorTextFocus && Cy"
+      },
+      {
+        "key": "ctrl+z",
+        "command": "extension.helixKeymap.ctrl_z",
+        "when": "editorTextFocus && Cz"
+      },
+      {
+        "key": "ctrl+pageup",
+        "command": "extension.helixKeymap.ctrl_pageup",
+        "when": "editorTextFocus && Cpageup"
+      },
+      {
+        "key": "ctrl+pagedown",
+        "command": "extension.helixKeymap.ctrl_pagedown",
+        "when": "editorTextFocus && Cpagedown"
+      },
+      {
+        "key": "ctrl+home",
+        "command": "extension.helixKeymap.ctrl_home",
+        "when": "editorTextFocus && Chome"
+      },
+      {
+        "key": "ctrl+end",
+        "command": "extension.helixKeymap.ctrl_end",
+        "when": "editorTextFocus && Cend"
+      },
+      {
+        "key": "ctrl+escape",
+        "command": "extension.helixKeymap.ctrl_escape",
+        "when": "editorTextFocus && Cescape"
+      },
+      {
+        "key": "ctrl+backspace",
+        "command": "extension.helixKeymap.ctrl_backspace",
+        "when": "editorTextFocus && Cbackspace"
+      },
+      {
+        "key": "ctrl+[",
+        "command": "extension.helixKeymap.ctrl_[",
+        "when": "editorTextFocus && C["
+      },
+      {
+        "key": "ctrl+]",
+        "command": "extension.helixKeymap.ctrl_]",
+        "when": "editorTextFocus && C]"
+      },
+      {
+        "key": "ctrl+backtick",
+        "command": "extension.helixKeymap.ctrl_backtick",
+        "when": "editorTextFocus && Cbacktick"
+      },
+      {
+        "key": "ctrl+;",
+        "command": "extension.helixKeymap.ctrl_;",
+        "when": "editorTextFocus && C;"
+      },
+      {
+        "key": "ctrl+'",
+        "command": "extension.helixKeymap.ctrl_'",
+        "when": "editorTextFocus && C'"
+      },
+      {
+        "key": "ctrl+,",
+        "command": "extension.helixKeymap.ctrl_,",
+        "when": "editorTextFocus && C,"
+      },
+      {
+        "key": "ctrl+.",
+        "command": "extension.helixKeymap.ctrl_.",
+        "when": "editorTextFocus && C."
+      },
+      {
+        "key": "ctrl+/",
+        "command": "extension.helixKeymap.ctrl_/",
+        "when": "editorTextFocus && C/"
+      },
+      {
+        "key": "ctrl+\\",
+        "command": "extension.helixKeymap.ctrl_\\",
+        "when": "editorTextFocus && C\\"
+      },
+      {
+        "key": "ctrl+=",
+        "command": "extension.helixKeymap.ctrl_=",
+        "when": "editorTextFocus && C="
+      },
+      {
+        "key": "ctrl+1",
+        "command": "extension.helixKeymap.ctrl_1",
+        "when": "editorTextFocus && C1"
+      },
+      {
+        "key": "ctrl+2",
+        "command": "extension.helixKeymap.ctrl_2",
+        "when": "editorTextFocus && C2"
+      },
+      {
+        "key": "ctrl+3",
+        "command": "extension.helixKeymap.ctrl_3",
+        "when": "editorTextFocus && C3"
+      },
+      {
+        "key": "ctrl+4",
+        "command": "extension.helixKeymap.ctrl_4",
+        "when": "editorTextFocus && C4"
+      },
+      {
+        "key": "ctrl+5",
+        "command": "extension.helixKeymap.ctrl_5",
+        "when": "editorTextFocus && C5"
+      },
+      {
+        "key": "ctrl+6",
+        "command": "extension.helixKeymap.ctrl_6",
+        "when": "editorTextFocus && C6"
+      },
+      {
+        "key": "ctrl+7",
+        "command": "extension.helixKeymap.ctrl_7",
+        "when": "editorTextFocus && C7"
+      },
+      {
+        "key": "ctrl+8",
+        "command": "extension.helixKeymap.ctrl_8",
+        "when": "editorTextFocus && C8"
+      },
+      {
+        "key": "ctrl+9",
+        "command": "extension.helixKeymap.ctrl_9",
+        "when": "editorTextFocus && C9"
+      },
+      {
+        "key": "ctrl+0",
+        "command": "extension.helixKeymap.ctrl_0",
+        "when": "editorTextFocus && C0"
+      },
+      {
+        "key": "alt+a",
+        "command": "extension.helixKeymap.alt_a",
+        "when": "editorTextFocus && Aa"
+      },
+      {
+        "key": "alt+b",
+        "command": "extension.helixKeymap.alt_b",
+        "when": "editorTextFocus && Ab"
+      },
+      {
+        "key": "alt+c",
+        "command": "extension.helixKeymap.alt_c",
+        "when": "editorTextFocus && Ac"
+      },
+      {
+        "key": "alt+d",
+        "command": "extension.helixKeymap.alt_d",
+        "when": "editorTextFocus && Ad"
+      },
+      {
+        "key": "alt+e",
+        "command": "extension.helixKeymap.alt_e",
+        "when": "editorTextFocus && Ae"
+      },
+      {
+        "key": "alt+f",
+        "command": "extension.helixKeymap.alt_f",
+        "when": "editorTextFocus && Af"
+      },
+      {
+        "key": "alt+g",
+        "command": "extension.helixKeymap.alt_g",
+        "when": "editorTextFocus && Ag"
+      },
+      {
+        "key": "alt+h",
+        "command": "extension.helixKeymap.alt_h",
+        "when": "editorTextFocus && Ah"
+      },
+      {
+        "key": "alt+i",
+        "command": "extension.helixKeymap.alt_i",
+        "when": "editorTextFocus && Ai"
+      },
+      {
+        "key": "alt+j",
+        "command": "extension.helixKeymap.alt_j",
+        "when": "editorTextFocus && Aj"
+      },
+      {
+        "key": "alt+k",
+        "command": "extension.helixKeymap.alt_k",
+        "when": "editorTextFocus && Ak"
+      },
+      {
+        "key": "alt+l",
+        "command": "extension.helixKeymap.alt_l",
+        "when": "editorTextFocus && Al"
+      },
+      {
+        "key": "alt+m",
+        "command": "extension.helixKeymap.alt_m",
+        "when": "editorTextFocus && Am"
+      },
+      {
+        "key": "alt+n",
+        "command": "extension.helixKeymap.alt_n",
+        "when": "editorTextFocus && An"
+      },
+      {
+        "key": "alt+o",
+        "command": "extension.helixKeymap.alt_o",
+        "when": "editorTextFocus && Ao"
+      },
+      {
+        "key": "alt+p",
+        "command": "extension.helixKeymap.alt_p",
+        "when": "editorTextFocus && Ap"
+      },
+      {
+        "key": "alt+q",
+        "command": "extension.helixKeymap.alt_q",
+        "when": "editorTextFocus && Aq"
+      },
+      {
+        "key": "alt+r",
+        "command": "extension.helixKeymap.alt_r",
+        "when": "editorTextFocus && Ar"
+      },
+      {
+        "key": "alt+s",
+        "command": "extension.helixKeymap.alt_s",
+        "when": "editorTextFocus && As"
+      },
+      {
+        "key": "alt+t",
+        "command": "extension.helixKeymap.alt_t",
+        "when": "editorTextFocus && At"
+      },
+      {
+        "key": "alt+u",
+        "command": "extension.helixKeymap.alt_u",
+        "when": "editorTextFocus && Au"
+      },
+      {
+        "key": "alt+v",
+        "command": "extension.helixKeymap.alt_v",
+        "when": "editorTextFocus && Av"
+      },
+      {
+        "key": "alt+w",
+        "command": "extension.helixKeymap.alt_w",
+        "when": "editorTextFocus && Aw"
+      },
+      {
+        "key": "alt+x",
+        "command": "extension.helixKeymap.alt_x",
+        "when": "editorTextFocus && Ax"
+      },
+      {
+        "key": "alt+y",
+        "command": "extension.helixKeymap.alt_y",
+        "when": "editorTextFocus && Ay"
+      },
+      {
+        "key": "alt+z",
+        "command": "extension.helixKeymap.alt_z",
+        "when": "editorTextFocus && Az"
+      },
+      {
+        "key": "alt+pageup",
+        "command": "extension.helixKeymap.alt_pageup",
+        "when": "editorTextFocus && Apageup"
+      },
+      {
+        "key": "alt+pagedown",
+        "command": "extension.helixKeymap.alt_pagedown",
+        "when": "editorTextFocus && Apagedown"
+      },
+      {
+        "key": "alt+home",
+        "command": "extension.helixKeymap.alt_home",
+        "when": "editorTextFocus && Ahome"
+      },
+      {
+        "key": "alt+end",
+        "command": "extension.helixKeymap.alt_end",
+        "when": "editorTextFocus && Aend"
+      },
+      {
+        "key": "alt+escape",
+        "command": "extension.helixKeymap.alt_escape",
+        "when": "editorTextFocus && Aescape"
+      },
+      {
+        "key": "alt+backspace",
+        "command": "extension.helixKeymap.alt_backspace",
+        "when": "editorTextFocus && Abackspace"
+      },
+      {
+        "key": "alt+[",
+        "command": "extension.helixKeymap.alt_[",
+        "when": "editorTextFocus && A["
+      },
+      {
+        "key": "alt+]",
+        "command": "extension.helixKeymap.alt_]",
+        "when": "editorTextFocus && A]"
+      },
+      {
+        "key": "alt+backtick",
+        "command": "extension.helixKeymap.alt_backtick",
+        "when": "editorTextFocus && Abacktick"
+      },
+      {
+        "key": "alt+;",
+        "command": "extension.helixKeymap.alt_;",
+        "when": "editorTextFocus && A;"
+      },
+      {
+        "key": "alt+'",
+        "command": "extension.helixKeymap.alt_'",
+        "when": "editorTextFocus && A'"
+      },
+      {
+        "key": "alt+,",
+        "command": "extension.helixKeymap.alt_,",
+        "when": "editorTextFocus && A,"
+      },
+      {
+        "key": "alt+.",
+        "command": "extension.helixKeymap.alt_.",
+        "when": "editorTextFocus && A."
+      },
+      {
+        "key": "alt+/",
+        "command": "extension.helixKeymap.alt_/",
+        "when": "editorTextFocus && A/"
+      },
+      {
+        "key": "alt+\\",
+        "command": "extension.helixKeymap.alt_\\",
+        "when": "editorTextFocus && A\\"
+      },
+      {
+        "key": "alt+=",
+        "command": "extension.helixKeymap.alt_=",
+        "when": "editorTextFocus && A="
+      },
+      {
+        "key": "alt+1",
+        "command": "extension.helixKeymap.alt_1",
+        "when": "editorTextFocus && A1"
+      },
+      {
+        "key": "alt+2",
+        "command": "extension.helixKeymap.alt_2",
+        "when": "editorTextFocus && A2"
+      },
+      {
+        "key": "alt+3",
+        "command": "extension.helixKeymap.alt_3",
+        "when": "editorTextFocus && A3"
+      },
+      {
+        "key": "alt+4",
+        "command": "extension.helixKeymap.alt_4",
+        "when": "editorTextFocus && A4"
+      },
+      {
+        "key": "alt+5",
+        "command": "extension.helixKeymap.alt_5",
+        "when": "editorTextFocus && A5"
+      },
+      {
+        "key": "alt+6",
+        "command": "extension.helixKeymap.alt_6",
+        "when": "editorTextFocus && A6"
+      },
+      {
+        "key": "alt+7",
+        "command": "extension.helixKeymap.alt_7",
+        "when": "editorTextFocus && A7"
+      },
+      {
+        "key": "alt+8",
+        "command": "extension.helixKeymap.alt_8",
+        "when": "editorTextFocus && A8"
+      },
+      {
+        "key": "alt+9",
+        "command": "extension.helixKeymap.alt_9",
+        "when": "editorTextFocus && A9"
+      },
+      {
+        "key": "alt+0",
+        "command": "extension.helixKeymap.alt_0",
+        "when": "editorTextFocus && A0"
+      },
+      {
+        "key": "shift+a",
+        "command": "extension.helixKeymap.shift_a",
+        "when": "editorTextFocus && Sa"
+      },
+      {
+        "key": "shift+b",
+        "command": "extension.helixKeymap.shift_b",
+        "when": "editorTextFocus && Sb"
+      },
+      {
+        "key": "shift+c",
+        "command": "extension.helixKeymap.shift_c",
+        "when": "editorTextFocus && Sc"
+      },
+      {
+        "key": "shift+d",
+        "command": "extension.helixKeymap.shift_d",
+        "when": "editorTextFocus && Sd"
+      },
+      {
+        "key": "shift+e",
+        "command": "extension.helixKeymap.shift_e",
+        "when": "editorTextFocus && Se"
+      },
+      {
+        "key": "shift+f",
+        "command": "extension.helixKeymap.shift_f",
+        "when": "editorTextFocus && Sf"
+      },
+      {
+        "key": "shift+g",
+        "command": "extension.helixKeymap.shift_g",
+        "when": "editorTextFocus && Sg"
+      },
+      {
+        "key": "shift+h",
+        "command": "extension.helixKeymap.shift_h",
+        "when": "editorTextFocus && Sh"
+      },
+      {
+        "key": "shift+i",
+        "command": "extension.helixKeymap.shift_i",
+        "when": "editorTextFocus && Si"
+      },
+      {
+        "key": "shift+j",
+        "command": "extension.helixKeymap.shift_j",
+        "when": "editorTextFocus && Sj"
+      },
+      {
+        "key": "shift+k",
+        "command": "extension.helixKeymap.shift_k",
+        "when": "editorTextFocus && Sk"
+      },
+      {
+        "key": "shift+l",
+        "command": "extension.helixKeymap.shift_l",
+        "when": "editorTextFocus && Sl"
+      },
+      {
+        "key": "shift+m",
+        "command": "extension.helixKeymap.shift_m",
+        "when": "editorTextFocus && Sm"
+      },
+      {
+        "key": "shift+n",
+        "command": "extension.helixKeymap.shift_n",
+        "when": "editorTextFocus && Sn"
+      },
+      {
+        "key": "shift+o",
+        "command": "extension.helixKeymap.shift_o",
+        "when": "editorTextFocus && So"
+      },
+      {
+        "key": "shift+p",
+        "command": "extension.helixKeymap.shift_p",
+        "when": "editorTextFocus && Sp"
+      },
+      {
+        "key": "shift+q",
+        "command": "extension.helixKeymap.shift_q",
+        "when": "editorTextFocus && Sq"
+      },
+      {
+        "key": "shift+r",
+        "command": "extension.helixKeymap.shift_r",
+        "when": "editorTextFocus && Sr"
+      },
+      {
+        "key": "shift+s",
+        "command": "extension.helixKeymap.shift_s",
+        "when": "editorTextFocus && Ss"
+      },
+      {
+        "key": "shift+t",
+        "command": "extension.helixKeymap.shift_t",
+        "when": "editorTextFocus && St"
+      },
+      {
+        "key": "shift+u",
+        "command": "extension.helixKeymap.shift_u",
+        "when": "editorTextFocus && Su"
+      },
+      {
+        "key": "shift+v",
+        "command": "extension.helixKeymap.shift_v",
+        "when": "editorTextFocus && Sv"
+      },
+      {
+        "key": "shift+w",
+        "command": "extension.helixKeymap.shift_w",
+        "when": "editorTextFocus && Sw"
+      },
+      {
+        "key": "shift+x",
+        "command": "extension.helixKeymap.shift_x",
+        "when": "editorTextFocus && Sx"
+      },
+      {
+        "key": "shift+y",
+        "command": "extension.helixKeymap.shift_y",
+        "when": "editorTextFocus && Sy"
+      },
+      {
+        "key": "shift+z",
+        "command": "extension.helixKeymap.shift_z",
+        "when": "editorTextFocus && Sz"
+      },
+      {
+        "key": "shift+pageup",
+        "command": "extension.helixKeymap.shift_pageup",
+        "when": "editorTextFocus && Spageup"
+      },
+      {
+        "key": "shift+pagedown",
+        "command": "extension.helixKeymap.shift_pagedown",
+        "when": "editorTextFocus && Spagedown"
+      },
+      {
+        "key": "shift+home",
+        "command": "extension.helixKeymap.shift_home",
+        "when": "editorTextFocus && Shome"
+      },
+      {
+        "key": "shift+end",
+        "command": "extension.helixKeymap.shift_end",
+        "when": "editorTextFocus && Send"
+      },
+      {
+        "key": "shift+escape",
+        "command": "extension.helixKeymap.shift_escape",
+        "when": "editorTextFocus && Sescape"
+      },
+      {
+        "key": "shift+backspace",
+        "command": "extension.helixKeymap.shift_backspace",
+        "when": "editorTextFocus && Sbackspace"
+      },
+      {
+        "key": "shift+[",
+        "command": "extension.helixKeymap.shift_[",
+        "when": "editorTextFocus && S["
+      },
+      {
+        "key": "shift+]",
+        "command": "extension.helixKeymap.shift_]",
+        "when": "editorTextFocus && S]"
+      },
+      {
+        "key": "shift+backtick",
+        "command": "extension.helixKeymap.shift_backtick",
+        "when": "editorTextFocus && Sbacktick"
+      },
+      {
+        "key": "shift+;",
+        "command": "extension.helixKeymap.shift_;",
+        "when": "editorTextFocus && S;"
+      },
+      {
+        "key": "shift+'",
+        "command": "extension.helixKeymap.shift_'",
+        "when": "editorTextFocus && S'"
+      },
+      {
+        "key": "shift+,",
+        "command": "extension.helixKeymap.shift_,",
+        "when": "editorTextFocus && S,"
+      },
+      {
+        "key": "shift+.",
+        "command": "extension.helixKeymap.shift_.",
+        "when": "editorTextFocus && S."
+      },
+      {
+        "key": "shift+/",
+        "command": "extension.helixKeymap.shift_/",
+        "when": "editorTextFocus && S/"
+      },
+      {
+        "key": "shift+\\",
+        "command": "extension.helixKeymap.shift_\\",
+        "when": "editorTextFocus && S\\"
+      },
+      {
+        "key": "shift+=",
+        "command": "extension.helixKeymap.shift_=",
+        "when": "editorTextFocus && S="
+      },
+      {
+        "key": "shift+1",
+        "command": "extension.helixKeymap.shift_1",
+        "when": "editorTextFocus && S1"
+      },
+      {
+        "key": "shift+2",
+        "command": "extension.helixKeymap.shift_2",
+        "when": "editorTextFocus && S2"
+      },
+      {
+        "key": "shift+3",
+        "command": "extension.helixKeymap.shift_3",
+        "when": "editorTextFocus && S3"
+      },
+      {
+        "key": "shift+4",
+        "command": "extension.helixKeymap.shift_4",
+        "when": "editorTextFocus && S4"
+      },
+      {
+        "key": "shift+5",
+        "command": "extension.helixKeymap.shift_5",
+        "when": "editorTextFocus && S5"
+      },
+      {
+        "key": "shift+6",
+        "command": "extension.helixKeymap.shift_6",
+        "when": "editorTextFocus && S6"
+      },
+      {
+        "key": "shift+7",
+        "command": "extension.helixKeymap.shift_7",
+        "when": "editorTextFocus && S7"
+      },
+      {
+        "key": "shift+8",
+        "command": "extension.helixKeymap.shift_8",
+        "when": "editorTextFocus && S8"
+      },
+      {
+        "key": "shift+9",
+        "command": "extension.helixKeymap.shift_9",
+        "when": "editorTextFocus && S9"
+      },
+      {
+        "key": "shift+0",
+        "command": "extension.helixKeymap.shift_0",
+        "when": "editorTextFocus && S0"
+      },
+      {
+        "key": "ctrl+alt+a",
+        "command": "extension.helixKeymap.ctrl_alt_a",
+        "when": "editorTextFocus && CAa"
+      },
+      {
+        "key": "ctrl+alt+b",
+        "command": "extension.helixKeymap.ctrl_alt_b",
+        "when": "editorTextFocus && CAb"
+      },
+      {
+        "key": "ctrl+alt+c",
+        "command": "extension.helixKeymap.ctrl_alt_c",
+        "when": "editorTextFocus && CAc"
+      },
+      {
+        "key": "ctrl+alt+d",
+        "command": "extension.helixKeymap.ctrl_alt_d",
+        "when": "editorTextFocus && CAd"
+      },
+      {
+        "key": "ctrl+alt+e",
+        "command": "extension.helixKeymap.ctrl_alt_e",
+        "when": "editorTextFocus && CAe"
+      },
+      {
+        "key": "ctrl+alt+f",
+        "command": "extension.helixKeymap.ctrl_alt_f",
+        "when": "editorTextFocus && CAf"
+      },
+      {
+        "key": "ctrl+alt+g",
+        "command": "extension.helixKeymap.ctrl_alt_g",
+        "when": "editorTextFocus && CAg"
+      },
+      {
+        "key": "ctrl+alt+h",
+        "command": "extension.helixKeymap.ctrl_alt_h",
+        "when": "editorTextFocus && CAh"
+      },
+      {
+        "key": "ctrl+alt+i",
+        "command": "extension.helixKeymap.ctrl_alt_i",
+        "when": "editorTextFocus && CAi"
+      },
+      {
+        "key": "ctrl+alt+j",
+        "command": "extension.helixKeymap.ctrl_alt_j",
+        "when": "editorTextFocus && CAj"
+      },
+      {
+        "key": "ctrl+alt+k",
+        "command": "extension.helixKeymap.ctrl_alt_k",
+        "when": "editorTextFocus && CAk"
+      },
+      {
+        "key": "ctrl+alt+l",
+        "command": "extension.helixKeymap.ctrl_alt_l",
+        "when": "editorTextFocus && CAl"
+      },
+      {
+        "key": "ctrl+alt+m",
+        "command": "extension.helixKeymap.ctrl_alt_m",
+        "when": "editorTextFocus && CAm"
+      },
+      {
+        "key": "ctrl+alt+n",
+        "command": "extension.helixKeymap.ctrl_alt_n",
+        "when": "editorTextFocus && CAn"
+      },
+      {
+        "key": "ctrl+alt+o",
+        "command": "extension.helixKeymap.ctrl_alt_o",
+        "when": "editorTextFocus && CAo"
+      },
+      {
+        "key": "ctrl+alt+p",
+        "command": "extension.helixKeymap.ctrl_alt_p",
+        "when": "editorTextFocus && CAp"
+      },
+      {
+        "key": "ctrl+alt+q",
+        "command": "extension.helixKeymap.ctrl_alt_q",
+        "when": "editorTextFocus && CAq"
+      },
+      {
+        "key": "ctrl+alt+r",
+        "command": "extension.helixKeymap.ctrl_alt_r",
+        "when": "editorTextFocus && CAr"
+      },
+      {
+        "key": "ctrl+alt+s",
+        "command": "extension.helixKeymap.ctrl_alt_s",
+        "when": "editorTextFocus && CAs"
+      },
+      {
+        "key": "ctrl+alt+t",
+        "command": "extension.helixKeymap.ctrl_alt_t",
+        "when": "editorTextFocus && CAt"
+      },
+      {
+        "key": "ctrl+alt+u",
+        "command": "extension.helixKeymap.ctrl_alt_u",
+        "when": "editorTextFocus && CAu"
+      },
+      {
+        "key": "ctrl+alt+v",
+        "command": "extension.helixKeymap.ctrl_alt_v",
+        "when": "editorTextFocus && CAv"
+      },
+      {
+        "key": "ctrl+alt+w",
+        "command": "extension.helixKeymap.ctrl_alt_w",
+        "when": "editorTextFocus && CAw"
+      },
+      {
+        "key": "ctrl+alt+x",
+        "command": "extension.helixKeymap.ctrl_alt_x",
+        "when": "editorTextFocus && CAx"
+      },
+      {
+        "key": "ctrl+alt+y",
+        "command": "extension.helixKeymap.ctrl_alt_y",
+        "when": "editorTextFocus && CAy"
+      },
+      {
+        "key": "ctrl+alt+z",
+        "command": "extension.helixKeymap.ctrl_alt_z",
+        "when": "editorTextFocus && CAz"
+      },
+      {
+        "key": "ctrl+alt+pageup",
+        "command": "extension.helixKeymap.ctrl_alt_pageup",
+        "when": "editorTextFocus && CApageup"
+      },
+      {
+        "key": "ctrl+alt+pagedown",
+        "command": "extension.helixKeymap.ctrl_alt_pagedown",
+        "when": "editorTextFocus && CApagedown"
+      },
+      {
+        "key": "ctrl+alt+home",
+        "command": "extension.helixKeymap.ctrl_alt_home",
+        "when": "editorTextFocus && CAhome"
+      },
+      {
+        "key": "ctrl+alt+end",
+        "command": "extension.helixKeymap.ctrl_alt_end",
+        "when": "editorTextFocus && CAend"
+      },
+      {
+        "key": "ctrl+alt+escape",
+        "command": "extension.helixKeymap.ctrl_alt_escape",
+        "when": "editorTextFocus && CAescape"
+      },
+      {
+        "key": "ctrl+alt+backspace",
+        "command": "extension.helixKeymap.ctrl_alt_backspace",
+        "when": "editorTextFocus && CAbackspace"
+      },
+      {
+        "key": "ctrl+alt+[",
+        "command": "extension.helixKeymap.ctrl_alt_[",
+        "when": "editorTextFocus && CA["
+      },
+      {
+        "key": "ctrl+alt+]",
+        "command": "extension.helixKeymap.ctrl_alt_]",
+        "when": "editorTextFocus && CA]"
+      },
+      {
+        "key": "ctrl+alt+backtick",
+        "command": "extension.helixKeymap.ctrl_alt_backtick",
+        "when": "editorTextFocus && CAbacktick"
+      },
+      {
+        "key": "ctrl+alt+;",
+        "command": "extension.helixKeymap.ctrl_alt_;",
+        "when": "editorTextFocus && CA;"
+      },
+      {
+        "key": "ctrl+alt+'",
+        "command": "extension.helixKeymap.ctrl_alt_'",
+        "when": "editorTextFocus && CA'"
+      },
+      {
+        "key": "ctrl+alt+,",
+        "command": "extension.helixKeymap.ctrl_alt_,",
+        "when": "editorTextFocus && CA,"
+      },
+      {
+        "key": "ctrl+alt+.",
+        "command": "extension.helixKeymap.ctrl_alt_.",
+        "when": "editorTextFocus && CA."
+      },
+      {
+        "key": "ctrl+alt+/",
+        "command": "extension.helixKeymap.ctrl_alt_/",
+        "when": "editorTextFocus && CA/"
+      },
+      {
+        "key": "ctrl+alt+\\",
+        "command": "extension.helixKeymap.ctrl_alt_\\",
+        "when": "editorTextFocus && CA\\"
+      },
+      {
+        "key": "ctrl+alt+=",
+        "command": "extension.helixKeymap.ctrl_alt_=",
+        "when": "editorTextFocus && CA="
+      },
+      {
+        "key": "ctrl+alt+1",
+        "command": "extension.helixKeymap.ctrl_alt_1",
+        "when": "editorTextFocus && CA1"
+      },
+      {
+        "key": "ctrl+alt+2",
+        "command": "extension.helixKeymap.ctrl_alt_2",
+        "when": "editorTextFocus && CA2"
+      },
+      {
+        "key": "ctrl+alt+3",
+        "command": "extension.helixKeymap.ctrl_alt_3",
+        "when": "editorTextFocus && CA3"
+      },
+      {
+        "key": "ctrl+alt+4",
+        "command": "extension.helixKeymap.ctrl_alt_4",
+        "when": "editorTextFocus && CA4"
+      },
+      {
+        "key": "ctrl+alt+5",
+        "command": "extension.helixKeymap.ctrl_alt_5",
+        "when": "editorTextFocus && CA5"
+      },
+      {
+        "key": "ctrl+alt+6",
+        "command": "extension.helixKeymap.ctrl_alt_6",
+        "when": "editorTextFocus && CA6"
+      },
+      {
+        "key": "ctrl+alt+7",
+        "command": "extension.helixKeymap.ctrl_alt_7",
+        "when": "editorTextFocus && CA7"
+      },
+      {
+        "key": "ctrl+alt+8",
+        "command": "extension.helixKeymap.ctrl_alt_8",
+        "when": "editorTextFocus && CA8"
+      },
+      {
+        "key": "ctrl+alt+9",
+        "command": "extension.helixKeymap.ctrl_alt_9",
+        "when": "editorTextFocus && CA9"
+      },
+      {
+        "key": "ctrl+alt+0",
+        "command": "extension.helixKeymap.ctrl_alt_0",
+        "when": "editorTextFocus && CA0"
+      },
+      {
+        "key": "ctrl+shift+a",
+        "command": "extension.helixKeymap.ctrl_shift_a",
+        "when": "editorTextFocus && CSa"
+      },
+      {
+        "key": "ctrl+shift+b",
+        "command": "extension.helixKeymap.ctrl_shift_b",
+        "when": "editorTextFocus && CSb"
+      },
+      {
+        "key": "ctrl+shift+c",
+        "command": "extension.helixKeymap.ctrl_shift_c",
+        "when": "editorTextFocus && CSc"
+      },
+      {
+        "key": "ctrl+shift+d",
+        "command": "extension.helixKeymap.ctrl_shift_d",
+        "when": "editorTextFocus && CSd"
+      },
+      {
+        "key": "ctrl+shift+e",
+        "command": "extension.helixKeymap.ctrl_shift_e",
+        "when": "editorTextFocus && CSe"
+      },
+      {
+        "key": "ctrl+shift+f",
+        "command": "extension.helixKeymap.ctrl_shift_f",
+        "when": "editorTextFocus && CSf"
+      },
+      {
+        "key": "ctrl+shift+g",
+        "command": "extension.helixKeymap.ctrl_shift_g",
+        "when": "editorTextFocus && CSg"
+      },
+      {
+        "key": "ctrl+shift+h",
+        "command": "extension.helixKeymap.ctrl_shift_h",
+        "when": "editorTextFocus && CSh"
+      },
+      {
+        "key": "ctrl+shift+i",
+        "command": "extension.helixKeymap.ctrl_shift_i",
+        "when": "editorTextFocus && CSi"
+      },
+      {
+        "key": "ctrl+shift+j",
+        "command": "extension.helixKeymap.ctrl_shift_j",
+        "when": "editorTextFocus && CSj"
+      },
+      {
+        "key": "ctrl+shift+k",
+        "command": "extension.helixKeymap.ctrl_shift_k",
+        "when": "editorTextFocus && CSk"
+      },
+      {
+        "key": "ctrl+shift+l",
+        "command": "extension.helixKeymap.ctrl_shift_l",
+        "when": "editorTextFocus && CSl"
+      },
+      {
+        "key": "ctrl+shift+m",
+        "command": "extension.helixKeymap.ctrl_shift_m",
+        "when": "editorTextFocus && CSm"
+      },
+      {
+        "key": "ctrl+shift+n",
+        "command": "extension.helixKeymap.ctrl_shift_n",
+        "when": "editorTextFocus && CSn"
+      },
+      {
+        "key": "ctrl+shift+o",
+        "command": "extension.helixKeymap.ctrl_shift_o",
+        "when": "editorTextFocus && CSo"
+      },
+      {
+        "key": "ctrl+shift+p",
+        "command": "extension.helixKeymap.ctrl_shift_p",
+        "when": "editorTextFocus && CSp"
+      },
+      {
+        "key": "ctrl+shift+q",
+        "command": "extension.helixKeymap.ctrl_shift_q",
+        "when": "editorTextFocus && CSq"
+      },
+      {
+        "key": "ctrl+shift+r",
+        "command": "extension.helixKeymap.ctrl_shift_r",
+        "when": "editorTextFocus && CSr"
+      },
+      {
+        "key": "ctrl+shift+s",
+        "command": "extension.helixKeymap.ctrl_shift_s",
+        "when": "editorTextFocus && CSs"
+      },
+      {
+        "key": "ctrl+shift+t",
+        "command": "extension.helixKeymap.ctrl_shift_t",
+        "when": "editorTextFocus && CSt"
+      },
+      {
+        "key": "ctrl+shift+u",
+        "command": "extension.helixKeymap.ctrl_shift_u",
+        "when": "editorTextFocus && CSu"
+      },
+      {
+        "key": "ctrl+shift+v",
+        "command": "extension.helixKeymap.ctrl_shift_v",
+        "when": "editorTextFocus && CSv"
+      },
+      {
+        "key": "ctrl+shift+w",
+        "command": "extension.helixKeymap.ctrl_shift_w",
+        "when": "editorTextFocus && CSw"
+      },
+      {
+        "key": "ctrl+shift+x",
+        "command": "extension.helixKeymap.ctrl_shift_x",
+        "when": "editorTextFocus && CSx"
+      },
+      {
+        "key": "ctrl+shift+y",
+        "command": "extension.helixKeymap.ctrl_shift_y",
+        "when": "editorTextFocus && CSy"
+      },
+      {
+        "key": "ctrl+shift+z",
+        "command": "extension.helixKeymap.ctrl_shift_z",
+        "when": "editorTextFocus && CSz"
+      },
+      {
+        "key": "ctrl+shift+pageup",
+        "command": "extension.helixKeymap.ctrl_shift_pageup",
+        "when": "editorTextFocus && CSpageup"
+      },
+      {
+        "key": "ctrl+shift+pagedown",
+        "command": "extension.helixKeymap.ctrl_shift_pagedown",
+        "when": "editorTextFocus && CSpagedown"
+      },
+      {
+        "key": "ctrl+shift+home",
+        "command": "extension.helixKeymap.ctrl_shift_home",
+        "when": "editorTextFocus && CShome"
+      },
+      {
+        "key": "ctrl+shift+end",
+        "command": "extension.helixKeymap.ctrl_shift_end",
+        "when": "editorTextFocus && CSend"
+      },
+      {
+        "key": "ctrl+shift+escape",
+        "command": "extension.helixKeymap.ctrl_shift_escape",
+        "when": "editorTextFocus && CSescape"
+      },
+      {
+        "key": "ctrl+shift+backspace",
+        "command": "extension.helixKeymap.ctrl_shift_backspace",
+        "when": "editorTextFocus && CSbackspace"
+      },
+      {
+        "key": "ctrl+shift+[",
+        "command": "extension.helixKeymap.ctrl_shift_[",
+        "when": "editorTextFocus && CS["
+      },
+      {
+        "key": "ctrl+shift+]",
+        "command": "extension.helixKeymap.ctrl_shift_]",
+        "when": "editorTextFocus && CS]"
+      },
+      {
+        "key": "ctrl+shift+backtick",
+        "command": "extension.helixKeymap.ctrl_shift_backtick",
+        "when": "editorTextFocus && CSbacktick"
+      },
+      {
+        "key": "ctrl+shift+;",
+        "command": "extension.helixKeymap.ctrl_shift_;",
+        "when": "editorTextFocus && CS;"
+      },
+      {
+        "key": "ctrl+shift+'",
+        "command": "extension.helixKeymap.ctrl_shift_'",
+        "when": "editorTextFocus && CS'"
+      },
+      {
+        "key": "ctrl+shift+,",
+        "command": "extension.helixKeymap.ctrl_shift_,",
+        "when": "editorTextFocus && CS,"
+      },
+      {
+        "key": "ctrl+shift+.",
+        "command": "extension.helixKeymap.ctrl_shift_.",
+        "when": "editorTextFocus && CS."
+      },
+      {
+        "key": "ctrl+shift+/",
+        "command": "extension.helixKeymap.ctrl_shift_/",
+        "when": "editorTextFocus && CS/"
+      },
+      {
+        "key": "ctrl+shift+\\",
+        "command": "extension.helixKeymap.ctrl_shift_\\",
+        "when": "editorTextFocus && CS\\"
+      },
+      {
+        "key": "ctrl+shift+=",
+        "command": "extension.helixKeymap.ctrl_shift_=",
+        "when": "editorTextFocus && CS="
+      },
+      {
+        "key": "ctrl+shift+1",
+        "command": "extension.helixKeymap.ctrl_shift_1",
+        "when": "editorTextFocus && CS1"
+      },
+      {
+        "key": "ctrl+shift+2",
+        "command": "extension.helixKeymap.ctrl_shift_2",
+        "when": "editorTextFocus && CS2"
+      },
+      {
+        "key": "ctrl+shift+3",
+        "command": "extension.helixKeymap.ctrl_shift_3",
+        "when": "editorTextFocus && CS3"
+      },
+      {
+        "key": "ctrl+shift+4",
+        "command": "extension.helixKeymap.ctrl_shift_4",
+        "when": "editorTextFocus && CS4"
+      },
+      {
+        "key": "ctrl+shift+5",
+        "command": "extension.helixKeymap.ctrl_shift_5",
+        "when": "editorTextFocus && CS5"
+      },
+      {
+        "key": "ctrl+shift+6",
+        "command": "extension.helixKeymap.ctrl_shift_6",
+        "when": "editorTextFocus && CS6"
+      },
+      {
+        "key": "ctrl+shift+7",
+        "command": "extension.helixKeymap.ctrl_shift_7",
+        "when": "editorTextFocus && CS7"
+      },
+      {
+        "key": "ctrl+shift+8",
+        "command": "extension.helixKeymap.ctrl_shift_8",
+        "when": "editorTextFocus && CS8"
+      },
+      {
+        "key": "ctrl+shift+9",
+        "command": "extension.helixKeymap.ctrl_shift_9",
+        "when": "editorTextFocus && CS9"
+      },
+      {
+        "key": "ctrl+shift+0",
+        "command": "extension.helixKeymap.ctrl_shift_0",
+        "when": "editorTextFocus && CS0"
+      },
+      {
+        "key": "shift+alt+a",
+        "command": "extension.helixKeymap.shift_alt_a",
+        "when": "editorTextFocus && SAa"
+      },
+      {
+        "key": "shift+alt+b",
+        "command": "extension.helixKeymap.shift_alt_b",
+        "when": "editorTextFocus && SAb"
+      },
+      {
+        "key": "shift+alt+c",
+        "command": "extension.helixKeymap.shift_alt_c",
+        "when": "editorTextFocus && SAc"
+      },
+      {
+        "key": "shift+alt+d",
+        "command": "extension.helixKeymap.shift_alt_d",
+        "when": "editorTextFocus && SAd"
+      },
+      {
+        "key": "shift+alt+e",
+        "command": "extension.helixKeymap.shift_alt_e",
+        "when": "editorTextFocus && SAe"
+      },
+      {
+        "key": "shift+alt+f",
+        "command": "extension.helixKeymap.shift_alt_f",
+        "when": "editorTextFocus && SAf"
+      },
+      {
+        "key": "shift+alt+g",
+        "command": "extension.helixKeymap.shift_alt_g",
+        "when": "editorTextFocus && SAg"
+      },
+      {
+        "key": "shift+alt+h",
+        "command": "extension.helixKeymap.shift_alt_h",
+        "when": "editorTextFocus && SAh"
+      },
+      {
+        "key": "shift+alt+i",
+        "command": "extension.helixKeymap.shift_alt_i",
+        "when": "editorTextFocus && SAi"
+      },
+      {
+        "key": "shift+alt+j",
+        "command": "extension.helixKeymap.shift_alt_j",
+        "when": "editorTextFocus && SAj"
+      },
+      {
+        "key": "shift+alt+k",
+        "command": "extension.helixKeymap.shift_alt_k",
+        "when": "editorTextFocus && SAk"
+      },
+      {
+        "key": "shift+alt+l",
+        "command": "extension.helixKeymap.shift_alt_l",
+        "when": "editorTextFocus && SAl"
+      },
+      {
+        "key": "shift+alt+m",
+        "command": "extension.helixKeymap.shift_alt_m",
+        "when": "editorTextFocus && SAm"
+      },
+      {
+        "key": "shift+alt+n",
+        "command": "extension.helixKeymap.shift_alt_n",
+        "when": "editorTextFocus && SAn"
+      },
+      {
+        "key": "shift+alt+o",
+        "command": "extension.helixKeymap.shift_alt_o",
+        "when": "editorTextFocus && SAo"
+      },
+      {
+        "key": "shift+alt+p",
+        "command": "extension.helixKeymap.shift_alt_p",
+        "when": "editorTextFocus && SAp"
+      },
+      {
+        "key": "shift+alt+q",
+        "command": "extension.helixKeymap.shift_alt_q",
+        "when": "editorTextFocus && SAq"
+      },
+      {
+        "key": "shift+alt+r",
+        "command": "extension.helixKeymap.shift_alt_r",
+        "when": "editorTextFocus && SAr"
+      },
+      {
+        "key": "shift+alt+s",
+        "command": "extension.helixKeymap.shift_alt_s",
+        "when": "editorTextFocus && SAs"
+      },
+      {
+        "key": "shift+alt+t",
+        "command": "extension.helixKeymap.shift_alt_t",
+        "when": "editorTextFocus && SAt"
+      },
+      {
+        "key": "shift+alt+u",
+        "command": "extension.helixKeymap.shift_alt_u",
+        "when": "editorTextFocus && SAu"
+      },
+      {
+        "key": "shift+alt+v",
+        "command": "extension.helixKeymap.shift_alt_v",
+        "when": "editorTextFocus && SAv"
+      },
+      {
+        "key": "shift+alt+w",
+        "command": "extension.helixKeymap.shift_alt_w",
+        "when": "editorTextFocus && SAw"
+      },
+      {
+        "key": "shift+alt+x",
+        "command": "extension.helixKeymap.shift_alt_x",
+        "when": "editorTextFocus && SAx"
+      },
+      {
+        "key": "shift+alt+y",
+        "command": "extension.helixKeymap.shift_alt_y",
+        "when": "editorTextFocus && SAy"
+      },
+      {
+        "key": "shift+alt+z",
+        "command": "extension.helixKeymap.shift_alt_z",
+        "when": "editorTextFocus && SAz"
+      },
+      {
+        "key": "shift+alt+pageup",
+        "command": "extension.helixKeymap.shift_alt_pageup",
+        "when": "editorTextFocus && SApageup"
+      },
+      {
+        "key": "shift+alt+pagedown",
+        "command": "extension.helixKeymap.shift_alt_pagedown",
+        "when": "editorTextFocus && SApagedown"
+      },
+      {
+        "key": "shift+alt+home",
+        "command": "extension.helixKeymap.shift_alt_home",
+        "when": "editorTextFocus && SAhome"
+      },
+      {
+        "key": "shift+alt+end",
+        "command": "extension.helixKeymap.shift_alt_end",
+        "when": "editorTextFocus && SAend"
+      },
+      {
+        "key": "shift+alt+escape",
+        "command": "extension.helixKeymap.shift_alt_escape",
+        "when": "editorTextFocus && SAescape"
+      },
+      {
+        "key": "shift+alt+backspace",
+        "command": "extension.helixKeymap.shift_alt_backspace",
+        "when": "editorTextFocus && SAbackspace"
+      },
+      {
+        "key": "shift+alt+[",
+        "command": "extension.helixKeymap.shift_alt_[",
+        "when": "editorTextFocus && SA["
+      },
+      {
+        "key": "shift+alt+]",
+        "command": "extension.helixKeymap.shift_alt_]",
+        "when": "editorTextFocus && SA]"
+      },
+      {
+        "key": "shift+alt+backtick",
+        "command": "extension.helixKeymap.shift_alt_backtick",
+        "when": "editorTextFocus && SAbacktick"
+      },
+      {
+        "key": "shift+alt+;",
+        "command": "extension.helixKeymap.shift_alt_;",
+        "when": "editorTextFocus && SA;"
+      },
+      {
+        "key": "shift+alt+'",
+        "command": "extension.helixKeymap.shift_alt_'",
+        "when": "editorTextFocus && SA'"
+      },
+      {
+        "key": "shift+alt+,",
+        "command": "extension.helixKeymap.shift_alt_,",
+        "when": "editorTextFocus && SA,"
+      },
+      {
+        "key": "shift+alt+.",
+        "command": "extension.helixKeymap.shift_alt_.",
+        "when": "editorTextFocus && SA."
+      },
+      {
+        "key": "shift+alt+/",
+        "command": "extension.helixKeymap.shift_alt_/",
+        "when": "editorTextFocus && SA/"
+      },
+      {
+        "key": "shift+alt+\\",
+        "command": "extension.helixKeymap.shift_alt_\\",
+        "when": "editorTextFocus && SA\\"
+      },
+      {
+        "key": "shift+alt+=",
+        "command": "extension.helixKeymap.shift_alt_=",
+        "when": "editorTextFocus && SA="
+      },
+      {
+        "key": "shift+alt+1",
+        "command": "extension.helixKeymap.shift_alt_1",
+        "when": "editorTextFocus && SA1"
+      },
+      {
+        "key": "shift+alt+2",
+        "command": "extension.helixKeymap.shift_alt_2",
+        "when": "editorTextFocus && SA2"
+      },
+      {
+        "key": "shift+alt+3",
+        "command": "extension.helixKeymap.shift_alt_3",
+        "when": "editorTextFocus && SA3"
+      },
+      {
+        "key": "shift+alt+4",
+        "command": "extension.helixKeymap.shift_alt_4",
+        "when": "editorTextFocus && SA4"
+      },
+      {
+        "key": "shift+alt+5",
+        "command": "extension.helixKeymap.shift_alt_5",
+        "when": "editorTextFocus && SA5"
+      },
+      {
+        "key": "shift+alt+6",
+        "command": "extension.helixKeymap.shift_alt_6",
+        "when": "editorTextFocus && SA6"
+      },
+      {
+        "key": "shift+alt+7",
+        "command": "extension.helixKeymap.shift_alt_7",
+        "when": "editorTextFocus && SA7"
+      },
+      {
+        "key": "shift+alt+8",
+        "command": "extension.helixKeymap.shift_alt_8",
+        "when": "editorTextFocus && SA8"
+      },
+      {
+        "key": "shift+alt+9",
+        "command": "extension.helixKeymap.shift_alt_9",
+        "when": "editorTextFocus && SA9"
+      },
+      {
+        "key": "shift+alt+0",
+        "command": "extension.helixKeymap.shift_alt_0",
+        "when": "editorTextFocus && SA0"
+      },
+      {
+        "key": "ctrl+shift+alt+a",
+        "command": "extension.helixKeymap.ctrl_shift_alt_a",
+        "when": "editorTextFocus && CSAa"
+      },
+      {
+        "key": "ctrl+shift+alt+b",
+        "command": "extension.helixKeymap.ctrl_shift_alt_b",
+        "when": "editorTextFocus && CSAb"
+      },
+      {
+        "key": "ctrl+shift+alt+c",
+        "command": "extension.helixKeymap.ctrl_shift_alt_c",
+        "when": "editorTextFocus && CSAc"
+      },
+      {
+        "key": "ctrl+shift+alt+d",
+        "command": "extension.helixKeymap.ctrl_shift_alt_d",
+        "when": "editorTextFocus && CSAd"
+      },
+      {
+        "key": "ctrl+shift+alt+e",
+        "command": "extension.helixKeymap.ctrl_shift_alt_e",
+        "when": "editorTextFocus && CSAe"
+      },
+      {
+        "key": "ctrl+shift+alt+f",
+        "command": "extension.helixKeymap.ctrl_shift_alt_f",
+        "when": "editorTextFocus && CSAf"
+      },
+      {
+        "key": "ctrl+shift+alt+g",
+        "command": "extension.helixKeymap.ctrl_shift_alt_g",
+        "when": "editorTextFocus && CSAg"
+      },
+      {
+        "key": "ctrl+shift+alt+h",
+        "command": "extension.helixKeymap.ctrl_shift_alt_h",
+        "when": "editorTextFocus && CSAh"
+      },
+      {
+        "key": "ctrl+shift+alt+i",
+        "command": "extension.helixKeymap.ctrl_shift_alt_i",
+        "when": "editorTextFocus && CSAi"
+      },
+      {
+        "key": "ctrl+shift+alt+j",
+        "command": "extension.helixKeymap.ctrl_shift_alt_j",
+        "when": "editorTextFocus && CSAj"
+      },
+      {
+        "key": "ctrl+shift+alt+k",
+        "command": "extension.helixKeymap.ctrl_shift_alt_k",
+        "when": "editorTextFocus && CSAk"
+      },
+      {
+        "key": "ctrl+shift+alt+l",
+        "command": "extension.helixKeymap.ctrl_shift_alt_l",
+        "when": "editorTextFocus && CSAl"
+      },
+      {
+        "key": "ctrl+shift+alt+m",
+        "command": "extension.helixKeymap.ctrl_shift_alt_m",
+        "when": "editorTextFocus && CSAm"
+      },
+      {
+        "key": "ctrl+shift+alt+n",
+        "command": "extension.helixKeymap.ctrl_shift_alt_n",
+        "when": "editorTextFocus && CSAn"
+      },
+      {
+        "key": "ctrl+shift+alt+o",
+        "command": "extension.helixKeymap.ctrl_shift_alt_o",
+        "when": "editorTextFocus && CSAo"
+      },
+      {
+        "key": "ctrl+shift+alt+p",
+        "command": "extension.helixKeymap.ctrl_shift_alt_p",
+        "when": "editorTextFocus && CSAp"
+      },
+      {
+        "key": "ctrl+shift+alt+q",
+        "command": "extension.helixKeymap.ctrl_shift_alt_q",
+        "when": "editorTextFocus && CSAq"
+      },
+      {
+        "key": "ctrl+shift+alt+r",
+        "command": "extension.helixKeymap.ctrl_shift_alt_r",
+        "when": "editorTextFocus && CSAr"
+      },
+      {
+        "key": "ctrl+shift+alt+s",
+        "command": "extension.helixKeymap.ctrl_shift_alt_s",
+        "when": "editorTextFocus && CSAs"
+      },
+      {
+        "key": "ctrl+shift+alt+t",
+        "command": "extension.helixKeymap.ctrl_shift_alt_t",
+        "when": "editorTextFocus && CSAt"
+      },
+      {
+        "key": "ctrl+shift+alt+u",
+        "command": "extension.helixKeymap.ctrl_shift_alt_u",
+        "when": "editorTextFocus && CSAu"
+      },
+      {
+        "key": "ctrl+shift+alt+v",
+        "command": "extension.helixKeymap.ctrl_shift_alt_v",
+        "when": "editorTextFocus && CSAv"
+      },
+      {
+        "key": "ctrl+shift+alt+w",
+        "command": "extension.helixKeymap.ctrl_shift_alt_w",
+        "when": "editorTextFocus && CSAw"
+      },
+      {
+        "key": "ctrl+shift+alt+x",
+        "command": "extension.helixKeymap.ctrl_shift_alt_x",
+        "when": "editorTextFocus && CSAx"
+      },
+      {
+        "key": "ctrl+shift+alt+y",
+        "command": "extension.helixKeymap.ctrl_shift_alt_y",
+        "when": "editorTextFocus && CSAy"
+      },
+      {
+        "key": "ctrl+shift+alt+z",
+        "command": "extension.helixKeymap.ctrl_shift_alt_z",
+        "when": "editorTextFocus && CSAz"
+      },
+      {
+        "key": "ctrl+shift+alt+pageup",
+        "command": "extension.helixKeymap.ctrl_shift_alt_pageup",
+        "when": "editorTextFocus && CSApageup"
+      },
+      {
+        "key": "ctrl+shift+alt+pagedown",
+        "command": "extension.helixKeymap.ctrl_shift_alt_pagedown",
+        "when": "editorTextFocus && CSApagedown"
+      },
+      {
+        "key": "ctrl+shift+alt+home",
+        "command": "extension.helixKeymap.ctrl_shift_alt_home",
+        "when": "editorTextFocus && CSAhome"
+      },
+      {
+        "key": "ctrl+shift+alt+end",
+        "command": "extension.helixKeymap.ctrl_shift_alt_end",
+        "when": "editorTextFocus && CSAend"
+      },
+      {
+        "key": "ctrl+shift+alt+escape",
+        "command": "extension.helixKeymap.ctrl_shift_alt_escape",
+        "when": "editorTextFocus && CSAescape"
+      },
+      {
+        "key": "ctrl+shift+alt+backspace",
+        "command": "extension.helixKeymap.ctrl_shift_alt_backspace",
+        "when": "editorTextFocus && CSAbackspace"
+      },
+      {
+        "key": "ctrl+shift+alt+[",
+        "command": "extension.helixKeymap.ctrl_shift_alt_[",
+        "when": "editorTextFocus && CSA["
+      },
+      {
+        "key": "ctrl+shift+alt+]",
+        "command": "extension.helixKeymap.ctrl_shift_alt_]",
+        "when": "editorTextFocus && CSA]"
+      },
+      {
+        "key": "ctrl+shift+alt+backtick",
+        "command": "extension.helixKeymap.ctrl_shift_alt_backtick",
+        "when": "editorTextFocus && CSAbacktick"
+      },
+      {
+        "key": "ctrl+shift+alt+;",
+        "command": "extension.helixKeymap.ctrl_shift_alt_;",
+        "when": "editorTextFocus && CSA;"
+      },
+      {
+        "key": "ctrl+shift+alt+'",
+        "command": "extension.helixKeymap.ctrl_shift_alt_'",
+        "when": "editorTextFocus && CSA'"
+      },
+      {
+        "key": "ctrl+shift+alt+,",
+        "command": "extension.helixKeymap.ctrl_shift_alt_,",
+        "when": "editorTextFocus && CSA,"
+      },
+      {
+        "key": "ctrl+shift+alt+.",
+        "command": "extension.helixKeymap.ctrl_shift_alt_.",
+        "when": "editorTextFocus && CSA."
+      },
+      {
+        "key": "ctrl+shift+alt+/",
+        "command": "extension.helixKeymap.ctrl_shift_alt_/",
+        "when": "editorTextFocus && CSA/"
+      },
+      {
+        "key": "ctrl+shift+alt+\\",
+        "command": "extension.helixKeymap.ctrl_shift_alt_\\",
+        "when": "editorTextFocus && CSA\\"
+      },
+      {
+        "key": "ctrl+shift+alt+=",
+        "command": "extension.helixKeymap.ctrl_shift_alt_=",
+        "when": "editorTextFocus && CSA="
+      },
+      {
+        "key": "ctrl+shift+alt+1",
+        "command": "extension.helixKeymap.ctrl_shift_alt_1",
+        "when": "editorTextFocus && CSA1"
+      },
+      {
+        "key": "ctrl+shift+alt+2",
+        "command": "extension.helixKeymap.ctrl_shift_alt_2",
+        "when": "editorTextFocus && CSA2"
+      },
+      {
+        "key": "ctrl+shift+alt+3",
+        "command": "extension.helixKeymap.ctrl_shift_alt_3",
+        "when": "editorTextFocus && CSA3"
+      },
+      {
+        "key": "ctrl+shift+alt+4",
+        "command": "extension.helixKeymap.ctrl_shift_alt_4",
+        "when": "editorTextFocus && CSA4"
+      },
+      {
+        "key": "ctrl+shift+alt+5",
+        "command": "extension.helixKeymap.ctrl_shift_alt_5",
+        "when": "editorTextFocus && CSA5"
+      },
+      {
+        "key": "ctrl+shift+alt+6",
+        "command": "extension.helixKeymap.ctrl_shift_alt_6",
+        "when": "editorTextFocus && CSA6"
+      },
+      {
+        "key": "ctrl+shift+alt+7",
+        "command": "extension.helixKeymap.ctrl_shift_alt_7",
+        "when": "editorTextFocus && CSA7"
+      },
+      {
+        "key": "ctrl+shift+alt+8",
+        "command": "extension.helixKeymap.ctrl_shift_alt_8",
+        "when": "editorTextFocus && CSA8"
+      },
+      {
+        "key": "ctrl+shift+alt+9",
+        "command": "extension.helixKeymap.ctrl_shift_alt_9",
+        "when": "editorTextFocus && CSA9"
+      },
+      {
+        "key": "ctrl+shift+alt+0",
+        "command": "extension.helixKeymap.ctrl_shift_alt_0",
+        "when": "editorTextFocus && CSA0"
       }
     ],
     "configuration": {
@@ -321,6 +1911,7 @@
     "@typescript-eslint/eslint-plugin": "^6.10.0",
     "@typescript-eslint/parser": "^6.10.0",
     "bumpp": "^8.2.1",
+    "esbuild": "^0.19.5",
     "eslint": "^8.27.0",
     "eslint-config-prettier": "^9.0.0",
     "esno": "^0.16.3",
@@ -328,7 +1919,10 @@
     "rimraf": "^3.0.2",
     "string.prototype.matchall": "^4.0.2",
     "typescript": "^5.2.2",
-    "esbuild": "^0.19.5",
     "vsce": "^2.11.0"
+  },
+  "dependencies": {
+    "json5": "^2.2.3",
+    "smol-toml": "^1.2.1"
   }
 }

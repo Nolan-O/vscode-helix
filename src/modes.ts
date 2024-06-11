@@ -1,8 +1,9 @@
 import * as vscode from 'vscode';
 
 import { HelixState } from './helix_state_types';
+import { typeHandler, matchTypeHandler, searchTypeHandler } from './type_handler';
 import { Mode } from './modes_types';
-import { removeTypeSubscription } from './type_subscription';
+import { setTypeSubscription, removeTypeSubscription } from './type_subscription';
 
 export function enterInsertMode(helixState: HelixState, before = true): void {
   // To fix https://github.com/jasonwilliams/vscode-helix/issues/14 we should clear selections on entering insert mode
@@ -21,42 +22,55 @@ export function enterInsertMode(helixState: HelixState, before = true): void {
 export function enterNormalMode(helixState: HelixState): void {
   helixState.mode = Mode.Normal;
   setModeContext('extension.helixKeymap.normalMode');
+  setTypeSubscription(helixState, typeHandler);
   helixState.commandLine.setText('', helixState);
 }
 
 export function enterSearchMode(helixState: HelixState): void {
   helixState.mode = Mode.SearchInProgress;
   setModeContext('extension.helixKeymap.searchMode');
+  setTypeSubscription(helixState, searchTypeHandler);
   helixState.commandLine.setText('', helixState);
 }
 
 export function enterSelectMode(helixState: HelixState): void {
   helixState.mode = Mode.Select;
   setModeContext('extension.helixKeymap.selectMode');
+  setTypeSubscription(helixState, searchTypeHandler);
   helixState.commandLine.setText('', helixState);
 }
 
 export function enterWindowMode(helixState: HelixState): void {
   helixState.mode = Mode.Window;
   setModeContext('extension.helixKeymap.windowMode');
+  setTypeSubscription(helixState, typeHandler);
   helixState.commandLine.setText('', helixState);
 }
 
 export function enterVisualMode(helixState: HelixState): void {
   helixState.mode = Mode.Visual;
   setModeContext('extension.helixKeymap.visualMode');
+  setTypeSubscription(helixState, typeHandler);
   helixState.commandLine.setText('', helixState);
 }
 
 export function enterVisualLineMode(helixState: HelixState): void {
   helixState.mode = Mode.VisualLine;
   setModeContext('extension.helixKeymap.visualLineMode');
+  setTypeSubscription(helixState, typeHandler);
 }
 
 export function enterViewMode(helixState: HelixState): void {
   helixState.mode = Mode.View;
   setModeContext('extension.helixKeymap.viewMode');
+  setTypeSubscription(helixState, typeHandler);
   helixState.commandLine.setText('', helixState);
+}
+
+export function enterMatchMode(helixState: HelixState): void {
+  helixState.mode = Mode.Match;
+  setModeContext('extension.helixKeymap.matchMode');
+  setTypeSubscription(helixState, matchTypeHandler);
 }
 
 export function enterDisabledMode(helixState: HelixState): void {
