@@ -1,40 +1,31 @@
 import * as vscode from 'vscode';
-import { Action, Action2, BindingStructure } from '../action_types';
+import { Action, BindingStructure } from '../action_types';
 import { HelixState } from '../helix_state_types';
 import {
-  enterInsertMode,
-  enterNormalMode,
-  enterSearchMode,
-  enterSelectMode,
-  enterVisualLineMode,
-  enterVisualMode,
+  ModeEnterFuncs,
   setModeCursorStyle,
-  enterWindowMode,
-  enterViewMode,
-  enterMatchMode
+  enterPreviousMode
 } from '../modes';
-import { Mode } from '../modes_types';
-import { parseKeysExact, parseKeysRegex } from '../parse_keys';
+import { Mode } from '../modes';
 import * as positionUtils from '../position_utils';
 import { putAfter } from '../put_utils/put_after';
 import { putBefore } from '../put_utils/put_before';
 import { removeTypeSubscription, setTypeSubscription } from '../type_subscription';
 import { flashYankHighlight } from '../yank_highlight';
-import KeyMap from './keymaps';
-import { delete_, isSingleLineRange, yank } from './operators';
 import { paragraphBackward, paragraphForward } from '../paragraph_utils';
 import { setVisualLineSelections } from '../visual_line_utils';
 import { setVisualSelections } from '../visual_utils';
 import { whitespaceWordRanges, wordRanges } from '../word_utils';
-import { typeHandler } from '../type_handler';
+import * as typeHandlers from '../type_handler';
 import * as motions from './motions';
+import * as operatorRanges from './operator_ranges';
 
 enum Direction {
   Up,
   Down,
 }
 
-export let actions2: BindingStructure = {
+export let bindings: BindingStructure = {
   [Mode.Disabled]: {},
   [Mode.Insert]: {},
   [Mode.Normal]: {},
@@ -47,12 +38,15 @@ export let actions2: BindingStructure = {
   [Mode.Select]: {},
   [Mode.View]: {},
   [Mode.Match]: {},
+  [Mode.Find]: {},
+  [Mode.Replace]: {},
+  [Mode.InputGathering]: {}
 }
 
 // Returns true if a binding was found or if the input has not ruled out the possibility of future keys finding a binding
-function matchInput(vimState: HelixState): Action2[] | boolean {
+function matchInput(vimState: HelixState): Action[] | boolean {
   let chars = vimState.keysPressed
-  let binding = actions2[vimState.mode]
+  let binding = bindings[vimState.mode]
   for (let i = 0; i < chars.length; i++) {
     binding = binding[chars[i]]
 
@@ -68,8 +62,14 @@ function matchInput(vimState: HelixState): Action2[] | boolean {
   return true
 }
 
+export enum ChordConsumeResult {
+  MATCH,
+  INVALID,
+  INCOMPLETE,
+}
+
 // return true if actions were executed
-export function tryConsumeChord(helixState: HelixState) {
+export function tryConsumeChord(helixState: HelixState, clearKeysPressed: boolean = true) {
   const editor = vscode.window.activeTextEditor
   if (editor === undefined) {
     return
@@ -79,51 +79,30 @@ export function tryConsumeChord(helixState: HelixState) {
   console.log(helixState.keysPressed)
 
   if (actions === false) {
-    helixState.keysPressed = [];
-    helixState.numbersPressed = [];
-    return false;
+    if (clearKeysPressed) {
+      helixState.keysPressed = [];
+      helixState.numbersPressed = [];
+    }
+    return ChordConsumeResult.INVALID;
   } else if (actions === true) {
-    return false;
+    return ChordConsumeResult.INCOMPLETE;
   } else {
     for (let action of actions) {
       action(helixState, editor)
     }
-    helixState.keysPressed = [];
-    helixState.numbersPressed = [];
-    return true;
+    if (clearKeysPressed) {
+      helixState.keysPressed = [];
+      helixState.numbersPressed = [];
+    }
+    return ChordConsumeResult.MATCH;
   }
 }
 
-export function handleMatchInput(helixState: HelixState) {
-
-}
-
-
-function getMatchPairs(char: string) {
-  let startChar: string;
-  let endChar: string;
-  if (['{', '}'].includes(char)) {
-    startChar = '{';
-    endChar = '}';
-  } else if (['[', ']'].includes(char)) {
-    startChar = '[';
-    endChar = ']';
-  } else if (['(', ')'].includes(char)) {
-    startChar = '(';
-    endChar = ')';
-  } else if (['<', '>'].includes(char)) {
-    startChar = '<';
-    endChar = '>';
-  } else {
-    // Otherwise, startChar and endChar should be the same character
-    startChar = char;
-    endChar = char;
-  }
-
-  return [startChar, endChar];
-};
-
-export const actionFuncs: { [key: string]: Action2 } = {
+/**
+ * Unimplemented:
+*/
+export const actionFuncs: { [key: string]: Action } = {
+  no_op: () => { },
   /*
     Modes
   */
@@ -134,9 +113,9 @@ export const actionFuncs: { [key: string]: Action2 } = {
         return new vscode.Selection(newPosition, newPosition);
       });
 
-      enterNormalMode(helixState);
+      ModeEnterFuncs[Mode.Normal](helixState);
       setModeCursorStyle(helixState.mode, editor);
-      setTypeSubscription(helixState, typeHandler);
+      setTypeSubscription(helixState, typeHandlers.typeHandler);
     } else if (helixState.mode === Mode.Normal) {
       // Clear multiple cursors
       if (editor.selections.length > 1) {
@@ -150,7 +129,7 @@ export const actionFuncs: { [key: string]: Action2 } = {
         return new vscode.Selection(newPosition, newPosition);
       });
 
-      enterNormalMode(helixState);
+      ModeEnterFuncs[Mode.Normal](helixState);
       setModeCursorStyle(helixState.mode, editor);
     } else if (helixState.mode === Mode.VisualLine) {
       editor.selections = editor.selections.map((selection) => {
@@ -160,10 +139,10 @@ export const actionFuncs: { [key: string]: Action2 } = {
         return new vscode.Selection(newPosition, newPosition);
       });
 
-      enterNormalMode(helixState);
+      ModeEnterFuncs[Mode.Normal](helixState);
       setModeCursorStyle(helixState.mode, editor);
     } else if (helixState.mode === Mode.SearchInProgress || helixState.mode === Mode.Select) {
-      enterNormalMode(helixState);
+      ModeEnterFuncs[Mode.Normal](helixState);
       helixState.searchState.clearSearchString(helixState);
       // To match Helix UI go back to the last active position on escape
       if (helixState.searchState.lastActivePosition) {
@@ -177,45 +156,45 @@ export const actionFuncs: { [key: string]: Action2 } = {
         );
       }
     } else if (helixState.mode === Mode.View) {
-      enterNormalMode(helixState);
+      ModeEnterFuncs[Mode.Normal](helixState);
     }
 
     helixState.keysPressed = [];
   },
   select_mode: (vimState, editor) => {
-    enterVisualMode(vimState);
+    ModeEnterFuncs[Mode.Visual](vimState);
     setModeCursorStyle(vimState.mode, editor);
   },
   insert_mode: (vimState, editor) => {
-    enterInsertMode(vimState);
+    ModeEnterFuncs[Mode.Insert](vimState);
     setModeCursorStyle(vimState.mode, editor);
     removeTypeSubscription(vimState);
   },
   append_mode: (vimState, editor) => {
-    enterInsertMode(vimState, false);
+    ModeEnterFuncs[Mode.Insert](vimState, false);
     setModeCursorStyle(vimState.mode, editor);
     removeTypeSubscription(vimState);
   },
   search: (helixState) => {
-    enterSearchMode(helixState);
+    ModeEnterFuncs[Mode.SearchInProgress](helixState);
   },
   rsearch: (helixState) => {
-    enterSearchMode(helixState);
+    ModeEnterFuncs[Mode.SearchInProgress](helixState);
     helixState.searchState.previousSearchResult(helixState);
   },
   select_regex: (helixState, editor) => {
-    enterSelectMode(helixState);
+    ModeEnterFuncs[Mode.Select](helixState);
     // if we enter select mode we should save the current selection
     helixState.currentSelection = editor.selection;
   },
   enterWindowMode: (helixState) => {
-    enterWindowMode(helixState);
+    ModeEnterFuncs[Mode.Window](helixState);
   },
   view_mode: (helixState) => {
-    enterViewMode(helixState);
+    ModeEnterFuncs[Mode.View](helixState);
   },
   match_mode: (helixState) => {
-    enterMatchMode(helixState);
+    ModeEnterFuncs[Mode.Match](helixState);
   },
   extend_line_below: (vimState: HelixState) => {
     vscode.commands.executeCommand('expandLineSelection');
@@ -251,7 +230,7 @@ export const actionFuncs: { [key: string]: Action2 } = {
       return new vscode.Selection(newPosition, newPosition);
     });
 
-    enterInsertMode(vimState);
+    ModeEnterFuncs[Mode.Insert](vimState);
     setModeCursorStyle(vimState.mode, editor);
     removeTypeSubscription(vimState);
   },
@@ -262,7 +241,7 @@ export const actionFuncs: { [key: string]: Action2 } = {
       return new vscode.Selection(newPosition, newPosition);
     });
 
-    enterInsertMode(vimState);
+    ModeEnterFuncs[Mode.Insert](vimState);
     setModeCursorStyle(vimState.mode, editor);
     removeTypeSubscription(vimState);
   },
@@ -313,13 +292,13 @@ export const actionFuncs: { [key: string]: Action2 } = {
     });
   },
   open_below: (vimState, editor) => {
-    enterInsertMode(vimState);
+    ModeEnterFuncs[Mode.Insert](vimState);
     vscode.commands.executeCommand('editor.action.insertLineAfter');
     setModeCursorStyle(vimState.mode, editor);
     removeTypeSubscription(vimState);
   },
   open_above: (vimState, editor) => {
-    enterInsertMode(vimState);
+    ModeEnterFuncs[Mode.Insert](vimState);
     vscode.commands.executeCommand('editor.action.insertLineBefore');
     setModeCursorStyle(vimState.mode, editor);
     removeTypeSubscription(vimState);
@@ -338,35 +317,36 @@ export const actionFuncs: { [key: string]: Action2 } = {
   },
   moveEditorRight: (helixState) => {
     vscode.commands.executeCommand('workbench.action.moveEditorToNextGroup');
-    enterNormalMode(helixState);
+    ModeEnterFuncs[Mode.Normal](helixState);
   },
   moveEditorDown: (helixState) => {
     vscode.commands.executeCommand('workbench.action.moveEditorToBelowGroup');
-    enterNormalMode(helixState);
+    ModeEnterFuncs[Mode.Normal](helixState);
   },
   moveEditorLeft: (helixState) => {
     vscode.commands.executeCommand('workbench.action.moveEditorToPreviousGroup');
-    enterNormalMode(helixState);
+    ModeEnterFuncs[Mode.Normal](helixState);
   },
   moveEditorNewWindow: (helixState) => {
     vscode.commands.executeCommand('workbench.action.moveEditorToNewWindow');
-    enterNormalMode(helixState);
+    ModeEnterFuncs[Mode.Normal](helixState);
   },
   moveEditorMainWindow: (helixState) => {
     vscode.commands.executeCommand('workbench.action.restoreEditorsToMainWindow');
-    enterNormalMode(helixState);
+    ModeEnterFuncs[Mode.Normal](helixState);
   },
-  yank: (vimState, editor) => {
-    // Yank highlight
-    const highlightRanges = editor.selections.map((selection) => selection.with());
+  yank_to_clipboard: (vimState, editor) => {
+    yankLine(vimState, editor);
 
-    // We need to detect if the ranges are lines because we need to handle them differently
-    highlightRanges.every((range) => isSingleLineRange(range));
-    yank(vimState, editor, highlightRanges, false);
+    // Yank highlight
+    const highlightRanges = editor.selections.map((selection) => {
+      const lineLength = editor.document.lineAt(selection.active.line).text.length;
+      return new vscode.Range(
+        selection.active.with({ character: 0 }),
+        selection.active.with({ character: lineLength }),
+      );
+    });
     flashYankHighlight(editor, highlightRanges);
-    if (vimState.mode === Mode.Visual) {
-      enterNormalMode(vimState);
-    }
   },
 
   /*
@@ -374,68 +354,68 @@ export const actionFuncs: { [key: string]: Action2 } = {
   */
   rotate_view: (helixState) => {
     vscode.commands.executeCommand('workbench.action.navigateEditorGroups');
-    enterNormalMode(helixState);
+    ModeEnterFuncs[Mode.Normal](helixState);
   },
   vsplit: (helixState) => {
     vscode.commands.executeCommand('workbench.action.splitEditor');
-    enterNormalMode(helixState);
+    ModeEnterFuncs[Mode.Normal](helixState);
   },
   hsplit: (helixState) => {
     vscode.commands.executeCommand('workbench.action.splitEditorDown');
-    enterNormalMode(helixState);
+    ModeEnterFuncs[Mode.Normal](helixState);
   },
   // maps to ctrl w f & ctrl w shift f since this is the only suitable replacement for both vscode.commands in helix
   goto_file: (helixState) => {
     vscode.commands.executeCommand('editor.action.revealDefinitionAside');
-    enterNormalMode(helixState);
+    ModeEnterFuncs[Mode.Normal](helixState);
   },
   jump_view_left: (helixState) => {
     vscode.commands.executeCommand('workbench.action.focusLeftGroup');
-    enterNormalMode(helixState);
+    ModeEnterFuncs[Mode.Normal](helixState);
   },
   jump_view_right: (helixState) => {
     vscode.commands.executeCommand('workbench.action.focusRightGroup');
-    enterNormalMode(helixState);
+    ModeEnterFuncs[Mode.Normal](helixState);
   },
   jump_view_down: (helixState) => {
     vscode.commands.executeCommand('workbench.action.focusBelowGroup');
-    enterNormalMode(helixState);
+    ModeEnterFuncs[Mode.Normal](helixState);
   },
   jump_view_up: (helixState) => {
     vscode.commands.executeCommand('workbench.action.focusAboveGroup');
-    enterNormalMode(helixState);
+    ModeEnterFuncs[Mode.Normal](helixState);
   },
   wclose: (helixState) => {
     vscode.commands.executeCommand('workbench.action.closeActiveEditor');
-    enterNormalMode(helixState);
+    ModeEnterFuncs[Mode.Normal](helixState);
   },
   wonly: (helixState) => {
     vscode.commands.executeCommand('workbench.action.closeOtherEditors');
-    enterNormalMode(helixState);
+    ModeEnterFuncs[Mode.Normal](helixState);
   },
   swap_view_left: (helixState) => {
     vscode.commands.executeCommand('workbench.action.moveActiveEditorGroupLeft');
-    enterNormalMode(helixState);
+    ModeEnterFuncs[Mode.Normal](helixState);
   },
   swap_view_right: (helixState) => {
     vscode.commands.executeCommand('workbench.action.moveActiveEditorGroupRight');
-    enterNormalMode(helixState);
+    ModeEnterFuncs[Mode.Normal](helixState);
   },
   swap_view_up: (helixState) => {
     vscode.commands.executeCommand('workbench.action.moveActiveEditorGroupUp');
-    enterNormalMode(helixState);
+    ModeEnterFuncs[Mode.Normal](helixState);
   },
   swap_view_down: (helixState) => {
     vscode.commands.executeCommand('workbench.action.moveActiveEditorGroupDown');
-    enterNormalMode(helixState);
+    ModeEnterFuncs[Mode.Normal](helixState);
   },
   newFile: (helixState) => {
     vscode.commands.executeCommand('workbench.action.files.newUntitledFile');
-    enterNormalMode(helixState);
+    ModeEnterFuncs[Mode.Normal](helixState);
   },
   toggleSidebarVisibility: (helixState) => {
     vscode.commands.executeCommand('workbench.action.toggleSidebarVisibility');
-    enterNormalMode(helixState);
+    ModeEnterFuncs[Mode.Normal](helixState);
   },
 
   /*
@@ -678,7 +658,74 @@ export const actionFuncs: { [key: string]: Action2 } = {
   selectToBracket: () => {
     vscode.commands.executeCommand('editor.action.selectToBracket');
   },
+  delete_char_backward: (helixState, editor) => {
+    const document = vscode.window.activeTextEditor?.document;
+    if (document == undefined) return;
+    const ranges = editor.selections.map((selection) => selection.with(undefined, positionUtils.leftWrap(document, selection.anchor)));
+    delete_(editor, ranges, false);
+  },
+  delete_char_forward: (helixState, editor) => {
+    const document = vscode.window.activeTextEditor?.document;
+    if (document == undefined) return;
+    const ranges = editor.selections.map((selection) => selection.with(undefined, positionUtils.rightWrap(document, selection.anchor)));
+    delete_(editor, ranges, false);
+  },
+  searchBackspaceOverride: (helixState, editor) => {
+    helixState.searchState.backspace(helixState)
+  },
 
+  delete_word_backward: (helixState, editor) => {
+    vscode.commands.executeCommand('deleteWordLeft');
+  },
+  delete_word_forward: (helixState, editor) => {
+    vscode.commands.executeCommand('deleteWordRight');
+  },
+  completion: () => {
+    vscode.commands.executeCommand("editor.action.triggerSuggest");
+  },
+  incriment: () => {
+    const editor = vscode.window.activeTextEditor
+    if (editor == undefined) return;
+
+    // Move the cursor to the first number and incremene the number
+    // If the cursor is not on a number, then do nothing
+    editor.edit((editBuilder) => {
+      editor.selections.forEach((selection) => {
+        const translatedSelection = selection.with(selection.start, selection.start.translate(0, 1));
+        const text = editor.document.getText(translatedSelection);
+        const number = parseInt(text, 10);
+        if (!isNaN(number)) {
+          editBuilder.replace(translatedSelection, (number + 1).toString());
+        }
+      });
+    });
+  },
+  decriment: () => {
+    const editor = vscode.window.activeTextEditor
+    if (editor == undefined) return;
+
+    // Move the cursor to the first number and incremene the number
+    // If the cursor is not on a number, then do nothing
+    editor.edit((editBuilder) => {
+      editor.selections.forEach((selection) => {
+        const translatedSelection = selection.with(selection.start, selection.start.translate(0, 1));
+        const text = editor.document.getText(translatedSelection);
+        const number = parseInt(text, 10);
+        if (!isNaN(number)) {
+          editBuilder.replace(translatedSelection, (number - 1).toString());
+        }
+      });
+    });
+  },
+
+  // edit match
+  changeMatch: (helixState, editor) => {
+    const ranges = editor.selections.map((selection) => selection.with());
+    delete_(editor, ranges, false);
+    ModeEnterFuncs[Mode.Insert](helixState);
+    setModeCursorStyle(helixState.mode, editor);
+    removeTypeSubscription(helixState);
+  },
   // Delete match
   deleteMatch: (helixState, editor) => {
     const ranges = editor.selections.map((selection) => selection.with());
@@ -686,101 +733,77 @@ export const actionFuncs: { [key: string]: Action2 } = {
     delete_(editor, ranges, false);
   },
 
-  backspaceOverride: (helixState, editor) => {
-    const ranges = editor.selections.map((selection) => selection.with());
-    delete_(editor, ranges, false);
+  match_brackets: (helixState, editor) => {
+    enterPreviousMode(helixState);
+
+    if (helixState.mode === Mode.Visual || helixState.mode === Mode.VisualLine) {
+      vscode.commands.executeCommand('editor.action.selectToBracket');
+    } else {
+      vscode.commands.executeCommand('editor.action.jumpToBracket');
+    }
+  },
+  surround_add: (helixState, editor) => {
+    ModeEnterFuncs[Mode.InputGathering](helixState);
+    setTypeSubscription(helixState, typeHandlers.surroundAddTypeHandler)
+  },
+  surround_replace: (helixState, editor) => {
+    ModeEnterFuncs[Mode.InputGathering](helixState);
+    setTypeSubscription(helixState, typeHandlers.surroundReplaceTypeHandler)
+  },
+  surround_delete: (helixState, editor) => {
+    ModeEnterFuncs[Mode.InputGathering](helixState);
+    setTypeSubscription(helixState, typeHandlers.surroundDeleteTypeHandler)
   },
 
-  searchBackspaceOverride: (helixState, editor) => {
-    helixState.searchState.backspace(helixState)
+  // Selection commands for match mode which, while making up individual actions, do not have individual helix bindings
+  selectOuterParagraph: (vimState, editor) => {
+    operatorRanges.outer.Paragraph(vimState, editor)
+    enterPreviousMode(vimState)
   },
-
-  // edit match
-  changeMatch: (helixState, editor) => {
-    const ranges = editor.selections.map((selection) => selection.with());
-    delete_(editor, ranges, false);
-    enterInsertMode(helixState);
-    setModeCursorStyle(helixState.mode, editor);
-    removeTypeSubscription(helixState);
+  selectOuterWord: (helixState, editor) => {
+    operatorRanges.outer.Word(helixState, editor)
+    enterPreviousMode(helixState)
   },
-
-  // implement match add to selection
-  /*   parseKeysRegex(/^ ms(.)$/, / ^ ms /, [Mode.Normal, Mode.Visual], (helixState, editor, match) => {
-      const char = match[1];
-      const [startChar, endChar] = getMatchPairs(char);
-      // Add char to both ends of each selection
-      editor.edit((editBuilder) => {
-        // Add char to both ends of each selection
-        editor.selections.forEach((selection) => {
-          const start = selection.start;
-          const end = selection.end;
-          editBuilder.insert(start, startChar);
-          editBuilder.insert(end, endChar);
-        });
-      });
-    }, */
-
-  // implement match replace to selection
-  /*   parseKeysRegex(/^ mr(.)(.)$/, / ^ mr(.) ? /, [Mode.Normal, Mode.Visual], (helixState, editor, match) => {
-        const original = match[1];
-  const replacement = match[2];
-  const [startCharOrig, endCharOrig] = getMatchPairs(original);
-  const [startCharNew, endCharNew] = getMatchPairs(replacement);
-  const num = helixState.resolveCount();
-  
-  const forwardPosition = searchForwardBracket(
-    editor.document,
-    startCharOrig,
-    endCharOrig,
-    editor.selection.active,
-    num,
-  );
-  const backwardPosition = searchBackwardBracket(
-    editor.document,
-    startCharOrig,
-    endCharOrig,
-    editor.selection.active,
-    num,
-  );
-  
-  if (forwardPosition === undefined || backwardPosition === undefined) return;
-  
-  // Add char to both ends of each selection
-  editor.edit((editBuilder) => {
-    // Add char to both ends of each selection
-    editBuilder.replace(
-      new vscode.Range(forwardPosition, forwardPosition.with({ character: forwardPosition.character + 1 })),
-      endCharNew,
-    );
-    editBuilder.replace(
-      new vscode.Range(backwardPosition, backwardPosition.with({ character: backwardPosition.character + 1 })),
-      startCharNew,
-    );
-  });
-      }, */
-
-  // implement match delete character
-  /*   parseKeysRegex(/^ md(.)$/, / ^ md /, [Mode.Normal, Mode.Visual], (helixState, editor, match) => {
-      const char = match[1];
-      const [startChar, endChar] = getMatchPairs(char);
-      const num = helixState.resolveCount();
-  
-      const forwardPosition = searchForwardBracket(editor.document, startChar, endChar, editor.selection.active, num);
-      const backwardPosition = searchBackwardBracket(editor.document, startChar, endChar, editor.selection.active, num);
-  
-      if (forwardPosition === undefined || backwardPosition === undefined) return;
-  
-      // Add char to both ends of each selection
-      editor.edit((editBuilder) => {
-        // Add char to both ends of each selection
-        editBuilder.delete(
-          new vscode.Range(forwardPosition, forwardPosition.with({ character: forwardPosition.character + 1 })),
-        );
-        editBuilder.delete(
-          new vscode.Range(backwardPosition, backwardPosition.with({ character: backwardPosition.character + 1 })),
-        );
-      });
-    }, */
+  selectOuterLongWord: (helixState, editor) => {
+    operatorRanges.outer.LongWord(helixState, editor)
+    enterPreviousMode(helixState)
+  },
+  selectOuterSurroundingPair: (helixState, editor) => {
+    operatorRanges.outer.SurroundingPair(helixState, editor)
+    enterPreviousMode(helixState)
+  },
+  selectOuterFunction: (helixState, editor) => {
+    operatorRanges.outer.Function(helixState, editor)
+    enterPreviousMode(helixState)
+  },
+  selectOuterType: (helixState, editor) => {
+    operatorRanges.outer.Type(helixState, editor)
+    enterPreviousMode(helixState)
+  },
+  selectInnerParagraph: (vimState, editor) => {
+    operatorRanges.inner.Paragraph(vimState, editor)
+    enterPreviousMode(vimState)
+  },
+  selectInnerWord: (helixState, editor) => {
+    operatorRanges.inner.Word(helixState, editor)
+    enterPreviousMode(helixState)
+  },
+  selectInnerLongWord: (helixState, editor) => {
+    operatorRanges.inner.LongWord(helixState, editor)
+    enterPreviousMode(helixState)
+  },
+  selectInnerSurroundingPair: (helixState, editor) => {
+    operatorRanges.inner.SurroundingPair(helixState, editor)
+    enterPreviousMode(helixState)
+  },
+  selectInnerFunction: (helixState, editor) => {
+    operatorRanges.inner.Function(helixState, editor)
+    enterPreviousMode(helixState)
+  },
+  selectInnerType: (helixState, editor) => {
+    operatorRanges.inner.Type(helixState, editor)
+    enterPreviousMode(helixState)
+  },
 
   move_char_right: (vimState, editor) => {
     if (vimState.mode === Mode.Visual) {
@@ -860,10 +883,8 @@ export const actionFuncs: { [key: string]: Action2 } = {
 
   move_next_word_start: motions.createWordForwardHandler(wordRanges),
   move_next_long_word_start: motions.createWordForwardHandler(whitespaceWordRanges),
-
   move_prev_word_start: motions.createWordBackwardHandler(wordRanges),
   move_prev_long_word_start: motions.createWordBackwardHandler(whitespaceWordRanges),
-
   move_next_word_end: motions.createWordEndHandler(wordRanges),
   move_next_long_word_end: motions.createWordEndHandler(whitespaceWordRanges),
 
@@ -872,20 +893,17 @@ export const actionFuncs: { [key: string]: Action2 } = {
       return new vscode.Position(paragraphForward(document, position.line), 0);
     });
   },
-
   goto_prev_paragraph: (vimState, editor) => {
     motions.execMotion(vimState, editor, ({ document, position }) => {
       return new vscode.Position(paragraphBackward(document, position.line), 0);
     });
   },
-
   moveLineEnd: (vimState, editor) => {
     motions.execMotion(vimState, editor, ({ document, position }) => {
       const lineLength = document.lineAt(position.line).text.length;
       return position.with({ character: Math.max(lineLength - 1, 0) });
     });
   },
-
   moveLineStart: (vimState, editor) => {
     motions.execMotion(vimState, editor, ({ document, position }) => {
       const line = document.lineAt(position.line);
@@ -894,7 +912,6 @@ export const actionFuncs: { [key: string]: Action2 } = {
       });
     });
   },
-
   goto_window_top: (vimState, editor) => {
     if (vimState.mode === Mode.Normal) {
       vscode.commands.executeCommand('cursorMove', {
@@ -925,7 +942,6 @@ export const actionFuncs: { [key: string]: Action2 } = {
         });
     }
   },
-
   goto_window_center: (vimState, editor) => {
     if (vimState.mode === Mode.Normal) {
       vscode.commands.executeCommand('cursorMove', {
@@ -956,7 +972,6 @@ export const actionFuncs: { [key: string]: Action2 } = {
         });
     }
   },
-
   goto_window_bottom: (vimState, editor) => {
     if (vimState.mode === Mode.Normal) {
       vscode.commands.executeCommand('cursorMove', {
@@ -988,110 +1003,38 @@ export const actionFuncs: { [key: string]: Action2 } = {
     }
   },
 
+  find_till_char: (helixState, editor) => {
+    ModeEnterFuncs[Mode.Find](helixState, motions.tillForward);
+  },
+  till_prev_char: (helixState, editor) => {
+    ModeEnterFuncs[Mode.Find](helixState, motions.tillBackward);
+  },
+  find_next_char: (helixState, editor) => {
+    ModeEnterFuncs[Mode.Find](helixState, motions.findForward);
+  },
+  find_prev_char: (helixState, editor) => {
+    ModeEnterFuncs[Mode.Find](helixState, motions.findBackward);
+  },
 
-  /*     parseKeysRegex(/^f(.)$/, /^(f|f.)$/, [Mode.Normal, Mode.Visual], (vimState, editor, match) => {
-        findForward(vimState, editor, match);
-    
-        vimState.repeatLastMotion = (innerVimState, innerEditor) => {
-          findForward(innerVimState, innerEditor, match);
-        };
-      }),
-    
-      parseKeysRegex(/^F(.)$/, /^(F|F.)$/, [Mode.Normal, Mode.Visual], (vimState, editor, match) => {
-        findBackward(vimState, editor, match);
-    
-        vimState.repeatLastMotion = (innerVimState, innerEditor) => {
-          findBackward(innerVimState, innerEditor, match);
-        };
-      }),
-    
-      parseKeysRegex(/^t(.)$/, /^t$/, [Mode.Normal, Mode.Visual], (vimState, editor, match) => {
-        tillForward(vimState, editor, match);
-    
-        vimState.repeatLastMotion = (innerVimState, innerEditor) => {
-          tillForward(innerVimState, innerEditor, match);
-        };
-      }),
-    
-      parseKeysRegex(/^T(.)$/, /^T$/, [Mode.Normal, Mode.Visual], (vimState, editor, match) => {
-        tillBackward(vimState, editor, match);
-    
-        vimState.repeatLastMotion = (innerVimState, innerEditor) => {
-          tillBackward(innerVimState, innerEditor, match);
-        };
-      }), */
-}
-
-// These are all legacy and waiting to be ported to the new actions array
-export const actions: Action[] = [
-
-  // 	replace
-  parseKeysRegex(/^r(.)/, /^r/, [Mode.Normal], (helixState, editor, match) => {
-    const position = editor.selection.active;
+  delete_selection: (vimState, editor) => {
     editor.edit((builder) => {
-      builder.replace(new vscode.Range(position, position.with({ character: position.character + 1 })), match[1]);
-    });
-  }),
-
-  parseKeysExact(['d', 'd'], [Mode.Normal], (vimState, editor) => {
-    deleteLine(vimState, editor);
-  }),
-
-  parseKeysExact(['D'], [Mode.Normal], () => {
-    vscode.commands.executeCommand('deleteAllRight');
-  }),
-
-  parseKeysRegex(/(\\d+)g/, /^g$/, [Mode.Normal, Mode.Visual], (helixState, editor, match) => {
-    new vscode.Position(parseInt(match[1]), 0);
-  }),
-
-  // add 1 character swap
-  parseKeysRegex(/^x(.)$/, /^x$/, [Mode.Normal, Mode.Visual], (vimState, editor, match) => {
-    editor.edit((builder) => {
-      editor.selections.forEach((s) => {
-        const oneChar = s.with({
-          end: s.active.with({
-            character: s.active.character + 1,
-          }),
-        });
-        builder.replace(oneChar, match[1]);
+      editor.selections.forEach((sel, i) => {
+        if (sel.isEmpty) {
+          const sel_ch = new vscode.Selection(
+            sel.active,
+            new vscode.Position(sel.active.line, sel.active.character + 1)
+          )
+          builder.replace(sel_ch, '')
+        } else {
+          builder.replace(sel, '')
+        }
       });
-    });
-  }),
-
-  // same for rip command
-  parseKeysRegex(
-    RegExp(`^r(\\d+)(${KeyMap.Motions.MoveUp}|${KeyMap.Motions.MoveDown})$`),
-    /^(r|r\d+)$/,
-    [Mode.Normal, Mode.Visual],
-    (vimState, editor, match) => {
-      const lineCount = parseInt(match[1]);
-      const direction = match[2] == KeyMap.Motions.MoveUp ? Direction.Up : Direction.Down;
-      // console.log(`delete ${lineCount} lines up`);
-      const selections = makeMultiLineSelection(vimState, editor, lineCount, direction);
-
-      yank(vimState, editor, selections, true);
-
-      deleteLines(vimState, editor, lineCount, direction);
-    },
-  ),
-
-  // same for duplicate command
-  parseKeysRegex(
-    RegExp(`^q(\\d+)(${KeyMap.Motions.MoveUp}|${KeyMap.Motions.MoveDown})$`),
-    /^(q|q\d+)$/,
-    [Mode.Normal, Mode.Visual],
-    (vimState, editor, match) => {
-      const lineCount = parseInt(match[1]);
-      const direction = match[2] == KeyMap.Motions.MoveUp ? Direction.Up : Direction.Down;
-      // console.log(`delete ${lineCount} lines up`);
-      editor.selections = makeMultiLineSelection(vimState, editor, lineCount, direction);
-      vscode.commands.executeCommand('editor.action.copyLinesDownAction');
-    },
-  ),
-
-  // Change
-  parseKeysExact(['c', 'c'], [Mode.Normal], (vimState, editor) => {
+    })
+  },
+  replace: (vimState, editor) => {
+    ModeEnterFuncs[Mode.Replace](vimState);
+  },
+  change: (helixState, editor) => {
     editor.edit((editBuilder) => {
       editor.selections.forEach((selection) => {
         const line = editor.document.lineAt(selection.active.line);
@@ -1106,75 +1049,16 @@ export const actions: Action[] = [
       });
     });
 
-    enterInsertMode(vimState);
-    setModeCursorStyle(vimState.mode, editor);
-    removeTypeSubscription(vimState);
-  }),
+    ModeEnterFuncs[Mode.Insert](helixState);
+  },
 
-  // Delete to end of line
-  parseKeysExact(['C'], [Mode.Normal], (vimState, editor) => {
+  kill_to_line_end: () => {
     vscode.commands.executeCommand('deleteAllRight');
-    enterInsertMode(vimState);
-    setModeCursorStyle(vimState.mode, editor);
-    removeTypeSubscription(vimState);
-  }),
-
-  // yank
-  parseKeysExact(['y', 'y'], [Mode.Normal], (vimState, editor) => {
-    yankLine(vimState, editor);
-
-    // Yank highlight
-    const highlightRanges = editor.selections.map((selection) => {
-      const lineLength = editor.document.lineAt(selection.active.line).text.length;
-      return new vscode.Range(
-        selection.active.with({ character: 0 }),
-        selection.active.with({ character: lineLength }),
-      );
-    });
-    flashYankHighlight(editor, highlightRanges);
-  }),
-  // Made up
-  parseKeysExact(['q', 'q'], [Mode.Normal, Mode.Visual], () => {
-    vscode.commands.executeCommand('editor.action.copyLinesDownAction');
-  }),
-
-  // Made up
-  parseKeysExact(['Q', 'Q'], [Mode.Normal, Mode.Visual], () => {
-    vscode.commands.executeCommand('editor.action.copyLinesUpAction');
-  }),
-
-  // Made up, should be replace
-  parseKeysExact(['r', 'r'], [Mode.Normal], (vimState, editor) => {
-    yankLine(vimState, editor);
-    deleteLine(vimState, editor);
-  }),
-
-  parseKeysExact(['s', 's'], [Mode.Normal], (vimState, editor) => {
-    editor.selections = editor.selections.map((selection) => {
-      return new vscode.Selection(
-        selection.active.with({ character: 0 }),
-        positionUtils.lineEnd(editor.document, selection.active),
-      );
-    });
-
-    enterVisualLineMode(vimState);
-    setModeCursorStyle(vimState.mode, editor);
-  }),
-
-  parseKeysExact(['S'], [Mode.Normal], (vimState, editor) => {
-    editor.selections = editor.selections.map((selection) => {
-      return new vscode.Selection(selection.active, positionUtils.lineEnd(editor.document, selection.active));
-    });
-
-    enterVisualMode(vimState);
-    setModeCursorStyle(vimState.mode, editor);
-  }),
-
-  /* parseKeysExact([';'], [Mode.Normal], (vimState, editor) => {
-    const active = editor.selection.active;
-    editor.selection = new vscode.Selection(active, active);
-  }), */
-];
+  },
+  kill_to_line_start: () => {
+    vscode.commands.executeCommand('deleteAllLeft');
+  }
+}
 
 function makeMultiLineSelection(
   vimState: HelixState,
@@ -1279,32 +1163,94 @@ export function switchToUppercase(editor: vscode.TextEditor): void {
   });
 }
 
-export function incremenet(editor: vscode.TextEditor): void {
-  // Move the cursor to the first number and incremene the number
-  // If the cursor is not on a number, then do nothing
-  editor.edit((editBuilder) => {
-    editor.selections.forEach((selection) => {
-      const translatedSelection = selection.with(selection.start, selection.start.translate(0, 1));
-      const text = editor.document.getText(translatedSelection);
-      const number = parseInt(text, 10);
-      if (!isNaN(number)) {
-        editBuilder.replace(translatedSelection, (number + 1).toString());
-      }
-    });
+function cursorsToRangesStart(editor: vscode.TextEditor, ranges: readonly (vscode.Range | undefined)[]) {
+  editor.selections = editor.selections.map((selection, i) => {
+    const range = ranges[i];
+
+    if (range) {
+      const newPosition = range.start;
+      return new vscode.Selection(newPosition, newPosition);
+    } else {
+      return selection;
+    }
   });
 }
 
-export function decrement(editor: vscode.TextEditor): void {
-  // Move the cursor to the first number and incremene the number
-  // If the cursor is not on a number, then do nothing
-  editor.edit((editBuilder) => {
-    editor.selections.forEach((selection) => {
-      const translatedSelection = selection.with(selection.start, selection.start.translate(0, 1));
-      const text = editor.document.getText(translatedSelection);
-      const number = parseInt(text, 10);
-      if (!isNaN(number)) {
-        editBuilder.replace(translatedSelection, (number - 1).toString());
-      }
+export function delete_(editor: vscode.TextEditor, ranges: (vscode.Range | undefined)[], linewise: boolean) {
+  if (ranges.length === 1 && ranges[0] && isEmptyRange(ranges[0])) {
+    vscode.commands.executeCommand('deleteRight');
+    return;
+  }
+
+  editor
+    .edit((editBuilder) => {
+      ranges.forEach((range) => {
+        if (!range) return;
+
+        let deleteRange = range;
+
+        if (linewise) {
+          const start = range.start;
+          const end = range.end;
+
+          if (end.line === editor.document.lineCount - 1) {
+            if (start.line === 0) {
+              deleteRange = new vscode.Range(start.with({ character: 0 }), end);
+            } else {
+              deleteRange = new vscode.Range(
+                new vscode.Position(start.line - 1, editor.document.lineAt(start.line - 1).text.length),
+                end,
+              );
+            }
+          } else {
+            deleteRange = new vscode.Range(range.start, new vscode.Position(end.line + 1, 0));
+          }
+        }
+
+        editBuilder.delete(deleteRange);
+      });
+    })
+    .then(() => {
+      // For linewise deletions, make sure cursor is at beginning of line
+      editor.selections = editor.selections.map((selection, i) => {
+        const range = ranges[i];
+
+        if (range && linewise) {
+          const newPosition = selection.start.with({ character: 0 });
+          return new vscode.Selection(newPosition, newPosition);
+        } else {
+          return selection;
+        }
+      });
     });
-  });
+}
+
+export function yank(
+  vimState: HelixState,
+  editor: vscode.TextEditor,
+  ranges: (vscode.Range | undefined)[],
+  linewise: boolean,
+) {
+  vimState.registers = {
+    contentsList: ranges.map((range, i) => {
+      if (range) {
+        return editor.document.getText(range);
+      } else {
+        return vimState.registers.contentsList[i];
+      }
+    }),
+    linewise: linewise,
+  };
+}
+
+// detect if a range is covering just a single character
+function isEmptyRange(range: vscode.Range) {
+  return range.start.line === range.end.line && range.start.character === range.end.character;
+}
+
+// detect if the range spans a whole line and only one line
+// Theres a weird issue where the cursor jumps to the next line when doing expand line selection
+// https://github.com/microsoft/vscode/issues/118015#issuecomment-854964022
+export function isSingleLineRange(range: vscode.Range): boolean {
+  return range.start.line === range.end.line && range.start.character === 0 && range.end.character === 0;
 }

@@ -42,9 +42,23 @@ export function paragraphRangeOuter(document: vscode.TextDocument, line: number)
   if (document.lineAt(line).isEmptyOrWhitespace) return undefined;
 
   return {
-    start: paragraphRangeBackward(document, line - 1),
+    start: paragraphRangeBackwardOuter(document, line - 1),
     end: paragraphRangeForwardOuter(document, line + 1),
   };
+}
+
+function paragraphRangeBackwardOuter(document: vscode.TextDocument, line: number): number {
+  let seenWhitespace = false;
+
+  for (let i = line; i >= 0; --i) {
+    if (document.lineAt(i).isEmptyOrWhitespace) {
+      seenWhitespace = true;
+    } else if (seenWhitespace) {
+      return i + 1;
+    }
+  }
+
+  return 1;
 }
 
 function paragraphRangeForwardOuter(document: vscode.TextDocument, line: number): number {

@@ -2,8 +2,8 @@ import * as vscode from 'vscode';
 
 import * as positionUtils from '../position_utils';
 import { HelixState } from '../helix_state_types';
-import { Mode } from '../modes_types';
-import { enterNormalMode, setModeCursorStyle } from '../modes';
+import { Mode } from '../modes';
+import { ModeEnterFuncs, setModeCursorStyle } from '../modes';
 import {
   getRegisterContentsList,
   adjustInsertPositions,
@@ -105,9 +105,9 @@ function normalModeCharacterwise(
 function visualMode(vimState: HelixState, editor: vscode.TextEditor, registerContentsList: (string | undefined)[]) {
   const insertContentsList = vimState.registers.linewise
     ? registerContentsList.map((contents) => {
-        if (!contents) return undefined;
-        else return '\n' + contents + '\n';
-      })
+      if (!contents) return undefined;
+      else return '\n' + contents + '\n';
+    })
     : registerContentsList;
 
   editor
@@ -136,7 +136,7 @@ function visualMode(vimState: HelixState, editor: vscode.TextEditor, registerCon
       });
     });
 
-  enterNormalMode(vimState);
+  ModeEnterFuncs[Mode.Normal](vimState);
   setModeCursorStyle(vimState.mode, editor);
 }
 
@@ -160,7 +160,7 @@ function visualLineMode(vimState: HelixState, editor: vscode.TextEditor, registe
         return new vscode.Selection(selection.start, selection.start);
       });
 
-      enterNormalMode(vimState);
+      ModeEnterFuncs[Mode.Normal](vimState);
       setModeCursorStyle(vimState.mode, editor);
     });
 }

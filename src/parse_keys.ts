@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 
 import { Action } from './action_types';
 import { HelixState } from './helix_state_types';
-import { Mode } from './modes_types';
+import { Mode } from './modes';
 import {
   OperatorRange,
   ParseFailure,

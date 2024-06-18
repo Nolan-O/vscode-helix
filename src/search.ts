@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { HelixState } from './helix_state_types';
-import { enterNormalMode } from './modes';
-import { Mode } from './modes_types';
+import { ModeEnterFuncs } from './modes';
+import { Mode } from './modes';
 
 // class which handles the search & select functionality
 export class SearchState {
@@ -114,7 +114,7 @@ export class SearchState {
     }
     // reset search history index
     this.searchHistoryIndex = this.searchHistory.length - 1;
-    enterNormalMode(helixState);
+    ModeEnterFuncs[Mode.Normal](helixState);
   }
 
   findInstancesInDocument(helixState: HelixState): void {

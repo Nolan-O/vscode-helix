@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 
 import { HelixState } from '../helix_state_types';
-import { Mode } from '../modes_types';
+import { Mode } from '../modes';
 import { searchBackward, searchForward } from '../search_utils';
 import {
   vimToVscodeVisualLineSelection,
@@ -39,38 +39,67 @@ function execRegexMotion(
   });
 }
 
-export function execMotion(vimState: HelixState, editor: vscode.TextEditor, motion: (args: MotionArgs) => vscode.Position) {
+type Motion = (args: MotionArgs) => vscode.Position
+type MotionExecutor = (vimState: HelixState, selection: vscode.Selection, selectionIndex: number, document: vscode.TextDocument, motion: Motion) => vscode.Selection
+export type MotionWrapper = (vimState: HelixState, editor: vscode.TextEditor, ...args: any) => void
+
+function execNormalMotion(vimState: HelixState, selection: vscode.Selection, selectionIndex: number, document: vscode.TextDocument, motion: Motion) {
+  const newPosition = motion({
+    document: document,
+    position: selection.active,
+    selectionIndex: selectionIndex,
+    vimState: vimState,
+  });
+  return new vscode.Selection(selection.active, newPosition);
+}
+
+function execVisualMotion(vimState: HelixState, selection: vscode.Selection, selectionIndex: number, document: vscode.TextDocument, motion: Motion) {
+  const vimSelection = vscodeToVimVisualSelection(document, selection);
+  const motionPosition = motion({
+    document: document,
+    position: vimSelection.active,
+    selectionIndex: selectionIndex,
+    vimState: vimState,
+  });
+
+  return vimToVscodeVisualSelection(document, new vscode.Selection(vimSelection.anchor, motionPosition));
+}
+
+function execVisualLineMotion(vimState: HelixState, selection: vscode.Selection, selectionIndex: number, document: vscode.TextDocument, motion: Motion) {
+  const vimSelection = vscodeToVimVisualLineSelection(document, selection);
+  const motionPosition = motion({
+    document: document,
+    position: vimSelection.active,
+    selectionIndex: selectionIndex,
+    vimState: vimState,
+  });
+
+  return vimToVscodeVisualLineSelection(document, new vscode.Selection(vimSelection.anchor, motionPosition));
+}
+
+function mapMotion(vimState: HelixState, editor: vscode.TextEditor, executor: MotionExecutor, motion: Motion) {
+  const newSelections = editor.selections.map((selection, i) => {
+    return executor(vimState, selection, i, editor.document, motion);
+  });
+
+  editor.selections = newSelections;
+
+  editor.revealRange(
+    new vscode.Range(newSelections[0].active, newSelections[0].active),
+    vscode.TextEditorRevealType.InCenterIfOutsideViewport,
+  );
+}
+
+export function execMotion(vimState: HelixState, editor: vscode.TextEditor, motion: Motion) {
   const document = editor.document;
 
   const newSelections = editor.selections.map((selection, i) => {
     if (vimState.mode === Mode.Normal) {
-      const newPosition = motion({
-        document: document,
-        position: selection.active,
-        selectionIndex: i,
-        vimState: vimState,
-      });
-      return new vscode.Selection(selection.active, newPosition);
+      return execNormalMotion(vimState, selection, i, document, motion)
     } else if (vimState.mode === Mode.Visual) {
-      const vimSelection = vscodeToVimVisualSelection(document, selection);
-      const motionPosition = motion({
-        document: document,
-        position: vimSelection.active,
-        selectionIndex: i,
-        vimState: vimState,
-      });
-
-      return vimToVscodeVisualSelection(document, new vscode.Selection(vimSelection.anchor, motionPosition));
+      return execVisualMotion(vimState, selection, i, document, motion)
     } else if (vimState.mode === Mode.VisualLine) {
-      const vimSelection = vscodeToVimVisualLineSelection(document, selection);
-      const motionPosition = motion({
-        document: document,
-        position: vimSelection.active,
-        selectionIndex: i,
-        vimState: vimState,
-      });
-
-      return vimToVscodeVisualLineSelection(document, new vscode.Selection(vimSelection.anchor, motionPosition));
+      return execVisualLineMotion(vimState, selection, i, document, motion)
     } else {
       return selection;
     }
@@ -84,56 +113,56 @@ export function execMotion(vimState: HelixState, editor: vscode.TextEditor, moti
   );
 }
 
-function findForward(vimState: HelixState, editor: vscode.TextEditor, outerMatch: RegExpMatchArray): void {
-  execRegexMotion(vimState, editor, outerMatch, ({ document, position, match }) => {
+export function findForward(vimState: HelixState, editor: vscode.TextEditor, str: string): void {
+  mapMotion(vimState, editor, execVisualMotion, ({ vimState, position, document }) => {
     const fromPosition = position.with({ character: position.character + 1 });
-    const result = searchForward(document, match[1], fromPosition);
-
-    if (result) {
-      return result.with({ character: result.character + 1 });
-    } else {
-      return position;
-    }
-  });
-}
-
-function findBackward(vimState: HelixState, editor: vscode.TextEditor, outerMatch: RegExpMatchArray): void {
-  execRegexMotion(vimState, editor, outerMatch, ({ document, position, match }) => {
-    const fromPosition = positionLeftWrap(document, position);
-    const result = searchBackward(document, match[1], fromPosition);
-
-    if (result) {
-      return result;
-    } else {
-      return position;
-    }
-  });
-}
-
-function tillForward(vimState: HelixState, editor: vscode.TextEditor, outerMatch: RegExpMatchArray): void {
-  execRegexMotion(vimState, editor, outerMatch, ({ document, position, match }) => {
-    const fromPosition = position.with({ character: position.character + 1 });
-    const result = searchForward(document, match[1], fromPosition);
+    const result = searchForward(document, str, fromPosition);
 
     if (result) {
       return result.with({ character: result.character });
     } else {
       return position;
     }
-  });
+  })
 }
 
-function tillBackward(vimState: HelixState, editor: vscode.TextEditor, outerMatch: RegExpMatchArray): void {
-  execRegexMotion(vimState, editor, outerMatch, ({ document, position, match }) => {
-    const fromPosition = positionLeftWrap(document, position);
-    const result = searchBackward(document, match[1], fromPosition);
+export function findBackward(vimState: HelixState, editor: vscode.TextEditor, str: string): void {
+  mapMotion(vimState, editor, execVisualMotion, ({ vimState, position, document }) => {
+    const fromPosition = position.with({ character: position.character + 1 });
+    const result = searchBackward(document, str, fromPosition);
 
     if (result) {
-      return result;
+      return result.with({ character: result.character });
     } else {
       return position;
     }
-  });
+  })
+}
+
+export const tillForward: MotionWrapper = function (vimState: HelixState, editor: vscode.TextEditor, str: string): void {
+  mapMotion(vimState, editor, execVisualMotion, ({ vimState, position, document }) => {
+    const fromPosition = position.with({ character: position.character + 1 });
+    const result = searchForward(document, str, fromPosition);
+
+    if (result) {
+      return result.with({ character: result.character - 1 });
+    } else {
+      return position;
+    }
+  })
+}
+
+export const tillBackward: MotionWrapper = function (vimState: HelixState, editor: vscode.TextEditor, str: string): void {
+  mapMotion(vimState, editor, execVisualMotion, ({ vimState, position, document }) => {
+    const fromPosition = position.with({ character: position.character + 1 });
+    const result = searchBackward(document, str, fromPosition);
+
+    if (result) {
+      return result.with({ character: result.character + 1 });
+    } else {
+      return position;
+    }
+  })
 }
 
 function positionLeftWrap(document: vscode.TextDocument, position: vscode.Position): vscode.Position {

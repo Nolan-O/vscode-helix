@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { HelixState } from './helix_state_types';
-import { Mode } from './modes_types';
+import { Mode } from './modes';
 
 class StatusBarImpl implements vscode.Disposable {
   // Displays the current state (mode, recording macro, etc.) and messages to the user

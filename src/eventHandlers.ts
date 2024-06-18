@@ -1,8 +1,8 @@
 import type { TextDocumentChangeEvent, TextEditor, TextEditorSelectionChangeEvent } from 'vscode';
 import { TextEditorSelectionChangeKind } from 'vscode';
 import { HelixState } from './helix_state_types';
-import { enterNormalMode, enterVisualMode, setModeCursorStyle } from './modes';
-import { Mode } from './modes_types';
+import { ModeEnterFuncs, setModeCursorStyle } from './modes';
+import { Mode } from './modes';
 
 /** Currently this handler is used for implementing "g", "m" (go to last modified file) */
 export function onDidChangeTextDocument(HelixState: HelixState, e: TextDocumentChangeEvent) {
@@ -31,12 +31,12 @@ export function onSelectionChange(helixState: HelixState, e: TextEditorSelection
       (helixState.mode === Mode.Visual || helixState.mode === Mode.VisualLine) &&
       e.kind === TextEditorSelectionChangeKind.Mouse
     ) {
-      enterNormalMode(helixState);
+      ModeEnterFuncs[Mode.Normal](helixState);
       setModeCursorStyle(helixState.mode, e.textEditor);
     }
   } else {
     if (helixState.mode === Mode.Normal) {
-      enterVisualMode(helixState);
+      ModeEnterFuncs[Mode.Visual](helixState);
       // setModeCursorStyle(helixState.mode, e.textEditor);
     }
   }

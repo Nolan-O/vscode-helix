@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
 
 import { HelixState } from './helix_state_types';
-import { enterNormalMode, setModeCursorStyle } from './modes';
-import { Mode } from './modes_types';
+import { ModeEnterFuncs, setModeCursorStyle } from './modes';
+import { Mode } from './modes';
 import * as positionUtils from './position_utils';
 import { typeHandler } from './type_handler';
 import { setTypeSubscription } from './type_subscription';
@@ -18,7 +18,7 @@ export function escapeHandler(vimState: HelixState): void {
       return new vscode.Selection(newPosition, newPosition);
     });
 
-    enterNormalMode(vimState);
+    ModeEnterFuncs[Mode.Normal](vimState);
     setModeCursorStyle(vimState.mode, editor);
     setTypeSubscription(vimState, typeHandler);
   } else if (vimState.mode === Mode.Normal) {
@@ -34,7 +34,7 @@ export function escapeHandler(vimState: HelixState): void {
       return new vscode.Selection(newPosition, newPosition);
     });
 
-    enterNormalMode(vimState);
+    ModeEnterFuncs[Mode.Normal](vimState);
     setModeCursorStyle(vimState.mode, editor);
   } else if (vimState.mode === Mode.VisualLine) {
     editor.selections = editor.selections.map((selection) => {
@@ -44,10 +44,10 @@ export function escapeHandler(vimState: HelixState): void {
       return new vscode.Selection(newPosition, newPosition);
     });
 
-    enterNormalMode(vimState);
+    ModeEnterFuncs[Mode.Normal](vimState);
     setModeCursorStyle(vimState.mode, editor);
   } else if (vimState.mode === Mode.SearchInProgress || vimState.mode === Mode.Select) {
-    enterNormalMode(vimState);
+    ModeEnterFuncs[Mode.Normal](vimState);
     vimState.searchState.clearSearchString(vimState);
     // To match Helix UI go back to the last active position on escape
     if (vimState.searchState.lastActivePosition) {
@@ -61,7 +61,7 @@ export function escapeHandler(vimState: HelixState): void {
       );
     }
   } else if (vimState.mode === Mode.View) {
-    enterNormalMode(vimState);
+    ModeEnterFuncs[Mode.Normal](vimState);
   }
 
   vimState.keysPressed = [];

@@ -2,13 +2,12 @@ import * as vscode from 'vscode';
 import { commands } from 'vscode';
 
 import { symbolProvider } from './SymbolProvider';
-import { decrement, incremenet, switchToUppercase } from './actions/actions';
 import { commandLine } from './commandLine';
 import { escapeHandler } from './escape_handler';
 import { onDidChangeActiveTextEditor, onDidChangeTextDocument } from './eventHandlers';
 import { HelixState } from './helix_state_types';
-import { enterDisabledMode, enterNormalMode, enterSearchMode, enterWindowMode, setModeCursorStyle } from './modes';
-import { Mode } from './modes_types';
+import { ModeEnterFuncs, setModeCursorStyle } from './modes';
+import { Mode } from './modes';
 import * as scrollCommands from './scroll_commands';
 import { searchState } from './search';
 import { flipSelection } from './selection_utils';
@@ -41,6 +40,8 @@ const globalhelixState: HelixState = {
   searchState,
   currentSelection: null,
   repeatLastMotion: () => undefined,
+  motionForMode: null,
+  previousMode: undefined,
   lastPutRanges: {
     ranges: [],
     linewise: true,
@@ -107,7 +108,6 @@ export function activate(context: vscode.ExtensionContext): void {
     commands.registerCommand("extension.helixKeymap.ctrl_/", () => { pushKP(["ctrl"]); globalhelixState.typeSubscription(globalhelixState, "/"); }),
     commands.registerCommand("extension.helixKeymap.ctrl_\\", () => { pushKP(["ctrl"]); globalhelixState.typeSubscription(globalhelixState, "\\"); }),
     commands.registerCommand("extension.helixKeymap.ctrl_=", () => { pushKP(["ctrl"]); globalhelixState.typeSubscription(globalhelixState, "="); }),
-    commands.registerCommand("extension.helixKeymap.ctrl_-", () => { pushKP(["ctrl"]); globalhelixState.typeSubscription(globalhelixState, "-"); }),
     commands.registerCommand("extension.helixKeymap.ctrl_1", () => { pushKP(["ctrl"]); globalhelixState.typeSubscription(globalhelixState, "1"); }),
     commands.registerCommand("extension.helixKeymap.ctrl_2", () => { pushKP(["ctrl"]); globalhelixState.typeSubscription(globalhelixState, "2"); }),
     commands.registerCommand("extension.helixKeymap.ctrl_3", () => { pushKP(["ctrl"]); globalhelixState.typeSubscription(globalhelixState, "3"); }),
@@ -160,7 +160,6 @@ export function activate(context: vscode.ExtensionContext): void {
     commands.registerCommand("extension.helixKeymap.alt_/", () => { pushKP(["alt"]); globalhelixState.typeSubscription(globalhelixState, "/"); }),
     commands.registerCommand("extension.helixKeymap.alt_\\", () => { pushKP(["alt"]); globalhelixState.typeSubscription(globalhelixState, "\\"); }),
     commands.registerCommand("extension.helixKeymap.alt_=", () => { pushKP(["alt"]); globalhelixState.typeSubscription(globalhelixState, "="); }),
-    commands.registerCommand("extension.helixKeymap.alt_-", () => { pushKP(["alt"]); globalhelixState.typeSubscription(globalhelixState, "-"); }),
     commands.registerCommand("extension.helixKeymap.alt_1", () => { pushKP(["alt"]); globalhelixState.typeSubscription(globalhelixState, "1"); }),
     commands.registerCommand("extension.helixKeymap.alt_2", () => { pushKP(["alt"]); globalhelixState.typeSubscription(globalhelixState, "2"); }),
     commands.registerCommand("extension.helixKeymap.alt_3", () => { pushKP(["alt"]); globalhelixState.typeSubscription(globalhelixState, "3"); }),
@@ -213,7 +212,6 @@ export function activate(context: vscode.ExtensionContext): void {
     commands.registerCommand("extension.helixKeymap.shift_/", () => { pushKP(["shift"]); globalhelixState.typeSubscription(globalhelixState, "/"); }),
     commands.registerCommand("extension.helixKeymap.shift_\\", () => { pushKP(["shift"]); globalhelixState.typeSubscription(globalhelixState, "\\"); }),
     commands.registerCommand("extension.helixKeymap.shift_=", () => { pushKP(["shift"]); globalhelixState.typeSubscription(globalhelixState, "="); }),
-    commands.registerCommand("extension.helixKeymap.shift_-", () => { pushKP(["shift"]); globalhelixState.typeSubscription(globalhelixState, "-"); }),
     commands.registerCommand("extension.helixKeymap.shift_1", () => { pushKP(["shift"]); globalhelixState.typeSubscription(globalhelixState, "1"); }),
     commands.registerCommand("extension.helixKeymap.shift_2", () => { pushKP(["shift"]); globalhelixState.typeSubscription(globalhelixState, "2"); }),
     commands.registerCommand("extension.helixKeymap.shift_3", () => { pushKP(["shift"]); globalhelixState.typeSubscription(globalhelixState, "3"); }),
@@ -266,7 +264,6 @@ export function activate(context: vscode.ExtensionContext): void {
     commands.registerCommand("extension.helixKeymap.ctrl_alt_/", () => { pushKP(["ctrl", "alt"]); globalhelixState.typeSubscription(globalhelixState, "/"); }),
     commands.registerCommand("extension.helixKeymap.ctrl_alt_\\", () => { pushKP(["ctrl", "alt"]); globalhelixState.typeSubscription(globalhelixState, "\\"); }),
     commands.registerCommand("extension.helixKeymap.ctrl_alt_=", () => { pushKP(["ctrl", "alt"]); globalhelixState.typeSubscription(globalhelixState, "="); }),
-    commands.registerCommand("extension.helixKeymap.ctrl_alt_-", () => { pushKP(["ctrl", "alt"]); globalhelixState.typeSubscription(globalhelixState, "-"); }),
     commands.registerCommand("extension.helixKeymap.ctrl_alt_1", () => { pushKP(["ctrl", "alt"]); globalhelixState.typeSubscription(globalhelixState, "1"); }),
     commands.registerCommand("extension.helixKeymap.ctrl_alt_2", () => { pushKP(["ctrl", "alt"]); globalhelixState.typeSubscription(globalhelixState, "2"); }),
     commands.registerCommand("extension.helixKeymap.ctrl_alt_3", () => { pushKP(["ctrl", "alt"]); globalhelixState.typeSubscription(globalhelixState, "3"); }),
@@ -319,7 +316,6 @@ export function activate(context: vscode.ExtensionContext): void {
     commands.registerCommand("extension.helixKeymap.ctrl_shift_/", () => { pushKP(["ctrl", "shift"]); globalhelixState.typeSubscription(globalhelixState, "/"); }),
     commands.registerCommand("extension.helixKeymap.ctrl_shift_\\", () => { pushKP(["ctrl", "shift"]); globalhelixState.typeSubscription(globalhelixState, "\\"); }),
     commands.registerCommand("extension.helixKeymap.ctrl_shift_=", () => { pushKP(["ctrl", "shift"]); globalhelixState.typeSubscription(globalhelixState, "="); }),
-    commands.registerCommand("extension.helixKeymap.ctrl_shift_-", () => { pushKP(["ctrl", "shift"]); globalhelixState.typeSubscription(globalhelixState, "-"); }),
     commands.registerCommand("extension.helixKeymap.ctrl_shift_1", () => { pushKP(["ctrl", "shift"]); globalhelixState.typeSubscription(globalhelixState, "1"); }),
     commands.registerCommand("extension.helixKeymap.ctrl_shift_2", () => { pushKP(["ctrl", "shift"]); globalhelixState.typeSubscription(globalhelixState, "2"); }),
     commands.registerCommand("extension.helixKeymap.ctrl_shift_3", () => { pushKP(["ctrl", "shift"]); globalhelixState.typeSubscription(globalhelixState, "3"); }),
@@ -372,7 +368,6 @@ export function activate(context: vscode.ExtensionContext): void {
     commands.registerCommand("extension.helixKeymap.shift_alt_/", () => { pushKP(["shift", "alt"]); globalhelixState.typeSubscription(globalhelixState, "/"); }),
     commands.registerCommand("extension.helixKeymap.shift_alt_\\", () => { pushKP(["shift", "alt"]); globalhelixState.typeSubscription(globalhelixState, "\\"); }),
     commands.registerCommand("extension.helixKeymap.shift_alt_=", () => { pushKP(["shift", "alt"]); globalhelixState.typeSubscription(globalhelixState, "="); }),
-    commands.registerCommand("extension.helixKeymap.shift_alt_-", () => { pushKP(["shift", "alt"]); globalhelixState.typeSubscription(globalhelixState, "-"); }),
     commands.registerCommand("extension.helixKeymap.shift_alt_1", () => { pushKP(["shift", "alt"]); globalhelixState.typeSubscription(globalhelixState, "1"); }),
     commands.registerCommand("extension.helixKeymap.shift_alt_2", () => { pushKP(["shift", "alt"]); globalhelixState.typeSubscription(globalhelixState, "2"); }),
     commands.registerCommand("extension.helixKeymap.shift_alt_3", () => { pushKP(["shift", "alt"]); globalhelixState.typeSubscription(globalhelixState, "3"); }),
@@ -425,7 +420,6 @@ export function activate(context: vscode.ExtensionContext): void {
     commands.registerCommand("extension.helixKeymap.ctrl_shift_alt_/", () => { pushKP(["ctrl", "shift", "alt"]); globalhelixState.typeSubscription(globalhelixState, "/"); }),
     commands.registerCommand("extension.helixKeymap.ctrl_shift_alt_\\", () => { pushKP(["ctrl", "shift", "alt"]); globalhelixState.typeSubscription(globalhelixState, "\\"); }),
     commands.registerCommand("extension.helixKeymap.ctrl_shift_alt_=", () => { pushKP(["ctrl", "shift", "alt"]); globalhelixState.typeSubscription(globalhelixState, "="); }),
-    commands.registerCommand("extension.helixKeymap.ctrl_shift_alt_-", () => { pushKP(["ctrl", "shift", "alt"]); globalhelixState.typeSubscription(globalhelixState, "-"); }),
     commands.registerCommand("extension.helixKeymap.ctrl_shift_alt_1", () => { pushKP(["ctrl", "shift", "alt"]); globalhelixState.typeSubscription(globalhelixState, "1"); }),
     commands.registerCommand("extension.helixKeymap.ctrl_shift_alt_2", () => { pushKP(["ctrl", "shift", "alt"]); globalhelixState.typeSubscription(globalhelixState, "2"); }),
     commands.registerCommand("extension.helixKeymap.ctrl_shift_alt_3", () => { pushKP(["ctrl", "shift", "alt"]); globalhelixState.typeSubscription(globalhelixState, "3"); }),
@@ -437,29 +431,11 @@ export function activate(context: vscode.ExtensionContext): void {
     commands.registerCommand("extension.helixKeymap.ctrl_shift_alt_9", () => { pushKP(["ctrl", "shift", "alt"]); globalhelixState.typeSubscription(globalhelixState, "9"); }),
     commands.registerCommand("extension.helixKeymap.ctrl_shift_alt_0", () => { pushKP(["ctrl", "shift", "alt"]); globalhelixState.typeSubscription(globalhelixState, "0"); }),
 
-    vscode.commands.registerCommand('extension.helixKeymap.scrollDownHalfPage', scrollCommands.scrollDownHalfPage),
-    vscode.commands.registerCommand('extension.helixKeymap.scrollUpHalfPage', scrollCommands.scrollUpHalfPage),
-    vscode.commands.registerCommand('extension.helixKeymap.scrollDownPage', scrollCommands.scrollDownPage),
-    vscode.commands.registerCommand('extension.helixKeymap.scrollUpPage', scrollCommands.scrollUpPage),
-    vscode.commands.registerCommand('extension.helixKeymap.enterSearchMode', () => enterSearchMode(globalhelixState)),
-    vscode.commands.registerCommand('extension.helixKeymap.exitSearchMode', () =>
-      globalhelixState.searchState.enter(globalhelixState),
-    ),
-    vscode.commands.registerCommand('extension.helixKeymap.enterWindowMode', () => enterWindowMode(globalhelixState)),
-    vscode.commands.registerCommand('extension.helixKeymap.backspaceSearchMode', () => {
-      globalhelixState.searchState.backspace(globalhelixState);
-    }),
-    vscode.commands.registerCommand('extension.helixKeymap.nextSearchResult', () =>
-      globalhelixState.searchState.nextSearchResult(globalhelixState),
-    ),
-    vscode.commands.registerCommand('extension.helixKeymap.previousSearchResult', () =>
-      globalhelixState.searchState.previousSearchResult(globalhelixState),
-    ),
     vscode.commands.registerCommand('extension.helixKeymap.enterDisabledMode', () => {
-      enterDisabledMode(globalhelixState);
+      ModeEnterFuncs[Mode.Disabled](globalhelixState);
     }),
     vscode.commands.registerCommand('extension.helixKeymap.enableHelix', () => {
-      enterNormalMode(globalhelixState);
+      ModeEnterFuncs[Mode.Normal](globalhelixState);
       setModeCursorStyle(globalhelixState.mode, vscode.window.activeTextEditor!);
       setTypeSubscription(globalhelixState, typeHandler);
     }),
@@ -474,19 +450,10 @@ export function activate(context: vscode.ExtensionContext): void {
     vscode.commands.registerCommand('extension.helixKeymap.repeatLastMotion', () => {
       globalhelixState.repeatLastMotion(globalhelixState, vscode.window.activeTextEditor!);
     }),
-    vscode.commands.registerCommand('extension.helixKeymap.switchToUppercase', () => {
-      switchToUppercase(vscode.window.activeTextEditor!);
-    }),
-    vscode.commands.registerCommand('extension.helixKeymap.increment', () => {
-      incremenet(vscode.window.activeTextEditor!);
-    }),
-    vscode.commands.registerCommand('extension.helixKeymap.decrement', () => {
-      decrement(vscode.window.activeTextEditor!);
-    }),
   );
 
   config.loadDefaultConfig();
-  enterNormalMode(globalhelixState);
+  ModeEnterFuncs[Mode.Normal](globalhelixState);
   setTypeSubscription(globalhelixState, typeHandler);
 
   if (vscode.window.activeTextEditor) {

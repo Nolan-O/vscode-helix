@@ -12,293 +12,227 @@ import { findQuoteRange, quoteRanges } from '../quote_utils';
 import { searchBackward, searchBackwardBracket, searchForward, searchForwardBracket } from '../search_utils';
 import { getTags } from '../tag_utils';
 import { whitespaceWordRanges, wordRanges } from '../word_utils';
-// import KeyMap from "./keymap";
 
-export const operatorRanges: OperatorRange[] = [
-  // createOperatorRangeExactKeys(
-  //   [KeyMap.Motions.MoveRight],
-  //   false,
-  //   (vimState, document, position) => {
-  //     const right = positionUtils.right(document, position);
+export type OperatorRangeFunc = (vimState: HelixState, editor: vscode.TextEditor) => void
 
-  //     if (right.isEqual(position)) {
-  //       return undefined;
-  //     } else {
-  //       return new vscode.Range(position, right);
-  //     }
-  //   }
-  // ),
-  // createOperatorRangeExactKeys(
-  //   [KeyMap.Motions.MoveLeft],
-  //   false,
-  //   (vimState, document, position) => {
-  //     const left = positionUtils.left(position);
+export const outer: { [key: string]: OperatorRangeFunc } = {
+  Word: createOuterWordHandler(wordRanges),
+  LongWord: createOuterWordHandler(whitespaceWordRanges),
 
-  //     if (left.isEqual(position)) {
-  //       return undefined;
-  //     } else {
-  //       return new vscode.Range(position, left);
-  //     }
-  //   }
-  // ),
-  // createOperatorRangeExactKeys(
-  //   [KeyMap.Motions.MoveUp],
-  //   true,
-  //   (vimState, document, position) => {
-  //     if (position.line === 0) {
-  //       return new vscode.Range(
-  //         new vscode.Position(0, 0),
-  //         positionUtils.lineEnd(document, position)
-  //       );
-  //     } else {
-  //       return new vscode.Range(
-  //         new vscode.Position(position.line - 1, 0),
-  //         positionUtils.lineEnd(document, position)
-  //       );
-  //     }
-  //   }
-  // ),
+  // TODO: outer paragraph just works like inner paragraph
+  Paragraph: (vimState, editor) => {
+    editor.selections = editor.selections.map((sel) => {
+      const result = paragraphRangeOuter(editor.document, sel.active.line);
 
-  // createOperatorRangeExactKeys(
-  //   [KeyMap.Motions.MoveDown],
-  //   true,
-  //   (vimState, document, position) => {
-  //     if (position.line === document.lineCount - 1) {
-  //       return new vscode.Range(
-  //         new vscode.Position(position.line, 0),
-  //         positionUtils.lineEnd(document, position)
-  //       );
-  //     } else {
-  //       return new vscode.Range(
-  //         new vscode.Position(position.line, 0),
-  //         positionUtils.lineEnd(
-  //           document,
-  //           position.with({ line: position.line + 1 })
-  //         )
-  //       );
-  //     }
-  //   }
-  // ),
-
-  createOperatorRangeExactKeys(['w'], false, createWordForwardHandler(wordRanges)),
-  createOperatorRangeExactKeys(['W'], false, createWordForwardHandler(whitespaceWordRanges)),
-
-  createOperatorRangeExactKeys(['b'], false, createWordBackwardHandler(wordRanges)),
-  createOperatorRangeExactKeys(['B'], false, createWordBackwardHandler(whitespaceWordRanges)),
-
-  createOperatorRangeExactKeys(['e'], false, createWordEndHandler(wordRanges)),
-  createOperatorRangeExactKeys(['E'], false, createWordEndHandler(whitespaceWordRanges)),
-
-  createOperatorRangeExactKeys(['i', 'w'], false, createInnerWordHandler(wordRanges)),
-  createOperatorRangeExactKeys(['i', 'W'], false, createInnerWordHandler(whitespaceWordRanges)),
-
-  createOperatorRangeExactKeys(['a', 'w'], false, createOuterWordHandler(wordRanges)),
-  createOperatorRangeExactKeys(['a', 'W'], false, createOuterWordHandler(whitespaceWordRanges)),
-
-  createOperatorRangeRegex(/^f(..)$/, /^(f|f.)$/, false, (vimState, document, position, match) => {
-    const fromPosition = position.with({ character: position.character + 1 });
-    const result = searchForward(document, match[1], fromPosition);
-
-    if (result) {
-      return new vscode.Range(position, result);
-    } else {
-      return undefined;
-    }
-  }),
-
-  createOperatorRangeRegex(/^F(..)$/, /^(F|F.)$/, false, (vimState, document, position, match) => {
-    const fromPosition = position.with({ character: position.character - 1 });
-    const result = searchBackward(document, match[1], fromPosition);
-
-    if (result) {
-      return new vscode.Range(position, result);
-    } else {
-      return undefined;
-    }
-  }),
-
-  createOperatorRangeRegex(/^t(.)$/, /^t$/, false, (vimState, document, position, match) => {
-    const lineText = document.lineAt(position.line).text;
-    const result = lineText.indexOf(match[1], position.character + 1);
-
-    if (result >= 0) {
-      return new vscode.Range(position, position.with({ character: result }));
-    } else {
-      return undefined;
-    }
-  }),
-
-  createOperatorRangeRegex(/^T(.)$/, /^T$/, false, (vimState, document, position, match) => {
-    const lineText = document.lineAt(position.line).text;
-    const result = lineText.lastIndexOf(match[1], position.character - 1);
-
-    if (result >= 0) {
-      const newPosition = positionUtils.right(document, position.with({ character: result }));
-      return new vscode.Range(newPosition, position);
-    } else {
-      return undefined;
-    }
-  }),
-
-  createOperatorRangeExactKeys(['g', 'g'], true, (vimState, document, position) => {
-    const lineLength = document.lineAt(position.line).text.length;
-
-    return new vscode.Range(new vscode.Position(0, 0), position.with({ character: lineLength }));
-  }),
-
-  createOperatorRangeExactKeys(['G'], true, (vimState, document, position) => {
-    const lineLength = document.lineAt(document.lineCount - 1).text.length;
-
-    return new vscode.Range(position.with({ character: 0 }), new vscode.Position(document.lineCount - 1, lineLength));
-  }),
-
-  // TODO: return undefined?
-  createOperatorRangeExactKeys(['}'], true, (vimState, document, position) => {
-    return new vscode.Range(
-      position.with({ character: 0 }),
-      new vscode.Position(paragraphForward(document, position.line), 0),
-    );
-  }),
-
-  // TODO: return undefined?
-  createOperatorRangeExactKeys(['{'], true, (vimState, document, position) => {
-    return new vscode.Range(
-      new vscode.Position(paragraphBackward(document, position.line), 0),
-      position.with({ character: 0 }),
-    );
-  }),
-
-  createOperatorRangeExactKeys(['i', 'p'], true, (vimState, document, position) => {
-    const result = paragraphRangeInner(document, position.line);
-
-    if (result) {
-      return new vscode.Range(
-        new vscode.Position(result.start, 0),
-        new vscode.Position(result.end, document.lineAt(result.end).text.length),
-      );
-    } else {
-      return undefined;
-    }
-  }),
-
-  createOperatorRangeExactKeys(['a', 'p'], true, (vimState, document, position) => {
-    const result = paragraphRangeOuter(document, position.line);
-
-    if (result) {
-      return new vscode.Range(
-        new vscode.Position(result.start, 0),
-        new vscode.Position(result.end, document.lineAt(result.end).text.length),
-      );
-    } else {
-      return undefined;
-    }
-  }),
-
-  createOperatorRangeExactKeys(['i', "'"], false, createInnerQuoteHandler("'")),
-  createOperatorRangeExactKeys(['a', "'"], false, createOuterQuoteHandler("'")),
-
-  createOperatorRangeExactKeys(['i', '"'], false, createInnerQuoteHandler('"')),
-  createOperatorRangeExactKeys(['a', '"'], false, createOuterQuoteHandler('"')),
-
-  createOperatorRangeExactKeys(['i', '`'], false, createInnerQuoteHandler('`')),
-  createOperatorRangeExactKeys(['a', '`'], false, createOuterQuoteHandler('`')),
-
-  createOperatorRangeExactKeys(['i', '('], false, createInnerBracketHandler('(', ')')),
-  createOperatorRangeExactKeys(['a', '('], false, createOuterBracketHandler('(', ')')),
-
-  createOperatorRangeExactKeys(['i', '{'], false, createInnerBracketHandler('{', '}')),
-  createOperatorRangeExactKeys(['a', '{'], false, createOuterBracketHandler('{', '}')),
-
-  createOperatorRangeExactKeys(['i', '['], false, createInnerBracketHandler('[', ']')),
-  createOperatorRangeExactKeys(['a', '['], false, createOuterBracketHandler('[', ']')),
-
-  createOperatorRangeExactKeys(['i', '<'], false, createInnerBracketHandler('<', '>')),
-  createOperatorRangeExactKeys(['a', '<'], false, createOuterBracketHandler('<', '>')),
-
-  createOperatorRangeExactKeys(['i', 'm'], false, createInnerMatchHandler()),
-  createOperatorRangeExactKeys(['a', 'm'], false, createOuterMatchHandler()),
-
-  createOperatorRangeExactKeys(['i', 'f'], false, createInnerFunctionHandler()),
-  createOperatorRangeExactKeys(['a', 'f'], false, createInnerFunctionHandler()),
-
-  createOperatorRangeExactKeys(['i', 't'], false, (vimState, document, position) => {
-    const tags = getTags(document);
-
-    const closestTag = arrayFindLast(tags, (tag) => {
-      if (tag.closing) {
-        return position.isAfterOrEqual(tag.opening.start) && position.isBeforeOrEqual(tag.closing.end);
-      } else {
-        // Self-closing tags have no inside
-        return false;
-      }
-    });
-
-    if (closestTag) {
-      if (closestTag.closing) {
-        return new vscode.Range(
-          closestTag.opening.end.with({
-            character: closestTag.opening.end.character + 1,
-          }),
-          closestTag.closing.start,
+      if (result) {
+        return new vscode.Selection(
+          new vscode.Position(result.start, 0),
+          new vscode.Position(result.end, editor.document.lineAt(result.end).text.length),
         );
       } else {
-        throw new Error('We should have already filtered out self-closing tags above');
+        return sel;
       }
-    } else {
-      return undefined;
-    }
-  }),
+    })
+  },
 
-  createOperatorRangeExactKeys(['a', 't'], false, (vimState, document, position) => {
-    const tags = getTags(document);
+  SurroundingPair: (helixState, editor) => {
+    const count = helixState.resolveCount();
+    const document = editor.document;
+    // Get all ranges from our position then reduce down to the shortest one
+    editor.selections = editor.selections.map((sel) => {
+      const bracketRange = [
+        getBracketRange(document, sel.active, '(', ')', count),
+        getBracketRange(document, sel.active, '{', '}', count),
+        getBracketRange(document, sel.active, '<', '>', count),
+        getBracketRange(document, sel.active, '[', ']', count),
+      ].reduce((acc, range) => {
+        if (range) {
+          if (!acc) {
+            return range;
+          } else {
+            return range.contains(acc) ? acc : range;
+          }
+        } else {
+          return acc;
+        }
+      }, undefined);
 
-    const closestTag = arrayFindLast(tags, (tag) => {
-      const afterStart = position.isAfterOrEqual(tag.opening.start);
-
-      if (tag.closing) {
-        return afterStart && position.isBeforeOrEqual(tag.closing.end);
+      if (bracketRange == undefined) {
+        return sel;
       } else {
-        return afterStart && position.isBeforeOrEqual(tag.opening.end);
+        return new vscode.Selection(new vscode.Position(bracketRange.start.line, bracketRange.start.character), new vscode.Position(bracketRange.end.line, bracketRange.end.character + 1))
       }
-    });
+    })
+  },
+  Function: createInnerFunctionHandler(),
 
-    if (closestTag) {
-      if (closestTag.closing) {
-        return new vscode.Range(
-          closestTag.opening.start,
-          closestTag.closing.end.with({
-            character: closestTag.closing.end.character + 1,
-          }),
+  Type: (vimState, editor) => {
+    const document = editor.document;
+    editor.selections = editor.selections.map((sel) => {
+      const position = sel.active;
+      const tags = getTags(document);
+
+      const closestTag = arrayFindLast(tags, (tag) => {
+        const afterStart = position.isAfterOrEqual(tag.opening.start);
+
+        if (tag.closing) {
+          return afterStart && position.isBeforeOrEqual(tag.closing.end);
+        } else {
+          return afterStart && position.isBeforeOrEqual(tag.opening.end);
+        }
+      });
+
+      if (closestTag) {
+        if (closestTag.closing) {
+          return new vscode.Selection(
+            closestTag.opening.start,
+            closestTag.closing.end.with({
+              character: closestTag.closing.end.character + 1,
+            }),
+          );
+        } else {
+          return new vscode.Selection(
+            closestTag.opening.start,
+            closestTag.opening.end.with({
+              character: closestTag.opening.end.character + 1,
+            }),
+          );
+        }
+      } else {
+        return sel;
+      }
+    })
+  }
+}
+
+export const inner: { [key: string]: OperatorRangeFunc } = {
+  Word: createInnerWordHandler(wordRanges),
+  LongWord: createInnerWordHandler(whitespaceWordRanges),
+
+  Paragraph: (vimState, editor) => {
+    editor.selections = editor.selections.map((sel) => {
+      const result = paragraphRangeInner(editor.document, sel.active.line);
+
+      if (result) {
+        return new vscode.Selection(
+          new vscode.Position(result.start, 0),
+          new vscode.Position(result.end, editor.document.lineAt(result.end).text.length),
         );
       } else {
-        return new vscode.Range(
-          closestTag.opening.start,
-          closestTag.opening.end.with({
-            character: closestTag.opening.end.character + 1,
-          }),
-        );
+        return sel;
       }
-    } else {
-      return undefined;
-    }
-  }),
+    })
+  },
 
-  // TODO: return undefined?
-  createOperatorRangeExactKeys(['i', 'i'], true, (vimState, document, position) => {
+  SurroundingPair: (helixState, editor) => {
+    const count = helixState.resolveCount();
+    const document = editor.document;
+    // Get all ranges from our position then reduce down to the shortest one
+    editor.selections = editor.selections.map((sel) => {
+      const bracketRange = [
+        getBracketRange(document, sel.active, '(', ')', count),
+        getBracketRange(document, sel.active, '{', '}', count),
+        getBracketRange(document, sel.active, '<', '>', count),
+        getBracketRange(document, sel.active, '[', ']', count),
+      ].reduce((acc, range) => {
+        if (range) {
+          if (!acc) {
+            return range;
+          } else {
+            return range.contains(acc) ? acc : range;
+          }
+        } else {
+          return acc;
+        }
+      }, undefined);
+
+      if (bracketRange == undefined) {
+        return sel;
+      } else {
+        return new vscode.Selection(new vscode.Position(bracketRange.start.line, bracketRange.start.character + 1), new vscode.Position(bracketRange.end.line, bracketRange.end.character))
+      }
+    })
+  },
+
+  Function: createInnerFunctionHandler(),
+  Type: (vimState, editor) => {
+    const document = editor.document;
+    editor.selections = editor.selections.map((sel) => {
+      const position = sel.active;
+      const tags = getTags(document);
+
+      const closestTag = arrayFindLast(tags, (tag) => {
+        if (tag.closing) {
+          return position.isAfterOrEqual(tag.opening.start) && position.isBeforeOrEqual(tag.closing.end);
+        } else {
+          // Self-closing tags have no inside
+          return false;
+        }
+      });
+
+      if (closestTag) {
+        if (closestTag.closing) {
+          return new vscode.Selection(
+            closestTag.opening.end.with({
+              character: closestTag.opening.end.character + 1,
+            }),
+            closestTag.closing.start,
+          );
+        } else {
+          throw new Error('We should have already filtered out self-closing tags above');
+        }
+      } else {
+        return sel;
+      }
+    })
+  },
+
+  // TODO: what is this?
+  /*   createOperatorRangeExactKeys(['i', 'i'], true, (vimState, document, position) => {
     const simpleRange = indentLevelRange(document, position.line);
-
+  
     return new vscode.Range(
       new vscode.Position(simpleRange.start, 0),
       new vscode.Position(simpleRange.end, document.lineAt(simpleRange.end).text.length),
     );
-  }),
+  }), */
 
-  createOperatorRangeExactKeys(['a', 'b'], true, (vimState, document, position) => {
+  // TODO: what is this?
+  /*   createOperatorRangeExactKeys(['a', 'b'], true, (vimState, document, position) => {
     const range = blockRange(document, position);
-
+  
     return range;
-  }),
-];
+  }), */
+};
+
+// TODO: I can't find the helix equivalent of these
+/* export const directional: { [key: string]: OperatorRangeFunc } = {
+  wordForward: createWordForwardHandler(wordRanges),
+  longWordForward: createWordForwardHandler(whitespaceWordRanges),
+
+  wordBackward: createWordBackwardHandler(wordRanges),
+  longWordBackward: createWordBackwardHandler(whitespaceWordRanges),
+
+  wordForwardEnd: createWordEndHandler(wordRanges),
+  longWordForwardEnd: createWordEndHandler(whitespaceWordRanges),
+
+
+  paragraphForward: (vimState, document, position) => {
+    return new vscode.Range(
+      position.with({ character: 0 }),
+      new vscode.Position(paragraphForward(document, position.line), 0),
+    );
+  },
+
+  paragraphBackward: (vimState, document, position) => {
+    return new vscode.Range(
+      new vscode.Position(paragraphBackward(document, position.line), 0),
+      position.with({ character: 0 }),
+    );
+  },
+}; */
+
+
 
 function createInnerBracketHandler(
   openingChar: string,
@@ -458,53 +392,65 @@ function createWordEndHandler(
 
 function createInnerWordHandler(
   wordRangesFunction: (text: string) => { start: number; end: number }[],
-): (vimState: HelixState, document: vscode.TextDocument, position: vscode.Position) => vscode.Range | undefined {
-  return (vimState, document, position) => {
-    const lineText = document.lineAt(position.line).text;
-    const ranges = wordRangesFunction(lineText);
+): (vimState: HelixState, editor: vscode.TextEditor) => void {
+  return (vimState, editor) => {
+    const document = editor.document;
+    editor.selections = editor.selections.map((sel) => {
+      const position = sel.active;
+      const lineText = document.lineAt(position.line).text;
+      const ranges = wordRangesFunction(lineText);
 
-    const result = ranges.find((x) => x.start <= position.character && position.character <= x.end);
+      const result = ranges.find((x) => x.start <= position.character && position.character <= x.end);
 
-    if (result) {
-      return new vscode.Range(
-        position.with({ character: result.start }),
-        positionUtils.right(document, position.with({ character: result.end })),
-      );
-    } else {
-      return undefined;
-    }
+      if (result) {
+        return new vscode.Selection(
+          position.with({ character: result.start }),
+          positionUtils.right(document, position.with({ character: result.end })),
+        );
+      } else {
+        return sel;
+      }
+    });
   };
 }
 
 function createOuterWordHandler(
   wordRangesFunction: (text: string) => { start: number; end: number }[],
-): (vimState: HelixState, document: vscode.TextDocument, position: vscode.Position) => vscode.Range | undefined {
-  return (vimState, document, position) => {
-    const lineText = document.lineAt(position.line).text;
-    const ranges = wordRangesFunction(lineText);
+): (vimState: HelixState, editor: vscode.TextEditor) => void {
+  return (vimState, editor) => {
+    const document = editor.document;
+    editor.selections = editor.selections.map((sel) => {
+      const position = sel.active;
+      const lineText = document.lineAt(position.line).text;
+      // TODO: pretty wasteful to get the ranges of all words on every line of every selection
+      // and then find the one that is around our selection
+      const ranges = wordRangesFunction(lineText);
 
-    for (let i = 0; i < ranges.length; ++i) {
-      const range = ranges[i];
+      for (let i = 0; i < ranges.length; ++i) {
+        const range = ranges[i];
 
-      if (range.start <= position.character && position.character <= range.end) {
-        if (i < ranges.length - 1) {
-          return new vscode.Range(
-            position.with({ character: range.start }),
-            position.with({ character: ranges[i + 1].start }),
-          );
-        } else if (i > 0) {
-          return new vscode.Range(
-            positionUtils.right(document, position.with({ character: ranges[i - 1].end })),
-            positionUtils.right(document, position.with({ character: range.end })),
-          );
-        } else {
-          return new vscode.Range(
-            position.with({ character: range.start }),
-            positionUtils.right(document, position.with({ character: range.end })),
-          );
+        if (range.start <= position.character && position.character <= range.end) {
+          if (i < ranges.length - 1) {
+            return new vscode.Selection(
+              position.with({ character: range.start }),
+              position.with({ character: ranges[i + 1].start }),
+            );
+          } else if (i > 0) {
+            return new vscode.Selection(
+              positionUtils.right(document, position.with({ character: ranges[i - 1].end })),
+              positionUtils.right(document, position.with({ character: range.end })),
+            );
+          } else {
+            return new vscode.Selection(
+              position.with({ character: range.start }),
+              positionUtils.right(document, position.with({ character: range.end })),
+            );
+          }
         }
       }
-    }
+
+      return sel;
+    })
 
     return undefined;
   };
@@ -577,12 +523,87 @@ function createOuterMatchHandler(): (
   };
 }
 
-function createInnerFunctionHandler(): (
-  helixState: HelixState,
-  document: vscode.TextDocument,
-  position: vscode.Position,
-) => vscode.Range | undefined {
-  return (helixState, _, position) => {
-    return helixState.symbolProvider.getContainingSymbolRange(position);
+function createInnerFunctionHandler(): (vimState: HelixState, editor: vscode.TextEditor) => void {
+  return (helixState, editor: vscode.TextEditor) => {
+    editor.selections = editor.selections.map((sel) => {
+      const position = sel.active;
+      const range = helixState.symbolProvider.getContainingSymbolRange(position);
+
+      if (range) {
+        return new vscode.Selection(
+          range.start.line, range.start.character,
+          range.end.line, range.end.character
+        );
+      } else {
+        return sel;
+      }
+    })
   };
 }
+
+
+
+// createOperatorRangeExactKeys(
+//   [KeyMap.Motions.MoveRight],
+//   false,
+//   (vimState, document, position) => {
+//     const right = positionUtils.right(document, position);
+
+//     if (right.isEqual(position)) {
+//       return undefined;
+//     } else {
+//       return new vscode.Range(position, right);
+//     }
+//   }
+// ),
+// createOperatorRangeExactKeys(
+//   [KeyMap.Motions.MoveLeft],
+//   false,
+//   (vimState, document, position) => {
+//     const left = positionUtils.left(position);
+
+//     if (left.isEqual(position)) {
+//       return undefined;
+//     } else {
+//       return new vscode.Range(position, left);
+//     }
+//   }
+// ),
+// createOperatorRangeExactKeys(
+//   [KeyMap.Motions.MoveUp],
+//   true,
+//   (vimState, document, position) => {
+//     if (position.line === 0) {
+//       return new vscode.Range(
+//         new vscode.Position(0, 0),
+//         positionUtils.lineEnd(document, position)
+//       );
+//     } else {
+//       return new vscode.Range(
+//         new vscode.Position(position.line - 1, 0),
+//         positionUtils.lineEnd(document, position)
+//       );
+//     }
+//   }
+// ),
+
+// createOperatorRangeExactKeys(
+//   [KeyMap.Motions.MoveDown],
+//   true,
+//   (vimState, document, position) => {
+//     if (position.line === document.lineCount - 1) {
+//       return new vscode.Range(
+//         new vscode.Position(position.line, 0),
+//         positionUtils.lineEnd(document, position)
+//       );
+//     } else {
+//       return new vscode.Range(
+//         new vscode.Position(position.line, 0),
+//         positionUtils.lineEnd(
+//           document,
+//           position.with({ line: position.line + 1 })
+//         )
+//       );
+//     }
+//   }
+// ),
