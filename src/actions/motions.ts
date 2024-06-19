@@ -245,7 +245,7 @@ export function createWordEndHandler(
       const result = ranges.find((x) => x.end > position.character);
 
       if (result) {
-        return position.with({ character: result.end });
+        return position.with({ character: result.end + 1 });
       } else {
         return position;
       }
