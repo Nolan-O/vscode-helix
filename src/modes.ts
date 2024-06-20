@@ -1,12 +1,14 @@
 import * as vscode from 'vscode';
 
 import { HelixState } from './helix_state_types';
+import { bindingContextVars } from './helix_config';
 import {
   typeHandler,
   execOrAbortTypeHandler,
   searchTypeHandler,
   tillCharTypeHandler,
-  replaceTypeHandler
+  replaceTypeHandler,
+  insertTypeHandler
 } from './type_handler';
 import { setTypeSubscription, removeTypeSubscription } from './type_subscription';
 import { MotionWrapper } from './actions/motions';
@@ -43,6 +45,7 @@ function enterInsertMode(helixState: HelixState, before = true): void {
   });
 
   helixState.mode = Mode.Insert;
+  setTypeSubscription(helixState, insertTypeHandler);
   helixState.commandLine.setText('', helixState);
 }
 
@@ -108,7 +111,6 @@ function enterReplaceMode(helixState: HelixState): void {
 }
 
 function enterMatchMode(helixState: HelixState): void {
-  setPreviousMode(helixState);
   helixState.mode = Mode.Match;
   setTypeSubscription(helixState, execOrAbortTypeHandler);
   helixState.commandLine.setText('', helixState);
@@ -122,22 +124,37 @@ type ModeEnterFuncs = {
   [key in Mode]: (helixState: HelixState, ...args: any) => void;
 };
 
+function enterModeCommon(mode: Mode, modeEnterFunc: (helixState: HelixState, ...args: any) => void): (helixState: HelixState, ...args: any) => void {
+  return (helixState: HelixState, ...args: any) => {
+    setPreviousMode(helixState);
+    for (const key in bindingContextVars[helixState.previousMode]) {
+      vscode.commands.executeCommand('setContext', key, false);
+    }
+    for (const key in bindingContextVars[mode]) {
+      vscode.commands.executeCommand('setContext', key, true);
+      console.log(key)
+    }
+
+    modeEnterFunc(helixState, args)
+  }
+}
+
 export const ModeEnterFuncs: ModeEnterFuncs = {
-  [Mode.Insert]: enterInsertMode,
-  [Mode.Normal]: enterNormalMode,
-  [Mode.SearchInProgress]: enterSearchMode,
-  [Mode.Select]: enterSelectMode,
-  [Mode.Window]: enterWindowMode,
-  [Mode.Visual]: enterVisualMode,
-  [Mode.VisualLine]: enterVisualLineMode,
-  [Mode.View]: enterViewMode,
-  [Mode.Disabled]: enterDisabledMode,
-  [Mode.Find]: enterFindMode,
-  [Mode.Replace]: enterReplaceMode,
-  [Mode.Match]: enterMatchMode,
+  [Mode.Insert]: enterModeCommon(Mode.Insert, enterInsertMode),
+  [Mode.Normal]: enterModeCommon(Mode.Normal, enterNormalMode),
+  [Mode.SearchInProgress]: enterModeCommon(Mode.SearchInProgress, enterSearchMode),
+  [Mode.Select]: enterModeCommon(Mode.Select, enterSelectMode),
+  [Mode.Window]: enterModeCommon(Mode.Window, enterWindowMode),
+  [Mode.Visual]: enterModeCommon(Mode.Visual, enterVisualMode),
+  [Mode.VisualLine]: enterModeCommon(Mode.VisualLine, enterVisualLineMode),
+  [Mode.View]: enterModeCommon(Mode.View, enterViewMode),
+  [Mode.Disabled]: enterModeCommon(Mode.Disabled, enterDisabledMode),
+  [Mode.Find]: enterModeCommon(Mode.Find, enterFindMode),
+  [Mode.Replace]: enterModeCommon(Mode.Replace, enterReplaceMode),
+  [Mode.Match]: enterModeCommon(Mode.Match, enterMatchMode),
+  [Mode.InputGathering]: enterModeCommon(Mode.InputGathering, enterInputGatheringMode),
   [Mode.Occurrence]: () => { },
   [Mode.CommandlineInProgress]: () => { },
-  [Mode.InputGathering]: enterInputGatheringMode,
 }
 
 // Somewhat misleading name, this only enters the previous mode which was set with setPreviousMode

@@ -1,26 +1,75 @@
 import * as vscode from 'vscode';
-
+import { Direction } from './actions/actions';
 import * as positionUtils from './position_utils';
 
 export function vscodeToVimVisualSelection(
   document: vscode.TextDocument,
   vscodeSelection: vscode.Selection,
+  direction: Direction
 ): vscode.Selection {
-  if (vscodeSelection.active.isBefore(vscodeSelection.anchor)) {
-    return new vscode.Selection(vscodeSelection.anchor, positionUtils.left(vscodeSelection.active));
+  if (direction === Direction.Left || direction === Direction.Up) {
+    if (vscodeSelection.active.isBefore(vscodeSelection.anchor)) {
+      console.log("Lbef")
+      return new vscode.Selection(vscodeSelection.anchor, vscodeSelection.active);
+    } else if (vscodeSelection.active.isEqual(vscodeSelection.anchor)) {
+      console.log("Leq")
+      return new vscode.Selection(positionUtils.rightWrap(document, vscodeSelection.anchor), vscodeSelection.active);
+    } else {
+      console.log("Laft")
+      return new vscode.Selection(vscodeSelection.active, vscodeSelection.anchor);
+    }
+  } else if (direction === Direction.Right || direction === Direction.Down) {
+    if (vscodeSelection.active.isBefore(vscodeSelection.anchor)) {
+      console.log("Rbef")
+      return new vscode.Selection(vscodeSelection.active, vscodeSelection.anchor);
+    } else if (vscodeSelection.active.isEqual(vscodeSelection.anchor)) {
+      console.log("Req")
+      return new vscode.Selection(vscodeSelection.anchor, positionUtils.rightWrap(document, vscodeSelection.active))
+    } else {
+      console.log("Raft")
+      return new vscode.Selection(vscodeSelection.anchor, positionUtils.rightWrap(document, vscodeSelection.active));
+    }
+  } else if (direction === Direction.Auto) {
+    if (vscodeSelection.active.compareTo(vscodeSelection.anchor) >= 0) {
+      console.log("Agt")
+      return new vscode.Selection(vscodeSelection.anchor, positionUtils.rightWrap(document, vscodeSelection.active))
+    } else {
+      console.log("Abef")
+      return new vscode.Selection(vscodeSelection.active, vscodeSelection.anchor);
+    }
   } else {
-    return new vscode.Selection(vscodeSelection.anchor, positionUtils.right(document, vscodeSelection.active));
+    return new vscode.Selection(vscodeSelection.anchor, vscodeSelection.active);
   }
 }
 
 export function vimToVscodeVisualSelection(
   document: vscode.TextDocument,
   vimSelection: vscode.Selection,
+  direction: Direction
 ): vscode.Selection {
-  if (vimSelection.active.isBefore(vimSelection.anchor)) {
-    return new vscode.Selection(vimSelection.anchor, positionUtils.right(document, vimSelection.active));
+  if (direction === Direction.Unknown) {
+    if (vimSelection.active.isBefore(vimSelection.anchor)) {
+      console.log("1bef")
+      return new vscode.Selection(vimSelection.anchor, vimSelection.active);
+    } else if (vimSelection.active.isEqual(vimSelection.anchor)) {
+      console.log("1eq")
+      return new vscode.Selection(vimSelection.anchor, vimSelection.active);
+    } else {
+      console.log("1aft")
+      return new vscode.Selection(vimSelection.anchor, vimSelection.active);
+    }
   } else {
-    return new vscode.Selection(vimSelection.anchor, positionUtils.left(vimSelection.active));
+    if (vimSelection.active.isBefore(vimSelection.anchor)) {
+      console.log("1bef")
+      return new vscode.Selection(vimSelection.anchor, vimSelection.active);
+      //}
+    } else if (vimSelection.active.isEqual(vimSelection.anchor)) {
+      console.log("1eq")
+      return new vscode.Selection(vimSelection.anchor, vimSelection.active);
+    } else {
+      console.log("1aft")
+      return new vscode.Selection(vimSelection.anchor, positionUtils.left(vimSelection.active));
+    }
   }
 }
 
@@ -50,6 +99,23 @@ export function vimToVscodeVisualLineSelection(
     return new vscode.Selection(
       vimSelection.anchor.with({ character: 0 }),
       vimSelection.active.with({ character: activeLineLength }),
+    );
+  }
+}
+
+export function toLinewiseSelection(document: vscode.TextDocument, selection: vscode.Selection) {
+  const anchorLineLength = document.lineAt(selection.anchor.line).text.length;
+  const activeLineLength = document.lineAt(selection.active.line).text.length;
+
+  if (selection.active.isBefore(selection.anchor)) {
+    return new vscode.Selection(
+      selection.anchor.with({ character: anchorLineLength }),
+      selection.active.with({ character: 0 }),
+    );
+  } else {
+    return new vscode.Selection(
+      selection.anchor.with({ character: 0 }),
+      selection.active.with({ character: activeLineLength }),
     );
   }
 }

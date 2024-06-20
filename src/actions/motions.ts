@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 
 import { HelixState } from '../helix_state_types';
 import { Mode } from '../modes';
+import { Direction } from './actions'
 import { searchBackward, searchForward } from '../search_utils';
 import {
   vimToVscodeVisualLineSelection,
@@ -17,28 +18,6 @@ type MotionArgs = {
   vimState: HelixState;
 };
 
-type RegexMotionArgs = {
-  document: vscode.TextDocument;
-  position: vscode.Position;
-  selectionIndex: number;
-  vimState: HelixState;
-  match: RegExpMatchArray;
-};
-
-function execRegexMotion(
-  vimState: HelixState,
-  editor: vscode.TextEditor,
-  match: RegExpMatchArray,
-  regexMotion: (args: RegexMotionArgs) => vscode.Position,
-) {
-  return execMotion(vimState, editor, (motionArgs) => {
-    return regexMotion({
-      ...motionArgs,
-      match: match,
-    });
-  });
-}
-
 type Motion = (args: MotionArgs) => vscode.Position
 type MotionExecutor = (vimState: HelixState, selection: vscode.Selection, selectionIndex: number, document: vscode.TextDocument, motion: Motion) => vscode.Selection
 export type MotionWrapper = (vimState: HelixState, editor: vscode.TextEditor, ...args: any) => void
@@ -53,8 +32,8 @@ function execNormalMotion(vimState: HelixState, selection: vscode.Selection, sel
   return new vscode.Selection(selection.active, newPosition);
 }
 
-function execVisualMotion(vimState: HelixState, selection: vscode.Selection, selectionIndex: number, document: vscode.TextDocument, motion: Motion) {
-  const vimSelection = vscodeToVimVisualSelection(document, selection);
+function execVisualMotion(vimState: HelixState, selection: vscode.Selection, selectionIndex: number, document: vscode.TextDocument, motion: Motion, dir: Direction) {
+  const vimSelection = vscodeToVimVisualSelection(document, selection, dir);
   const motionPosition = motion({
     document: document,
     position: vimSelection.active,
@@ -62,7 +41,13 @@ function execVisualMotion(vimState: HelixState, selection: vscode.Selection, sel
     vimState: vimState,
   });
 
-  return vimToVscodeVisualSelection(document, new vscode.Selection(vimSelection.anchor, motionPosition));
+  return vimToVscodeVisualSelection(document, new vscode.Selection(vimSelection.anchor, motionPosition), dir);
+}
+function execVisualMotionLeft(vimState: HelixState, selection: vscode.Selection, selectionIndex: number, document: vscode.TextDocument, motion: Motion) {
+  return execVisualMotion(vimState, selection, selectionIndex, document, motion, Direction.Left)
+}
+function execVisualMotionRight(vimState: HelixState, selection: vscode.Selection, selectionIndex: number, document: vscode.TextDocument, motion: Motion) {
+  return execVisualMotion(vimState, selection, selectionIndex, document, motion, Direction.Right)
 }
 
 function execVisualLineMotion(vimState: HelixState, selection: vscode.Selection, selectionIndex: number, document: vscode.TextDocument, motion: Motion) {
@@ -90,20 +75,29 @@ function mapMotion(vimState: HelixState, editor: vscode.TextEditor, executor: Mo
   );
 }
 
-export function execMotion(vimState: HelixState, editor: vscode.TextEditor, motion: Motion) {
+export function execMotion(vimState: HelixState, editor: vscode.TextEditor, motion: Motion, dir: Direction | undefined) {
   const document = editor.document;
 
-  const newSelections = editor.selections.map((selection, i) => {
-    if (vimState.mode === Mode.Normal) {
+  let newSelections
+  if (vimState.mode === Mode.Normal) {
+    newSelections = editor.selections.map((selection, i) => {
       return execNormalMotion(vimState, selection, i, document, motion)
-    } else if (vimState.mode === Mode.Visual) {
-      return execVisualMotion(vimState, selection, i, document, motion)
-    } else if (vimState.mode === Mode.VisualLine) {
-      return execVisualLineMotion(vimState, selection, i, document, motion)
-    } else {
-      return selection;
+    })
+  } else if (vimState.mode === Mode.Visual) {
+    if (dir === undefined) {
+      console.warn('No direction specified for visual motion')
+      return
     }
-  });
+    newSelections = editor.selections.map((selection, i) => {
+      return execVisualMotion(vimState, selection, i, document, motion, dir)
+    })
+  } else if (vimState.mode === Mode.VisualLine) {
+    newSelections = editor.selections.map((selection, i) => {
+      return execVisualLineMotion(vimState, selection, i, document, motion)
+    })
+  } else {
+    newSelections = editor.selections
+  }
 
   editor.selections = newSelections;
 
@@ -114,12 +108,12 @@ export function execMotion(vimState: HelixState, editor: vscode.TextEditor, moti
 }
 
 export function findForward(vimState: HelixState, editor: vscode.TextEditor, str: string): void {
-  mapMotion(vimState, editor, execVisualMotion, ({ vimState, position, document }) => {
-    const fromPosition = position.with({ character: position.character + 1 });
+  mapMotion(vimState, editor, execVisualMotionRight, ({ vimState, position, document }) => {
+    const fromPosition = position.with({ character: position.character });
     const result = searchForward(document, str, fromPosition);
 
     if (result) {
-      return result.with({ character: result.character });
+      return result.with({ character: result.character + 2 });
     } else {
       return position;
     }
@@ -127,8 +121,8 @@ export function findForward(vimState: HelixState, editor: vscode.TextEditor, str
 }
 
 export function findBackward(vimState: HelixState, editor: vscode.TextEditor, str: string): void {
-  mapMotion(vimState, editor, execVisualMotion, ({ vimState, position, document }) => {
-    const fromPosition = position.with({ character: position.character + 1 });
+  mapMotion(vimState, editor, execVisualMotionLeft, ({ vimState, position, document }) => {
+    const fromPosition = position.with({ character: position.character - 1 });
     const result = searchBackward(document, str, fromPosition);
 
     if (result) {
@@ -140,12 +134,12 @@ export function findBackward(vimState: HelixState, editor: vscode.TextEditor, st
 }
 
 export const tillForward: MotionWrapper = function (vimState: HelixState, editor: vscode.TextEditor, str: string): void {
-  mapMotion(vimState, editor, execVisualMotion, ({ vimState, position, document }) => {
+  mapMotion(vimState, editor, execVisualMotionRight, ({ vimState, position, document }) => {
     const fromPosition = position.with({ character: position.character + 1 });
     const result = searchForward(document, str, fromPosition);
 
     if (result) {
-      return result.with({ character: result.character - 1 });
+      return result.with({ character: result.character + 1 });
     } else {
       return position;
     }
@@ -153,8 +147,8 @@ export const tillForward: MotionWrapper = function (vimState: HelixState, editor
 }
 
 export const tillBackward: MotionWrapper = function (vimState: HelixState, editor: vscode.TextEditor, str: string): void {
-  mapMotion(vimState, editor, execVisualMotion, ({ vimState, position, document }) => {
-    const fromPosition = position.with({ character: position.character + 1 });
+  mapMotion(vimState, editor, execVisualMotionLeft, ({ vimState, position, document }) => {
+    const fromPosition = position.with({ character: position.character - 2 });
     const result = searchBackward(document, str, fromPosition);
 
     if (result) {
@@ -202,7 +196,7 @@ export function createWordForwardHandler(
 
       // We may be at the end of the document or nothing else matches
       return position;
-    });
+    }, Direction.Right);
   };
 }
 
@@ -230,12 +224,13 @@ export function createWordBackwardHandler(
       }
       // We may be at the end of the document or nothing else matches
       return position;
-    });
+    }, Direction.Left);
   };
 }
 
 export function createWordEndHandler(
   wordRangesFunction: (text: string) => { start: number; end: number }[],
+  direction: Direction
 ): (vimState: HelixState, editor: vscode.TextEditor) => void {
   return (vimState, editor) => {
     execMotion(vimState, editor, ({ document, position }) => {
@@ -249,6 +244,6 @@ export function createWordEndHandler(
       } else {
         return position;
       }
-    });
+    }, direction);
   };
 }

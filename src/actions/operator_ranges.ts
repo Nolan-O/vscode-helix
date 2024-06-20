@@ -232,45 +232,6 @@ export const inner: { [key: string]: OperatorRangeFunc } = {
   },
 }; */
 
-
-
-function createInnerBracketHandler(
-  openingChar: string,
-  closingChar: string,
-): (vimState: HelixState, document: vscode.TextDocument, position: vscode.Position) => vscode.Range | undefined {
-  return (helixState, document, position) => {
-    const count = helixState.resolveCount();
-    const bracketRange = getBracketRange(document, position, openingChar, closingChar, count);
-
-    if (bracketRange) {
-      return new vscode.Range(
-        bracketRange.start.with({
-          character: bracketRange.start.character + 1,
-        }),
-        bracketRange.end,
-      );
-    } else {
-      return undefined;
-    }
-  };
-}
-
-function createOuterBracketHandler(
-  openingChar: string,
-  closingChar: string,
-): (vimState: HelixState, document: vscode.TextDocument, position: vscode.Position) => vscode.Range | undefined {
-  return (helixState, document, position) => {
-    const count = helixState.resolveCount();
-    const bracketRange = getBracketRange(document, position, openingChar, closingChar, count);
-
-    if (bracketRange) {
-      return new vscode.Range(bracketRange.start, bracketRange.end.with({ character: bracketRange.end.character + 1 }));
-    } else {
-      return undefined;
-    }
-  };
-}
-
 function getBracketRange(
   document: vscode.TextDocument,
   position: vscode.Position,
@@ -305,89 +266,6 @@ function getBracketRange(
   } else {
     return undefined;
   }
-}
-
-function createInnerQuoteHandler(
-  quoteChar: string,
-): (vimState: HelixState, document: vscode.TextDocument, position: vscode.Position) => vscode.Range | undefined {
-  return (vimState, document, position) => {
-    const lineText = document.lineAt(position.line).text;
-    const ranges = quoteRanges(quoteChar, lineText);
-    const result = findQuoteRange(ranges, position);
-
-    if (result) {
-      return new vscode.Range(position.with({ character: result.start + 1 }), position.with({ character: result.end }));
-    } else {
-      return undefined;
-    }
-  };
-}
-
-function createOuterQuoteHandler(
-  quoteChar: string,
-): (vimState: HelixState, document: vscode.TextDocument, position: vscode.Position) => vscode.Range | undefined {
-  return (vimState, document, position) => {
-    const lineText = document.lineAt(position.line).text;
-    const ranges = quoteRanges(quoteChar, lineText);
-    const result = findQuoteRange(ranges, position);
-
-    if (result) {
-      return new vscode.Range(position.with({ character: result.start }), position.with({ character: result.end + 1 }));
-    } else {
-      return undefined;
-    }
-  };
-}
-
-function createWordForwardHandler(
-  wordRangesFunction: (text: string) => { start: number; end: number }[],
-): (vimState: HelixState, document: vscode.TextDocument, position: vscode.Position) => vscode.Range {
-  return (vimState, document, position) => {
-    const lineText = document.lineAt(position.line).text;
-    const ranges = wordRangesFunction(lineText);
-
-    const result = ranges.find((x) => x.start > position.character);
-
-    if (result) {
-      return new vscode.Range(position, position.with({ character: result.start }));
-    } else {
-      return new vscode.Range(position, position.with({ character: lineText.length }));
-    }
-  };
-}
-
-function createWordBackwardHandler(
-  wordRangesFunction: (text: string) => { start: number; end: number }[],
-): (vimState: HelixState, document: vscode.TextDocument, position: vscode.Position) => vscode.Range | undefined {
-  return (vimState, document, position) => {
-    const lineText = document.lineAt(position.line).text;
-    const ranges = wordRangesFunction(lineText);
-
-    const result = ranges.reverse().find((x) => x.start < position.character);
-
-    if (result) {
-      return new vscode.Range(position.with({ character: result.start }), position);
-    } else {
-      return undefined;
-    }
-  };
-}
-
-function createWordEndHandler(
-  wordRangesFunction: (text: string) => { start: number; end: number }[],
-): (vimState: HelixState, document: vscode.TextDocument, position: vscode.Position) => vscode.Range | undefined {
-  return (vimState, document, position) => {
-    const lineText = document.lineAt(position.line).text;
-    const ranges = wordRangesFunction(lineText);
-
-    const result = ranges.find((x) => x.end > position.character);
-
-    if (result) {
-      return new vscode.Range(position, positionUtils.right(document, position.with({ character: result.end })));
-    } else {
-      return undefined;
-    }
-  };
 }
 
 function createInnerWordHandler(

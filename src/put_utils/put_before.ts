@@ -1,6 +1,8 @@
 import * as vscode from 'vscode';
 import * as positionUtils from '../position_utils';
 import type { HelixState } from '../helix_state_types';
+import { vscodeToVimVisualSelection } from '../selection_utils';
+import { Direction } from '../actions/actions';
 import { adjustInsertPositions, getInsertRangesFromBeginning, getRegisterContentsList } from './common';
 
 export function putBefore(vimState: HelixState, editor: vscode.TextEditor) {
@@ -12,6 +14,42 @@ export function putBefore(vimState: HelixState, editor: vscode.TextEditor) {
   } else {
     normalModeCharacterwise(vimState, editor, registerContentsList);
   }
+}
+
+function normalModeCharacterwise(
+  vimState: HelixState,
+  editor: vscode.TextEditor,
+  registerContentsList: (string | undefined)[],
+) {
+  const insertPositions: vscode.Position[] = editor.selections.map((selection) => {
+    return vscodeToVimVisualSelection(editor.document, selection, Direction.Auto).start
+  })
+  const adjustedInsertPositions = adjustInsertPositions(insertPositions, registerContentsList);
+  const insertRanges = getInsertRangesFromBeginning(adjustedInsertPositions, registerContentsList);
+
+  editor
+    .edit((editBuilder) => {
+      insertPositions.forEach((insertPosition, i) => {
+        const registerContents = registerContentsList[i];
+        if (registerContents === undefined) return;
+
+        editBuilder.insert(insertPosition, registerContents);
+      });
+    })
+    .then(() => {
+      editor.selections = editor.selections.map((selection, i) => {
+        const range = insertRanges[i];
+        if (range === undefined) return selection;
+
+        const end = positionUtils.left(range.end);
+        return new vscode.Selection(range.start, positionUtils.leftWrap(editor.document, end));
+      });
+    });
+
+  vimState.lastPutRanges = {
+    ranges: insertRanges,
+    linewise: false,
+  };
 }
 
 function normalModeLinewise(
@@ -51,39 +89,5 @@ function normalModeLinewise(
   vimState.lastPutRanges = {
     ranges: getInsertRangesFromBeginning(adjustedInsertPositions, registerContentsList),
     linewise: true,
-  };
-}
-
-function normalModeCharacterwise(
-  vimState: HelixState,
-  editor: vscode.TextEditor,
-  registerContentsList: (string | undefined)[],
-) {
-  const insertPositions = editor.selections.map((selection) => selection.active);
-  const adjustedInsertPositions = adjustInsertPositions(insertPositions, registerContentsList);
-  const insertRanges = getInsertRangesFromBeginning(adjustedInsertPositions, registerContentsList);
-
-  editor
-    .edit((editBuilder) => {
-      insertPositions.forEach((insertPosition, i) => {
-        const registerContents = registerContentsList[i];
-        if (registerContents === undefined) return;
-
-        editBuilder.insert(insertPosition, registerContents);
-      });
-    })
-    .then(() => {
-      editor.selections = editor.selections.map((selection, i) => {
-        const range = insertRanges[i];
-        if (range === undefined) return selection;
-
-        const position = positionUtils.left(range.end);
-        return new vscode.Selection(position, position);
-      });
-    });
-
-  vimState.lastPutRanges = {
-    ranges: insertRanges,
-    linewise: false,
   };
 }

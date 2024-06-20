@@ -1,8 +1,16 @@
 import * as vscode from 'vscode';
 import * as toml from 'smol-toml';
 import * as json5 from 'json5';
-import { bindings, actionFuncs } from './actions/actions';
-import { Action, BindingActionList, BindingLayer } from './action_types'
+import { actionFuncs } from './actions/actions';
+import { HelixState } from './helix_state_types';
+import {
+  Action,
+  BindingActionList,
+  BindingLayer,
+  BindingStructure,
+  ContextList,
+  ContextStructure
+} from './action_types'
 import { sanitizeCharForContext } from './input_utils';
 import { Mode } from './modes';
 
@@ -12,6 +20,42 @@ type VSKeyBinding = {
   command: string
 }
 type VSKeyBindings = [VSKeyBinding]
+
+export let bindings: BindingStructure = {
+  [Mode.Disabled]: {},
+  [Mode.Insert]: {},
+  [Mode.Normal]: {},
+  [Mode.Visual]: {},
+  [Mode.VisualLine]: {},
+  [Mode.Occurrence]: {},
+  [Mode.Window]: {},
+  [Mode.SearchInProgress]: {},
+  [Mode.CommandlineInProgress]: {},
+  [Mode.Select]: {},
+  [Mode.View]: {},
+  [Mode.Match]: {},
+  [Mode.Find]: {},
+  [Mode.Replace]: {},
+  [Mode.InputGathering]: {}
+}
+
+export let bindingContextVars: ContextStructure = {
+  [Mode.Disabled]: {},
+  [Mode.Insert]: {},
+  [Mode.Normal]: {},
+  [Mode.Visual]: {},
+  [Mode.VisualLine]: {},
+  [Mode.Occurrence]: {},
+  [Mode.Window]: {},
+  [Mode.SearchInProgress]: {},
+  [Mode.CommandlineInProgress]: {},
+  [Mode.Select]: {},
+  [Mode.View]: {},
+  [Mode.Match]: {},
+  [Mode.Find]: {},
+  [Mode.Replace]: {},
+  [Mode.InputGathering]: {}
+}
 
 async function open_file(windows_uri: vscode.Uri, other_uri: vscode.Uri): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -78,9 +122,6 @@ function configError(mode: Mode, cur_idx: number, keys: string[]) {
   console.warn(`Error adding config item: Mode ${mode.toString()}, key sequence ${seq_so_far} is already bound to some actions; cannot index it further with ${seq}`)
 }
 
-function isModifier(str: string) {
-  return str === "shift" || str === "ctrl" || str == "alt"
-}
 let modifierOrder: { [key: string]: number } = {
   ctrl: 1,
   shift: 2,
@@ -90,6 +131,61 @@ let modifierCode: { [key: string]: string } = {
   ctrl: "C",
   shift: "S",
   alt: "A"
+}
+
+// Returns true if a binding was found or if the input has not ruled out the possibility of future keys finding a binding
+function matchInput(vimState: HelixState): Action[] | boolean {
+  let chars = vimState.keysPressed
+  let binding = bindings[vimState.mode]
+  for (let i = 0; i < chars.length; i++) {
+    binding = binding[chars[i]]
+
+    if (binding === undefined) {
+      return false
+    }
+  }
+
+  if (Array.isArray(binding)) {
+    return binding
+  }
+
+  return true
+}
+
+export enum ChordConsumeResult {
+  MATCH,
+  INVALID,
+  INCOMPLETE,
+}
+
+// return true if actions were executed
+export function tryConsumeChord(helixState: HelixState, clearKeysPressed: boolean = true) {
+  const editor = vscode.window.activeTextEditor
+  if (editor === undefined) {
+    return
+  }
+
+  let actions = matchInput(helixState)
+  console.log(helixState.keysPressed)
+
+  if (actions === false) {
+    if (clearKeysPressed) {
+      helixState.keysPressed = [];
+      helixState.numbersPressed = [];
+    }
+    return ChordConsumeResult.INVALID;
+  } else if (actions === true) {
+    return ChordConsumeResult.INCOMPLETE;
+  } else {
+    for (let action of actions) {
+      action(helixState, editor)
+    }
+    if (clearKeysPressed) {
+      helixState.keysPressed = [];
+      helixState.numbersPressed = [];
+    }
+    return ChordConsumeResult.MATCH;
+  }
 }
 
 /*
@@ -171,6 +267,7 @@ function getModifierBindings(keys: string[]) {
 function resetBindings() {
   for (let key of Object.values(Mode)) {
     bindings[key] = {};
+    bindingContextVars[key] = {};
   }
 }
 
@@ -181,7 +278,7 @@ export function addBinding(actions: Action[], cfg: BindingActionList[]) {
       let binding_strs = getModifierBindings(keys)
       // TODO: the vim extension uses an async wrapper around this because of latency, probably a good idea
       for (let str of binding_strs) {
-        vscode.commands.executeCommand('setContext', str, true);
+        bindingContextVars[mode][str] = true
       }
     }
 
@@ -215,13 +312,8 @@ export function loadDefaultConfig() {
   /*
     Unknown/custom
   */
-  // Occurence mode isn't even accessible
-  addBinding([actionFuncs.addSelectionToPreviousFindMatch], [[Mode.Occurrence, ["p"]]])
-  addBinding([actionFuncs.selectHighlights], [[Mode.Occurrence, ["a"]]])
   addBinding([actionFuncs.window_mode], [[Mode.Normal, ["ctrl", "w"]]])
   addBinding([actionFuncs.view_mode], [[Mode.Normal, ["shift", "z"]]])
-  addBinding([actionFuncs.gotoPageUp], [[Mode.Normal, ["g", "pgup"]], [Mode.Visual, ["g", "pgup"]]])
-  addBinding([actionFuncs.gotoPageDown], [[Mode.Normal, ["g", "pgdn"]], [Mode.Visual, ["g", "pgdn"]]])
 
   addBinding([actionFuncs.delete_char_backward], [[Mode.Insert, ["backspace"]]])
   addBinding([actionFuncs.delete_char_forward], [[Mode.Insert, ["ctrl", "d"]]])
@@ -238,6 +330,30 @@ export function loadDefaultConfig() {
   addBinding([actionFuncs.decriment], [[Mode.Normal, ["ctrl", "x"]]])
 
   addBinding([actionFuncs.yank_to_clipboard], [[Mode.Normal, ["y"]], [Mode.Visual, ["y"]], [Mode.VisualLine, ["y"]]])
+  addBinding([actionFuncs.repeat_last_motion], [[Mode.Normal, ["alt", "."]], [Mode.Visual, ["alt", "."]], [Mode.VisualLine, ["alt", "."]]])
+  addBinding([actionFuncs.goto_line_end], [[Mode.Normal, ["end"]], [Mode.Visual, ["end"]], [Mode.VisualLine, ["end"]]])
+  addBinding([actionFuncs.goto_line_start], [[Mode.Normal, ["home"]], [Mode.Visual, ["home"]], [Mode.VisualLine, ["home"]]])
+  addBinding([actionFuncs.page_up], [
+    [Mode.Normal, ["ctrl", "b"]], [Mode.Normal, ["pageup"]],
+    [Mode.Visual, ["ctrl", "b"]], [Mode.Visual, ["pageup"]],
+    [Mode.VisualLine, ["ctrl", "b"]], [Mode.VisualLine, ["pageup"]],
+  ])
+  addBinding([actionFuncs.page_down], [
+    [Mode.Normal, ["ctrl", "f"]], [Mode.Normal, ["pagedown"]],
+    [Mode.Visual, ["ctrl", "f"]], [Mode.Visual, ["pagedown"]],
+    [Mode.VisualLine, ["ctrl", "f"]], [Mode.VisualLine, ["pagedown"]],
+  ])
+  addBinding([actionFuncs.page_up], [[Mode.Normal, ["g", "pageup"]], [Mode.Visual, ["g", "pageup"]]])
+  addBinding([actionFuncs.page_down], [[Mode.Normal, ["g", "pagedown"]], [Mode.Visual, ["g", "pagedown"]]])
+  addBinding([actionFuncs.page_cursor_half_up], [[Mode.Normal, ["ctrl", "u"]], [Mode.Visual, ["ctrl", "u"]]])
+  addBinding([actionFuncs.page_cursor_half_down], [[Mode.Normal, ["ctrl", "d"]], [Mode.Visual, ["ctrl", "d"]]])
+  addBinding([actionFuncs.jump_forward], [[Mode.Normal, ["ctrl", "o"]], [Mode.Visual, ["ctrl", "o"]]])
+  addBinding([actionFuncs.jump_backward], [[Mode.Normal, ["ctrl", "i"]], [Mode.Visual, ["ctrl", "i"]]])
+  addBinding([actionFuncs.yank], [[Mode.Normal, ["y"]], [Mode.Visual, ["y"]]])
+  addBinding([actionFuncs.yank_to_clipboard], [[Mode.Normal, ["shift", "y"]], [Mode.Visual, ["shift", "y"]]])
+  addBinding([actionFuncs.paste_after], [[Mode.Normal, ["p"]], [Mode.Visual, ["p"]]])
+  addBinding([actionFuncs.paste_before], [[Mode.Normal, ["shift", "p"]], [Mode.Visual, ["shift", "p"]]])
+
 
   addBinding([actionFuncs.match_mode], [[Mode.Normal, ["m"]], [Mode.Visual, ["m"]], [Mode.VisualLine, ["m"]]])
   addBinding([actionFuncs.match_brackets], [[Mode.Match, ["m"]]])
@@ -277,7 +393,6 @@ export function loadDefaultConfig() {
     [Mode.InputGathering, ["escape"]]
   ])
   addBinding([actionFuncs.search_next], [[Mode.Normal, ["n"]]])
-  addBinding([actionFuncs.yank], [[Mode.Normal, ["y"]], [Mode.Visual, ["y"]]])
   addBinding([actionFuncs.search_prev], [[Mode.Normal, ["shift", "n"]]])
   addBinding([actionFuncs.search_selection], [[Mode.Normal, ["*"]]])
   addBinding([actionFuncs.insert_mode], [[Mode.Normal, ["i"]], [Mode.Visual, ["i"]], [Mode.VisualLine, ["i"]], [Mode.Occurrence, ["i"]]])
@@ -297,12 +412,10 @@ export function loadDefaultConfig() {
   addBinding([actionFuncs.select_mode], [[Mode.Normal, ["v"]]])
   addBinding([actionFuncs.open_below], [[Mode.Normal, ["o"]], [Mode.Visual, ["o"]], [Mode.VisualLine, ["o"]]])
   addBinding([actionFuncs.open_below], [[Mode.Normal, ["shift", "o"]], [Mode.Visual, ["shift", "o"]], [Mode.VisualLine, ["shift", "o"]]])
-  addBinding([actionFuncs.paste_after], [[Mode.Normal, ["p"]], [Mode.Visual, ["p"]], [Mode.VisualLine, ["p"]]])
-  addBinding([actionFuncs.paste_before], [[Mode.Normal, ["shift", "p"]], [Mode.Visual, ["shift", "p"]]])
   addBinding([actionFuncs.undo], [[Mode.Normal, ["u"]], [Mode.Visual, ["u"]], [Mode.VisualLine, ["u"]]])
   addBinding([actionFuncs.redo], [[Mode.Normal, ["shift", "u"]], [Mode.Visual, ["shift", "u"]], [Mode.VisualLine, ["shift", "u"]]])
-  addBinding([actionFuncs.extend_line_below], [[Mode.Normal, ["x"]]])
-  addBinding([actionFuncs.collapse_selection], [[Mode.Normal, [";"]]])
+  addBinding([actionFuncs.extend_line_below], [[Mode.Normal, ["x"]], [Mode.Visual, ["x"]]])
+  addBinding([actionFuncs.collapse_selection], [[Mode.Normal, [";"]], [Mode.Visual, [";"]]])
   addBinding([actionFuncs.delete_selection], [[Mode.Normal, ["d"]], [Mode.Visual, ["d"]], [Mode.VisualLine, ["d"]]])
   addBinding([actionFuncs.kill_to_line_start], [[Mode.Insert, ["ctrl", "u"]]])
   // Deviation: ctrl+k reserved so use alt+u to remain related to the ctrl+u binding
@@ -334,6 +447,7 @@ export function loadDefaultConfig() {
   */
   addBinding([actionFuncs.goto_last_modification], [[Mode.Normal, ["g", "."]]])
   addBinding([actionFuncs.goto_file_start], [[Mode.Normal, ["g", "g"]], [Mode.Visual, ["g", "g"]]])
+  addBinding([actionFuncs.goto_file_start], [[Mode.Normal, ["shift", "g"]], [Mode.Visual, ["shift", "g"]]])
   addBinding([actionFuncs.goto_last_line], [[Mode.Normal, ["g", "e"]], [Mode.Visual, ["g", "e"]]])
   addBinding([actionFuncs.goto_line_start], [[Mode.Normal, ["g", "h"]], [Mode.Visual, ["g", "h"]]])
   addBinding([actionFuncs.goto_line_end], [[Mode.Normal, ["g", "l"]], [Mode.Visual, ["g", "l"]]])

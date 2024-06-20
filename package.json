@@ -50,6 +50,26 @@
     ],
     "keybindings": [
       {
+        "key": "pageup",
+        "command": "extension.helixKeymap.pageup",
+        "when": "editorTextFocus"
+      },
+      {
+        "key": "pagedown",
+        "command": "extension.helixKeymap.pagedown",
+        "when": "editorTextFocus"
+      },
+      {
+        "key": "home",
+        "command": "extension.helixKeymap.home",
+        "when": "editorTextFocus"
+      },
+      {
+        "key": "end",
+        "command": "extension.helixKeymap.end",
+        "when": "editorTextFocus"
+      },
+      {
         "key": "escape",
         "command": "extension.helixKeymap.escape",
         "when": "editorTextFocus"
@@ -240,9 +260,9 @@
         "when": "editorTextFocus && C;"
       },
       {
-        "key": "ctrl+'",
-        "command": "extension.helixKeymap.ctrl_'",
-        "when": "editorTextFocus && C'"
+        "key": "ctrl+squote",
+        "command": "extension.helixKeymap.ctrl_squote",
+        "when": "editorTextFocus && Csquote"
       },
       {
         "key": "ctrl+,",
@@ -265,9 +285,14 @@
         "when": "editorTextFocus && C\\"
       },
       {
-        "key": "ctrl+=",
-        "command": "extension.helixKeymap.ctrl_=",
-        "when": "editorTextFocus && C="
+        "key": "ctrl+eq",
+        "command": "extension.helixKeymap.ctrl_eq",
+        "when": "editorTextFocus && Ceq"
+      },
+      {
+        "key": "ctrl+-",
+        "command": "extension.helixKeymap.ctrl_-",
+        "when": "editorTextFocus && C-"
       },
       {
         "key": "ctrl+1",
@@ -500,9 +525,9 @@
         "when": "editorTextFocus && A;"
       },
       {
-        "key": "alt+'",
-        "command": "extension.helixKeymap.alt_'",
-        "when": "editorTextFocus && A'"
+        "key": "alt+squote",
+        "command": "extension.helixKeymap.alt_squote",
+        "when": "editorTextFocus && Asquote"
       },
       {
         "key": "alt+,",
@@ -525,9 +550,14 @@
         "when": "editorTextFocus && A\\"
       },
       {
-        "key": "alt+=",
-        "command": "extension.helixKeymap.alt_=",
-        "when": "editorTextFocus && A="
+        "key": "alt+eq",
+        "command": "extension.helixKeymap.alt_eq",
+        "when": "editorTextFocus && Aeq"
+      },
+      {
+        "key": "alt+-",
+        "command": "extension.helixKeymap.alt_-",
+        "when": "editorTextFocus && A-"
       },
       {
         "key": "alt+1",
@@ -760,9 +790,9 @@
         "when": "editorTextFocus && S;"
       },
       {
-        "key": "shift+'",
-        "command": "extension.helixKeymap.shift_'",
-        "when": "editorTextFocus && S'"
+        "key": "shift+squote",
+        "command": "extension.helixKeymap.shift_squote",
+        "when": "editorTextFocus && Ssquote"
       },
       {
         "key": "shift+,",
@@ -785,9 +815,14 @@
         "when": "editorTextFocus && S\\"
       },
       {
-        "key": "shift+=",
-        "command": "extension.helixKeymap.shift_=",
-        "when": "editorTextFocus && S="
+        "key": "shift+eq",
+        "command": "extension.helixKeymap.shift_eq",
+        "when": "editorTextFocus && Seq"
+      },
+      {
+        "key": "shift+-",
+        "command": "extension.helixKeymap.shift_-",
+        "when": "editorTextFocus && S-"
       },
       {
         "key": "shift+1",
@@ -1020,9 +1055,9 @@
         "when": "editorTextFocus && CA;"
       },
       {
-        "key": "ctrl+alt+'",
-        "command": "extension.helixKeymap.ctrl_alt_'",
-        "when": "editorTextFocus && CA'"
+        "key": "ctrl+alt+squote",
+        "command": "extension.helixKeymap.ctrl_alt_squote",
+        "when": "editorTextFocus && CAsquote"
       },
       {
         "key": "ctrl+alt+,",
@@ -1045,9 +1080,14 @@
         "when": "editorTextFocus && CA\\"
       },
       {
-        "key": "ctrl+alt+=",
-        "command": "extension.helixKeymap.ctrl_alt_=",
-        "when": "editorTextFocus && CA="
+        "key": "ctrl+alt+eq",
+        "command": "extension.helixKeymap.ctrl_alt_eq",
+        "when": "editorTextFocus && CAeq"
+      },
+      {
+        "key": "ctrl+alt+-",
+        "command": "extension.helixKeymap.ctrl_alt_-",
+        "when": "editorTextFocus && CA-"
       },
       {
         "key": "ctrl+alt+1",
@@ -1280,9 +1320,9 @@
         "when": "editorTextFocus && CS;"
       },
       {
-        "key": "ctrl+shift+'",
-        "command": "extension.helixKeymap.ctrl_shift_'",
-        "when": "editorTextFocus && CS'"
+        "key": "ctrl+shift+squote",
+        "command": "extension.helixKeymap.ctrl_shift_squote",
+        "when": "editorTextFocus && CSsquote"
       },
       {
         "key": "ctrl+shift+,",
@@ -1305,9 +1345,14 @@
         "when": "editorTextFocus && CS\\"
       },
       {
-        "key": "ctrl+shift+=",
-        "command": "extension.helixKeymap.ctrl_shift_=",
-        "when": "editorTextFocus && CS="
+        "key": "ctrl+shift+eq",
+        "command": "extension.helixKeymap.ctrl_shift_eq",
+        "when": "editorTextFocus && CSeq"
+      },
+      {
+        "key": "ctrl+shift+-",
+        "command": "extension.helixKeymap.ctrl_shift_-",
+        "when": "editorTextFocus && CS-"
       },
       {
         "key": "ctrl+shift+1",
@@ -1540,9 +1585,9 @@
         "when": "editorTextFocus && SA;"
       },
       {
-        "key": "shift+alt+'",
-        "command": "extension.helixKeymap.shift_alt_'",
-        "when": "editorTextFocus && SA'"
+        "key": "shift+alt+squote",
+        "command": "extension.helixKeymap.shift_alt_squote",
+        "when": "editorTextFocus && SAsquote"
       },
       {
         "key": "shift+alt+,",
@@ -1565,9 +1610,14 @@
         "when": "editorTextFocus && SA\\"
       },
       {
-        "key": "shift+alt+=",
-        "command": "extension.helixKeymap.shift_alt_=",
-        "when": "editorTextFocus && SA="
+        "key": "shift+alt+eq",
+        "command": "extension.helixKeymap.shift_alt_eq",
+        "when": "editorTextFocus && SAeq"
+      },
+      {
+        "key": "shift+alt+-",
+        "command": "extension.helixKeymap.shift_alt_-",
+        "when": "editorTextFocus && SA-"
       },
       {
         "key": "shift+alt+1",
@@ -1800,9 +1850,9 @@
         "when": "editorTextFocus && CSA;"
       },
       {
-        "key": "ctrl+shift+alt+'",
-        "command": "extension.helixKeymap.ctrl_shift_alt_'",
-        "when": "editorTextFocus && CSA'"
+        "key": "ctrl+shift+alt+squote",
+        "command": "extension.helixKeymap.ctrl_shift_alt_squote",
+        "when": "editorTextFocus && CSAsquote"
       },
       {
         "key": "ctrl+shift+alt+,",
@@ -1825,9 +1875,14 @@
         "when": "editorTextFocus && CSA\\"
       },
       {
-        "key": "ctrl+shift+alt+=",
-        "command": "extension.helixKeymap.ctrl_shift_alt_=",
-        "when": "editorTextFocus && CSA="
+        "key": "ctrl+shift+alt+eq",
+        "command": "extension.helixKeymap.ctrl_shift_alt_eq",
+        "when": "editorTextFocus && CSAeq"
+      },
+      {
+        "key": "ctrl+shift+alt+-",
+        "command": "extension.helixKeymap.ctrl_shift_alt_-",
+        "when": "editorTextFocus && CSA-"
       },
       {
         "key": "ctrl+shift+alt+1",

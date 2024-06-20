@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 
-import { ChordConsumeResult, tryConsumeChord } from './actions/actions';
+import { ChordConsumeResult, tryConsumeChord } from './helix_config';
 import { HelixState } from './helix_state_types';
 import { enterPreviousMode, Mode, ModeEnterFuncs } from './modes';
 import * as search from './search_utils';
@@ -26,6 +26,41 @@ export function typeHandler(helixState: HelixState, char: string): void {
   console.log(char)
 
   helixState.keysPressed.push(char);
+
+  try {
+    tryConsumeChord(helixState)
+  } catch (error) {
+    console.error(error);
+  }
+}
+export function insertTypeHandler(helixState: HelixState, char: string): void {
+  const editor = vscode.window.activeTextEditor;
+  if (!editor) return;
+
+  if (char.length == 1 && (char.toLowerCase() != char)) {
+    return;
+  }
+
+  console.log(char)
+
+  helixState.keysPressed.push(char);
+
+  const strs = inputTools.literalizeChord(helixState.keysPressed);
+  if (strs.length > 0) {
+    helixState.keysPressed = [];
+
+    editor.edit((builder) => {
+      editor.selections.forEach((sel) => {
+        if (sel.active.compareTo(sel.anchor) > 0) {
+          builder.insert(sel.anchor, strs.join(''))
+        } else {
+          builder.insert(sel.active, strs.join(''))
+        }
+      })
+    })
+
+    return;
+  }
 
   try {
     tryConsumeChord(helixState)
