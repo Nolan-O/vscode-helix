@@ -23,13 +23,14 @@ import * as inputTools from "../src/input_utils";
     })
 
     for (let j = 0; j < keys.length; j++) {
-      const char = inputTools.sanitizeCharForContext(keys[j])
+      const char = keys[j]
+      const char_sanitized = inputTools.sanitizeCharForContext(char)
       /*       if (modifiers.length === 1 && modifiers[0] === "shift" && inputTools.isSymbolKey(char)) {
               continue
             } */
 
-      const internal_state_var = internal_state_var_prefix + char
-      let entry = `{"key": "${binding_prefix}+${char}", "command": "extension.helixKeymap.${command_prefix}_${char}", "when": "editorTextFocus && ${internal_state_var}"},`
+      const internal_state_var = internal_state_var_prefix + char_sanitized
+      let entry = `{"key": "${binding_prefix}+${char}", "command": "extension.helixKeymap.${command_prefix}_${char_sanitized}", "when": "editorTextFocus && ${internal_state_var}"},`
       out += entry
     }
   }
