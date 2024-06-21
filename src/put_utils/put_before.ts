@@ -41,8 +41,7 @@ function normalModeCharacterwise(
         const range = insertRanges[i];
         if (range === undefined) return selection;
 
-        const end = positionUtils.left(range.end);
-        return new vscode.Selection(range.start, positionUtils.leftWrap(editor.document, end));
+        return new vscode.Selection(range.start, positionUtils.leftWrap(editor.document, range.end));
       });
     });
 
