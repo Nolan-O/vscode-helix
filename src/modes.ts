@@ -135,7 +135,7 @@ function enterModeCommon(mode: Mode, modeEnterFunc: (helixState: HelixState, ...
       console.log(key)
     }
 
-    modeEnterFunc(helixState, args)
+    modeEnterFunc(helixState, ...args)
   }
 }
 
