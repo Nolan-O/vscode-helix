@@ -10,7 +10,7 @@ import * as inputTools from "../src/input_utils";
 
   let out = ""
   for (const key of inputTools.superkeys) {
-    out += `{ "key": "${key}", "command": "extension.helixKeymap.${key}", "when": "editorTextFocus"},`
+    out += `{ "key": "${key}", "command": "extension.helixKeymap.${key}", "when": "editorTextFocus && hxEnabled"},`
   }
 
   for (let i = 0; i < inputTools.modifierCombos.length; i++) {
@@ -23,14 +23,18 @@ import * as inputTools from "../src/input_utils";
     })
 
     for (let j = 0; j < keys.length; j++) {
-      const char = keys[j]
-      const char_sanitized = inputTools.sanitizeCharForContext(char)
-      /*       if (modifiers.length === 1 && modifiers[0] === "shift" && inputTools.isSymbolKey(char)) {
-              continue
-            } */
+      const key = keys[j]
+      const char_sanitized = inputTools.sanitizeCharForContext(key)
+      const escaped = inputTools.escapeLiteral(key)
+      let hxEnableParam = " && hxEnabled"
+
+      // shift+escape will bypass hxEnabled for toggling back into helix
+      if (key === "escape" && modifiers.length === 1 && modifiers[0] === "shift") {
+        hxEnableParam = ""
+      }
 
       const internal_state_var = internal_state_var_prefix + char_sanitized
-      let entry = `{"key": "${binding_prefix}+${char}", "command": "extension.helixKeymap.${command_prefix}_${char_sanitized}", "when": "editorTextFocus && ${internal_state_var}"},`
+      let entry = `{"key": "${binding_prefix}+${escaped}", "command": "extension.helixKeymap.${command_prefix}_${char_sanitized}", "when": "editorTextFocus${hxEnableParam} && ${internal_state_var}"},`
       out += entry
     }
   }

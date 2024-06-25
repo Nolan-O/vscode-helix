@@ -5,6 +5,8 @@ import { HelixState } from './helix_state_types';
 import { enterPreviousMode, Mode, ModeEnterFuncs } from './modes';
 import * as search from './search_utils';
 import * as inputTools from './input_utils';
+import { vscodeToVimVisualSelection } from './selection_utils';
+import { Direction } from './actions/actions';
 
 export function typeHandler(helixState: HelixState, char: string): void {
   const editor = vscode.window.activeTextEditor;
@@ -52,6 +54,7 @@ export function insertTypeHandler(helixState: HelixState, char: string): void {
     editor.edit((builder) => {
       editor.selections.forEach((sel) => {
         if (sel.active.compareTo(sel.anchor) > 0) {
+          // In theory strs should never have a length > 1 but we'll be forgiving I suppose
           builder.insert(sel.anchor, strs.join(''))
         } else {
           builder.insert(sel.active, strs.join(''))
@@ -68,19 +71,6 @@ export function insertTypeHandler(helixState: HelixState, char: string): void {
     console.error(error);
   }
 }
-export function rawTypeHandler(helixState: HelixState, char: string): void {
-  console.log("raw " + char)
-  const editor = vscode.window.activeTextEditor;
-  if (!editor) return;
-
-  helixState.keysPressed.push(char);
-
-  try {
-    handleInput(helixState)
-  } catch (error) {
-    console.error(error);
-  }
-}
 export function searchTypeHandler(helixState: HelixState, char: string): void {
   console.log("search " + char)
   const editor = vscode.window.activeTextEditor;
@@ -88,11 +78,16 @@ export function searchTypeHandler(helixState: HelixState, char: string): void {
 
   // Bindings in search mode are an odd idea but it is how we avoid hardcoded rules for escape and backspace
   helixState.keysPressed.push(char);
+  const str = inputTools.literalizeChord(helixState.keysPressed).join('')
 
   if (tryConsumeChord(helixState) === ChordConsumeResult.MATCH) {
     return
   } else {
-    helixState.searchState.addChar(helixState, char);
+    try {
+      helixState.searchState.addChar(helixState, str);
+    } catch {
+      return
+    }
   }
 }
 export function tillCharTypeHandler(helixState: HelixState, char: string): void {
@@ -107,12 +102,17 @@ export function tillCharTypeHandler(helixState: HelixState, char: string): void 
   if (tryConsumeChord(helixState) === ChordConsumeResult.MATCH) {
     return
   } else if (search_str.length > 0) {
-    const motionWrapper = helixState.motionForMode;
-    if (motionWrapper) {
-      motionWrapper(helixState, editor, search_str[0]);
-      helixState.repeatLastMotion = (innerHelixState, innerEditor) => {
-        motionWrapper(innerHelixState, innerEditor, search_str[0]);
-      };
+    try {
+      const motionWrapper = helixState.motionForMode;
+      if (motionWrapper) {
+        motionWrapper(helixState, editor, search_str[0]);
+        helixState.repeatLastMotion = (innerHelixState, innerEditor) => {
+          motionWrapper(innerHelixState, innerEditor, search_str[0]);
+        };
+      }
+    } catch (error) {
+      console.error(error);
+      ModeEnterFuncs[Mode.Normal](helixState);
     }
 
     ModeEnterFuncs[Mode.Normal](helixState);
@@ -125,6 +125,12 @@ export function execOrAbortTypeHandler(helixState: HelixState, char: string): vo
   console.log("abortable " + char)
   const editor = vscode.window.activeTextEditor;
   if (!editor) return;
+
+  // Handle number prefixes
+  if (/[0-9]/.test(char) && helixState.keysPressed.length === 0) {
+    helixState.numbersPressed.push(char);
+    return;
+  }
 
   // Bindings in search mode are an odd idea but it is how we avoid hardcoded rules for escape and backspace
   helixState.keysPressed.push(char);
@@ -201,16 +207,10 @@ export function surroundAddTypeHandler(helixState: HelixState, char: string): vo
     editor.edit((editBuilder) => {
       // Add char to both ends of each selection
       editor.selections.forEach((selection) => {
-        const start = selection.start;
-        let end = undefined;
-        if (selection.isEmpty) {
-          end = new vscode.Position(selection.end.line, selection.end.character + 1);
-        } else {
-          end = selection.end;
-        }
+        const helixSelection = vscodeToVimVisualSelection(editor.document, selection, Direction.Auto)
 
-        editBuilder.insert(start, startChar);
-        editBuilder.insert(end, endChar);
+        editBuilder.insert(helixSelection.start, startChar);
+        editBuilder.insert(helixSelection.end, endChar);
       });
     });
 

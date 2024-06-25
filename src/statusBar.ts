@@ -9,6 +9,8 @@ class StatusBarImpl implements vscode.Disposable {
   private previousMode: Mode | undefined = undefined;
   private showingDefaultMessage = true;
   private themeBackgroundColor = new vscode.ThemeColor('statusBarItem.warningBackground');
+  // TODO: Maybe use our own color for this. For now this is all I could find that actually changed the color
+  private vscodeModeBackgroundColor = new vscode.ThemeColor('statusBarItem.errorBackground');
 
   public lastMessageTime: Date | undefined;
 
@@ -88,6 +90,11 @@ class StatusBarImpl implements vscode.Disposable {
         return ':';
       case Mode.View:
         return 'VIEW';
+      case Mode.Match:
+        return 'MATCH';
+      case Mode.VSCode:
+        this.statusBarItem.backgroundColor = this.vscodeModeBackgroundColor;
+        return 'VSCODE';
       default:
         return '';
     }

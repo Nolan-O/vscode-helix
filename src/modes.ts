@@ -33,17 +33,12 @@ export enum Mode {
   // A special-ish mode for gathering input, see match replace/add for example
   // any mode can set this mode to unbind its sub-bindings without changing a type handler
   InputGathering = "14",
+
+  // Functionally disables helix
+  VSCode = "15",
 }
 
 function enterInsertMode(helixState: HelixState, before = true): void {
-  // To fix https://github.com/jasonwilliams/vscode-helix/issues/14 we should clear selections on entering insert mode
-  // Helix doesn't clear selections on insert but doesn't overwrite the selection either, so our best option is to just clear them
-  const editor = helixState.editorState.activeEditor!;
-  editor.selections = editor.selections.map((selection) => {
-    const position = before ? selection.anchor : selection.active;
-    return new vscode.Selection(position, position);
-  });
-
   helixState.mode = Mode.Insert;
   setTypeSubscription(helixState, insertTypeHandler);
   helixState.commandLine.setText('', helixState);
@@ -116,8 +111,15 @@ function enterMatchMode(helixState: HelixState): void {
   helixState.commandLine.setText('', helixState);
 }
 
-function enterInputGatheringMode(helixState: HelixState): void {
+function enterVSCodeMode(helixState: HelixState): void {
+  helixState.mode = Mode.VSCode;
+  removeTypeSubscription(helixState);
+  helixState.commandLine.setText('', helixState);
+}
+
+function enterInputGatheringMode(helixState: HelixState, subscription: (helixState: HelixState, char: string) => void): void {
   helixState.mode = Mode.InputGathering;
+  setTypeSubscription(helixState, subscription);
 }
 
 type ModeEnterFuncs = {
@@ -133,6 +135,12 @@ function enterModeCommon(mode: Mode, modeEnterFunc: (helixState: HelixState, ...
     for (const key in bindingContextVars[mode]) {
       vscode.commands.executeCommand('setContext', key, true);
       console.log(key)
+    }
+
+    if (mode == Mode.VSCode) {
+      vscode.commands.executeCommand('setContext', 'hxEnabled', false);
+    } else {
+      vscode.commands.executeCommand('setContext', 'hxEnabled', true);
     }
 
     modeEnterFunc(helixState, ...args)
@@ -153,6 +161,7 @@ export const ModeEnterFuncs: ModeEnterFuncs = {
   [Mode.Replace]: enterModeCommon(Mode.Replace, enterReplaceMode),
   [Mode.Match]: enterModeCommon(Mode.Match, enterMatchMode),
   [Mode.InputGathering]: enterModeCommon(Mode.InputGathering, enterInputGatheringMode),
+  [Mode.VSCode]: enterModeCommon(Mode.VSCode, enterVSCodeMode),
   [Mode.Occurrence]: () => { },
   [Mode.CommandlineInProgress]: () => { },
 }
@@ -175,11 +184,9 @@ export function setPreviousMode(helixState: HelixState) {
 }
 
 export function setModeCursorStyle(mode: Mode, editor: vscode.TextEditor): void {
-  if (mode === Mode.Insert || mode === Mode.Occurrence || mode === Mode.Disabled) {
+  if (mode === Mode.Insert || mode === Mode.Occurrence || mode === Mode.Disabled || mode == Mode.VSCode) {
     editor.options.cursorStyle = vscode.TextEditorCursorStyle.Line;
-  } else if (mode === Mode.Normal) {
-    editor.options.cursorStyle = vscode.TextEditorCursorStyle.Block;
-  } else if (mode === Mode.Visual || mode === Mode.VisualLine) {
+  } else {
     editor.options.cursorStyle = vscode.TextEditorCursorStyle.Block;
   }
 }

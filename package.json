@@ -52,712 +52,712 @@
       {
         "key": "pageup",
         "command": "extension.helixKeymap.pageup",
-        "when": "editorTextFocus"
+        "when": "editorTextFocus && hxEnabled"
       },
       {
         "key": "pagedown",
         "command": "extension.helixKeymap.pagedown",
-        "when": "editorTextFocus"
+        "when": "editorTextFocus && hxEnabled"
       },
       {
         "key": "home",
         "command": "extension.helixKeymap.home",
-        "when": "editorTextFocus"
+        "when": "editorTextFocus && hxEnabled"
       },
       {
         "key": "end",
         "command": "extension.helixKeymap.end",
-        "when": "editorTextFocus"
+        "when": "editorTextFocus && hxEnabled"
       },
       {
         "key": "escape",
         "command": "extension.helixKeymap.escape",
-        "when": "editorTextFocus"
+        "when": "editorTextFocus && hxEnabled"
       },
       {
         "key": "backspace",
         "command": "extension.helixKeymap.backspace",
-        "when": "editorTextFocus"
+        "when": "editorTextFocus && hxEnabled"
       },
       {
         "key": "ctrl+a",
         "command": "extension.helixKeymap.ctrl_a",
-        "when": "editorTextFocus && Ca"
+        "when": "editorTextFocus && hxEnabled && Ca"
       },
       {
         "key": "ctrl+b",
         "command": "extension.helixKeymap.ctrl_b",
-        "when": "editorTextFocus && Cb"
+        "when": "editorTextFocus && hxEnabled && Cb"
       },
       {
         "key": "ctrl+c",
         "command": "extension.helixKeymap.ctrl_c",
-        "when": "editorTextFocus && Cc"
+        "when": "editorTextFocus && hxEnabled && Cc"
       },
       {
         "key": "ctrl+d",
         "command": "extension.helixKeymap.ctrl_d",
-        "when": "editorTextFocus && Cd"
+        "when": "editorTextFocus && hxEnabled && Cd"
       },
       {
         "key": "ctrl+e",
         "command": "extension.helixKeymap.ctrl_e",
-        "when": "editorTextFocus && Ce"
+        "when": "editorTextFocus && hxEnabled && Ce"
       },
       {
         "key": "ctrl+f",
         "command": "extension.helixKeymap.ctrl_f",
-        "when": "editorTextFocus && Cf"
+        "when": "editorTextFocus && hxEnabled && Cf"
       },
       {
         "key": "ctrl+g",
         "command": "extension.helixKeymap.ctrl_g",
-        "when": "editorTextFocus && Cg"
+        "when": "editorTextFocus && hxEnabled && Cg"
       },
       {
         "key": "ctrl+h",
         "command": "extension.helixKeymap.ctrl_h",
-        "when": "editorTextFocus && Ch"
+        "when": "editorTextFocus && hxEnabled && Ch"
       },
       {
         "key": "ctrl+i",
         "command": "extension.helixKeymap.ctrl_i",
-        "when": "editorTextFocus && Ci"
+        "when": "editorTextFocus && hxEnabled && Ci"
       },
       {
         "key": "ctrl+j",
         "command": "extension.helixKeymap.ctrl_j",
-        "when": "editorTextFocus && Cj"
+        "when": "editorTextFocus && hxEnabled && Cj"
       },
       {
         "key": "ctrl+k",
         "command": "extension.helixKeymap.ctrl_k",
-        "when": "editorTextFocus && Ck"
+        "when": "editorTextFocus && hxEnabled && Ck"
       },
       {
         "key": "ctrl+l",
         "command": "extension.helixKeymap.ctrl_l",
-        "when": "editorTextFocus && Cl"
+        "when": "editorTextFocus && hxEnabled && Cl"
       },
       {
         "key": "ctrl+m",
         "command": "extension.helixKeymap.ctrl_m",
-        "when": "editorTextFocus && Cm"
+        "when": "editorTextFocus && hxEnabled && Cm"
       },
       {
         "key": "ctrl+n",
         "command": "extension.helixKeymap.ctrl_n",
-        "when": "editorTextFocus && Cn"
+        "when": "editorTextFocus && hxEnabled && Cn"
       },
       {
         "key": "ctrl+o",
         "command": "extension.helixKeymap.ctrl_o",
-        "when": "editorTextFocus && Co"
+        "when": "editorTextFocus && hxEnabled && Co"
       },
       {
         "key": "ctrl+p",
         "command": "extension.helixKeymap.ctrl_p",
-        "when": "editorTextFocus && Cp"
+        "when": "editorTextFocus && hxEnabled && Cp"
       },
       {
         "key": "ctrl+q",
         "command": "extension.helixKeymap.ctrl_q",
-        "when": "editorTextFocus && Cq"
+        "when": "editorTextFocus && hxEnabled && Cq"
       },
       {
         "key": "ctrl+r",
         "command": "extension.helixKeymap.ctrl_r",
-        "when": "editorTextFocus && Cr"
+        "when": "editorTextFocus && hxEnabled && Cr"
       },
       {
         "key": "ctrl+s",
         "command": "extension.helixKeymap.ctrl_s",
-        "when": "editorTextFocus && Cs"
+        "when": "editorTextFocus && hxEnabled && Cs"
       },
       {
         "key": "ctrl+t",
         "command": "extension.helixKeymap.ctrl_t",
-        "when": "editorTextFocus && Ct"
+        "when": "editorTextFocus && hxEnabled && Ct"
       },
       {
         "key": "ctrl+u",
         "command": "extension.helixKeymap.ctrl_u",
-        "when": "editorTextFocus && Cu"
+        "when": "editorTextFocus && hxEnabled && Cu"
       },
       {
         "key": "ctrl+v",
         "command": "extension.helixKeymap.ctrl_v",
-        "when": "editorTextFocus && Cv"
+        "when": "editorTextFocus && hxEnabled && Cv"
       },
       {
         "key": "ctrl+w",
         "command": "extension.helixKeymap.ctrl_w",
-        "when": "editorTextFocus && Cw"
+        "when": "editorTextFocus && hxEnabled && Cw"
       },
       {
         "key": "ctrl+x",
         "command": "extension.helixKeymap.ctrl_x",
-        "when": "editorTextFocus && Cx"
+        "when": "editorTextFocus && hxEnabled && Cx"
       },
       {
         "key": "ctrl+y",
         "command": "extension.helixKeymap.ctrl_y",
-        "when": "editorTextFocus && Cy"
+        "when": "editorTextFocus && hxEnabled && Cy"
       },
       {
         "key": "ctrl+z",
         "command": "extension.helixKeymap.ctrl_z",
-        "when": "editorTextFocus && Cz"
+        "when": "editorTextFocus && hxEnabled && Cz"
       },
       {
         "key": "ctrl+pageup",
         "command": "extension.helixKeymap.ctrl_pageup",
-        "when": "editorTextFocus && Cpageup"
+        "when": "editorTextFocus && hxEnabled && Cpageup"
       },
       {
         "key": "ctrl+pagedown",
         "command": "extension.helixKeymap.ctrl_pagedown",
-        "when": "editorTextFocus && Cpagedown"
+        "when": "editorTextFocus && hxEnabled && Cpagedown"
       },
       {
         "key": "ctrl+home",
         "command": "extension.helixKeymap.ctrl_home",
-        "when": "editorTextFocus && Chome"
+        "when": "editorTextFocus && hxEnabled && Chome"
       },
       {
         "key": "ctrl+end",
         "command": "extension.helixKeymap.ctrl_end",
-        "when": "editorTextFocus && Cend"
+        "when": "editorTextFocus && hxEnabled && Cend"
       },
       {
         "key": "ctrl+escape",
         "command": "extension.helixKeymap.ctrl_escape",
-        "when": "editorTextFocus && Cescape"
+        "when": "editorTextFocus && hxEnabled && Cescape"
       },
       {
         "key": "ctrl+backspace",
         "command": "extension.helixKeymap.ctrl_backspace",
-        "when": "editorTextFocus && Cbackspace"
+        "when": "editorTextFocus && hxEnabled && Cbackspace"
       },
       {
         "key": "ctrl+[",
         "command": "extension.helixKeymap.ctrl_[",
-        "when": "editorTextFocus && C["
+        "when": "editorTextFocus && hxEnabled && C["
       },
       {
         "key": "ctrl+]",
         "command": "extension.helixKeymap.ctrl_]",
-        "when": "editorTextFocus && C]"
+        "when": "editorTextFocus && hxEnabled && C]"
       },
       {
-        "key": "ctrl+backtick",
+        "key": "ctrl+`",
         "command": "extension.helixKeymap.ctrl_backtick",
-        "when": "editorTextFocus && Cbacktick"
+        "when": "editorTextFocus && hxEnabled && Cbacktick"
       },
       {
         "key": "ctrl+;",
         "command": "extension.helixKeymap.ctrl_;",
-        "when": "editorTextFocus && C;"
+        "when": "editorTextFocus && hxEnabled && C;"
       },
       {
-        "key": "ctrl+squote",
+        "key": "ctrl+'",
         "command": "extension.helixKeymap.ctrl_squote",
-        "when": "editorTextFocus && Csquote"
+        "when": "editorTextFocus && hxEnabled && Csquote"
       },
       {
         "key": "ctrl+,",
         "command": "extension.helixKeymap.ctrl_,",
-        "when": "editorTextFocus && C,"
+        "when": "editorTextFocus && hxEnabled && C,"
       },
       {
         "key": "ctrl+.",
         "command": "extension.helixKeymap.ctrl_.",
-        "when": "editorTextFocus && C."
+        "when": "editorTextFocus && hxEnabled && C."
       },
       {
         "key": "ctrl+/",
         "command": "extension.helixKeymap.ctrl_/",
-        "when": "editorTextFocus && C/"
+        "when": "editorTextFocus && hxEnabled && C/"
       },
       {
         "key": "ctrl+\\",
-        "command": "extension.helixKeymap.ctrl_\\",
-        "when": "editorTextFocus && C\\"
+        "command": "extension.helixKeymap.ctrl_bslash",
+        "when": "editorTextFocus && hxEnabled && Cbslash"
       },
       {
-        "key": "ctrl+eq",
+        "key": "ctrl+=",
         "command": "extension.helixKeymap.ctrl_eq",
-        "when": "editorTextFocus && Ceq"
+        "when": "editorTextFocus && hxEnabled && Ceq"
       },
       {
         "key": "ctrl+-",
         "command": "extension.helixKeymap.ctrl_-",
-        "when": "editorTextFocus && C-"
+        "when": "editorTextFocus && hxEnabled && C-"
       },
       {
         "key": "ctrl+1",
         "command": "extension.helixKeymap.ctrl_1",
-        "when": "editorTextFocus && C1"
+        "when": "editorTextFocus && hxEnabled && C1"
       },
       {
         "key": "ctrl+2",
         "command": "extension.helixKeymap.ctrl_2",
-        "when": "editorTextFocus && C2"
+        "when": "editorTextFocus && hxEnabled && C2"
       },
       {
         "key": "ctrl+3",
         "command": "extension.helixKeymap.ctrl_3",
-        "when": "editorTextFocus && C3"
+        "when": "editorTextFocus && hxEnabled && C3"
       },
       {
         "key": "ctrl+4",
         "command": "extension.helixKeymap.ctrl_4",
-        "when": "editorTextFocus && C4"
+        "when": "editorTextFocus && hxEnabled && C4"
       },
       {
         "key": "ctrl+5",
         "command": "extension.helixKeymap.ctrl_5",
-        "when": "editorTextFocus && C5"
+        "when": "editorTextFocus && hxEnabled && C5"
       },
       {
         "key": "ctrl+6",
         "command": "extension.helixKeymap.ctrl_6",
-        "when": "editorTextFocus && C6"
+        "when": "editorTextFocus && hxEnabled && C6"
       },
       {
         "key": "ctrl+7",
         "command": "extension.helixKeymap.ctrl_7",
-        "when": "editorTextFocus && C7"
+        "when": "editorTextFocus && hxEnabled && C7"
       },
       {
         "key": "ctrl+8",
         "command": "extension.helixKeymap.ctrl_8",
-        "when": "editorTextFocus && C8"
+        "when": "editorTextFocus && hxEnabled && C8"
       },
       {
         "key": "ctrl+9",
         "command": "extension.helixKeymap.ctrl_9",
-        "when": "editorTextFocus && C9"
+        "when": "editorTextFocus && hxEnabled && C9"
       },
       {
         "key": "ctrl+0",
         "command": "extension.helixKeymap.ctrl_0",
-        "when": "editorTextFocus && C0"
+        "when": "editorTextFocus && hxEnabled && C0"
       },
       {
         "key": "alt+a",
         "command": "extension.helixKeymap.alt_a",
-        "when": "editorTextFocus && Aa"
+        "when": "editorTextFocus && hxEnabled && Aa"
       },
       {
         "key": "alt+b",
         "command": "extension.helixKeymap.alt_b",
-        "when": "editorTextFocus && Ab"
+        "when": "editorTextFocus && hxEnabled && Ab"
       },
       {
         "key": "alt+c",
         "command": "extension.helixKeymap.alt_c",
-        "when": "editorTextFocus && Ac"
+        "when": "editorTextFocus && hxEnabled && Ac"
       },
       {
         "key": "alt+d",
         "command": "extension.helixKeymap.alt_d",
-        "when": "editorTextFocus && Ad"
+        "when": "editorTextFocus && hxEnabled && Ad"
       },
       {
         "key": "alt+e",
         "command": "extension.helixKeymap.alt_e",
-        "when": "editorTextFocus && Ae"
+        "when": "editorTextFocus && hxEnabled && Ae"
       },
       {
         "key": "alt+f",
         "command": "extension.helixKeymap.alt_f",
-        "when": "editorTextFocus && Af"
+        "when": "editorTextFocus && hxEnabled && Af"
       },
       {
         "key": "alt+g",
         "command": "extension.helixKeymap.alt_g",
-        "when": "editorTextFocus && Ag"
+        "when": "editorTextFocus && hxEnabled && Ag"
       },
       {
         "key": "alt+h",
         "command": "extension.helixKeymap.alt_h",
-        "when": "editorTextFocus && Ah"
+        "when": "editorTextFocus && hxEnabled && Ah"
       },
       {
         "key": "alt+i",
         "command": "extension.helixKeymap.alt_i",
-        "when": "editorTextFocus && Ai"
+        "when": "editorTextFocus && hxEnabled && Ai"
       },
       {
         "key": "alt+j",
         "command": "extension.helixKeymap.alt_j",
-        "when": "editorTextFocus && Aj"
+        "when": "editorTextFocus && hxEnabled && Aj"
       },
       {
         "key": "alt+k",
         "command": "extension.helixKeymap.alt_k",
-        "when": "editorTextFocus && Ak"
+        "when": "editorTextFocus && hxEnabled && Ak"
       },
       {
         "key": "alt+l",
         "command": "extension.helixKeymap.alt_l",
-        "when": "editorTextFocus && Al"
+        "when": "editorTextFocus && hxEnabled && Al"
       },
       {
         "key": "alt+m",
         "command": "extension.helixKeymap.alt_m",
-        "when": "editorTextFocus && Am"
+        "when": "editorTextFocus && hxEnabled && Am"
       },
       {
         "key": "alt+n",
         "command": "extension.helixKeymap.alt_n",
-        "when": "editorTextFocus && An"
+        "when": "editorTextFocus && hxEnabled && An"
       },
       {
         "key": "alt+o",
         "command": "extension.helixKeymap.alt_o",
-        "when": "editorTextFocus && Ao"
+        "when": "editorTextFocus && hxEnabled && Ao"
       },
       {
         "key": "alt+p",
         "command": "extension.helixKeymap.alt_p",
-        "when": "editorTextFocus && Ap"
+        "when": "editorTextFocus && hxEnabled && Ap"
       },
       {
         "key": "alt+q",
         "command": "extension.helixKeymap.alt_q",
-        "when": "editorTextFocus && Aq"
+        "when": "editorTextFocus && hxEnabled && Aq"
       },
       {
         "key": "alt+r",
         "command": "extension.helixKeymap.alt_r",
-        "when": "editorTextFocus && Ar"
+        "when": "editorTextFocus && hxEnabled && Ar"
       },
       {
         "key": "alt+s",
         "command": "extension.helixKeymap.alt_s",
-        "when": "editorTextFocus && As"
+        "when": "editorTextFocus && hxEnabled && As"
       },
       {
         "key": "alt+t",
         "command": "extension.helixKeymap.alt_t",
-        "when": "editorTextFocus && At"
+        "when": "editorTextFocus && hxEnabled && At"
       },
       {
         "key": "alt+u",
         "command": "extension.helixKeymap.alt_u",
-        "when": "editorTextFocus && Au"
+        "when": "editorTextFocus && hxEnabled && Au"
       },
       {
         "key": "alt+v",
         "command": "extension.helixKeymap.alt_v",
-        "when": "editorTextFocus && Av"
+        "when": "editorTextFocus && hxEnabled && Av"
       },
       {
         "key": "alt+w",
         "command": "extension.helixKeymap.alt_w",
-        "when": "editorTextFocus && Aw"
+        "when": "editorTextFocus && hxEnabled && Aw"
       },
       {
         "key": "alt+x",
         "command": "extension.helixKeymap.alt_x",
-        "when": "editorTextFocus && Ax"
+        "when": "editorTextFocus && hxEnabled && Ax"
       },
       {
         "key": "alt+y",
         "command": "extension.helixKeymap.alt_y",
-        "when": "editorTextFocus && Ay"
+        "when": "editorTextFocus && hxEnabled && Ay"
       },
       {
         "key": "alt+z",
         "command": "extension.helixKeymap.alt_z",
-        "when": "editorTextFocus && Az"
+        "when": "editorTextFocus && hxEnabled && Az"
       },
       {
         "key": "alt+pageup",
         "command": "extension.helixKeymap.alt_pageup",
-        "when": "editorTextFocus && Apageup"
+        "when": "editorTextFocus && hxEnabled && Apageup"
       },
       {
         "key": "alt+pagedown",
         "command": "extension.helixKeymap.alt_pagedown",
-        "when": "editorTextFocus && Apagedown"
+        "when": "editorTextFocus && hxEnabled && Apagedown"
       },
       {
         "key": "alt+home",
         "command": "extension.helixKeymap.alt_home",
-        "when": "editorTextFocus && Ahome"
+        "when": "editorTextFocus && hxEnabled && Ahome"
       },
       {
         "key": "alt+end",
         "command": "extension.helixKeymap.alt_end",
-        "when": "editorTextFocus && Aend"
+        "when": "editorTextFocus && hxEnabled && Aend"
       },
       {
         "key": "alt+escape",
         "command": "extension.helixKeymap.alt_escape",
-        "when": "editorTextFocus && Aescape"
+        "when": "editorTextFocus && hxEnabled && Aescape"
       },
       {
         "key": "alt+backspace",
         "command": "extension.helixKeymap.alt_backspace",
-        "when": "editorTextFocus && Abackspace"
+        "when": "editorTextFocus && hxEnabled && Abackspace"
       },
       {
         "key": "alt+[",
         "command": "extension.helixKeymap.alt_[",
-        "when": "editorTextFocus && A["
+        "when": "editorTextFocus && hxEnabled && A["
       },
       {
         "key": "alt+]",
         "command": "extension.helixKeymap.alt_]",
-        "when": "editorTextFocus && A]"
+        "when": "editorTextFocus && hxEnabled && A]"
       },
       {
-        "key": "alt+backtick",
+        "key": "alt+`",
         "command": "extension.helixKeymap.alt_backtick",
-        "when": "editorTextFocus && Abacktick"
+        "when": "editorTextFocus && hxEnabled && Abacktick"
       },
       {
         "key": "alt+;",
         "command": "extension.helixKeymap.alt_;",
-        "when": "editorTextFocus && A;"
+        "when": "editorTextFocus && hxEnabled && A;"
       },
       {
-        "key": "alt+squote",
+        "key": "alt+'",
         "command": "extension.helixKeymap.alt_squote",
-        "when": "editorTextFocus && Asquote"
+        "when": "editorTextFocus && hxEnabled && Asquote"
       },
       {
         "key": "alt+,",
         "command": "extension.helixKeymap.alt_,",
-        "when": "editorTextFocus && A,"
+        "when": "editorTextFocus && hxEnabled && A,"
       },
       {
         "key": "alt+.",
         "command": "extension.helixKeymap.alt_.",
-        "when": "editorTextFocus && A."
+        "when": "editorTextFocus && hxEnabled && A."
       },
       {
         "key": "alt+/",
         "command": "extension.helixKeymap.alt_/",
-        "when": "editorTextFocus && A/"
+        "when": "editorTextFocus && hxEnabled && A/"
       },
       {
         "key": "alt+\\",
-        "command": "extension.helixKeymap.alt_\\",
-        "when": "editorTextFocus && A\\"
+        "command": "extension.helixKeymap.alt_bslash",
+        "when": "editorTextFocus && hxEnabled && Abslash"
       },
       {
-        "key": "alt+eq",
+        "key": "alt+=",
         "command": "extension.helixKeymap.alt_eq",
-        "when": "editorTextFocus && Aeq"
+        "when": "editorTextFocus && hxEnabled && Aeq"
       },
       {
         "key": "alt+-",
         "command": "extension.helixKeymap.alt_-",
-        "when": "editorTextFocus && A-"
+        "when": "editorTextFocus && hxEnabled && A-"
       },
       {
         "key": "alt+1",
         "command": "extension.helixKeymap.alt_1",
-        "when": "editorTextFocus && A1"
+        "when": "editorTextFocus && hxEnabled && A1"
       },
       {
         "key": "alt+2",
         "command": "extension.helixKeymap.alt_2",
-        "when": "editorTextFocus && A2"
+        "when": "editorTextFocus && hxEnabled && A2"
       },
       {
         "key": "alt+3",
         "command": "extension.helixKeymap.alt_3",
-        "when": "editorTextFocus && A3"
+        "when": "editorTextFocus && hxEnabled && A3"
       },
       {
         "key": "alt+4",
         "command": "extension.helixKeymap.alt_4",
-        "when": "editorTextFocus && A4"
+        "when": "editorTextFocus && hxEnabled && A4"
       },
       {
         "key": "alt+5",
         "command": "extension.helixKeymap.alt_5",
-        "when": "editorTextFocus && A5"
+        "when": "editorTextFocus && hxEnabled && A5"
       },
       {
         "key": "alt+6",
         "command": "extension.helixKeymap.alt_6",
-        "when": "editorTextFocus && A6"
+        "when": "editorTextFocus && hxEnabled && A6"
       },
       {
         "key": "alt+7",
         "command": "extension.helixKeymap.alt_7",
-        "when": "editorTextFocus && A7"
+        "when": "editorTextFocus && hxEnabled && A7"
       },
       {
         "key": "alt+8",
         "command": "extension.helixKeymap.alt_8",
-        "when": "editorTextFocus && A8"
+        "when": "editorTextFocus && hxEnabled && A8"
       },
       {
         "key": "alt+9",
         "command": "extension.helixKeymap.alt_9",
-        "when": "editorTextFocus && A9"
+        "when": "editorTextFocus && hxEnabled && A9"
       },
       {
         "key": "alt+0",
         "command": "extension.helixKeymap.alt_0",
-        "when": "editorTextFocus && A0"
+        "when": "editorTextFocus && hxEnabled && A0"
       },
       {
         "key": "shift+a",
         "command": "extension.helixKeymap.shift_a",
-        "when": "editorTextFocus && Sa"
+        "when": "editorTextFocus && hxEnabled && Sa"
       },
       {
         "key": "shift+b",
         "command": "extension.helixKeymap.shift_b",
-        "when": "editorTextFocus && Sb"
+        "when": "editorTextFocus && hxEnabled && Sb"
       },
       {
         "key": "shift+c",
         "command": "extension.helixKeymap.shift_c",
-        "when": "editorTextFocus && Sc"
+        "when": "editorTextFocus && hxEnabled && Sc"
       },
       {
         "key": "shift+d",
         "command": "extension.helixKeymap.shift_d",
-        "when": "editorTextFocus && Sd"
+        "when": "editorTextFocus && hxEnabled && Sd"
       },
       {
         "key": "shift+e",
         "command": "extension.helixKeymap.shift_e",
-        "when": "editorTextFocus && Se"
+        "when": "editorTextFocus && hxEnabled && Se"
       },
       {
         "key": "shift+f",
         "command": "extension.helixKeymap.shift_f",
-        "when": "editorTextFocus && Sf"
+        "when": "editorTextFocus && hxEnabled && Sf"
       },
       {
         "key": "shift+g",
         "command": "extension.helixKeymap.shift_g",
-        "when": "editorTextFocus && Sg"
+        "when": "editorTextFocus && hxEnabled && Sg"
       },
       {
         "key": "shift+h",
         "command": "extension.helixKeymap.shift_h",
-        "when": "editorTextFocus && Sh"
+        "when": "editorTextFocus && hxEnabled && Sh"
       },
       {
         "key": "shift+i",
         "command": "extension.helixKeymap.shift_i",
-        "when": "editorTextFocus && Si"
+        "when": "editorTextFocus && hxEnabled && Si"
       },
       {
         "key": "shift+j",
         "command": "extension.helixKeymap.shift_j",
-        "when": "editorTextFocus && Sj"
+        "when": "editorTextFocus && hxEnabled && Sj"
       },
       {
         "key": "shift+k",
         "command": "extension.helixKeymap.shift_k",
-        "when": "editorTextFocus && Sk"
+        "when": "editorTextFocus && hxEnabled && Sk"
       },
       {
         "key": "shift+l",
         "command": "extension.helixKeymap.shift_l",
-        "when": "editorTextFocus && Sl"
+        "when": "editorTextFocus && hxEnabled && Sl"
       },
       {
         "key": "shift+m",
         "command": "extension.helixKeymap.shift_m",
-        "when": "editorTextFocus && Sm"
+        "when": "editorTextFocus && hxEnabled && Sm"
       },
       {
         "key": "shift+n",
         "command": "extension.helixKeymap.shift_n",
-        "when": "editorTextFocus && Sn"
+        "when": "editorTextFocus && hxEnabled && Sn"
       },
       {
         "key": "shift+o",
         "command": "extension.helixKeymap.shift_o",
-        "when": "editorTextFocus && So"
+        "when": "editorTextFocus && hxEnabled && So"
       },
       {
         "key": "shift+p",
         "command": "extension.helixKeymap.shift_p",
-        "when": "editorTextFocus && Sp"
+        "when": "editorTextFocus && hxEnabled && Sp"
       },
       {
         "key": "shift+q",
         "command": "extension.helixKeymap.shift_q",
-        "when": "editorTextFocus && Sq"
+        "when": "editorTextFocus && hxEnabled && Sq"
       },
       {
         "key": "shift+r",
         "command": "extension.helixKeymap.shift_r",
-        "when": "editorTextFocus && Sr"
+        "when": "editorTextFocus && hxEnabled && Sr"
       },
       {
         "key": "shift+s",
         "command": "extension.helixKeymap.shift_s",
-        "when": "editorTextFocus && Ss"
+        "when": "editorTextFocus && hxEnabled && Ss"
       },
       {
         "key": "shift+t",
         "command": "extension.helixKeymap.shift_t",
-        "when": "editorTextFocus && St"
+        "when": "editorTextFocus && hxEnabled && St"
       },
       {
         "key": "shift+u",
         "command": "extension.helixKeymap.shift_u",
-        "when": "editorTextFocus && Su"
+        "when": "editorTextFocus && hxEnabled && Su"
       },
       {
         "key": "shift+v",
         "command": "extension.helixKeymap.shift_v",
-        "when": "editorTextFocus && Sv"
+        "when": "editorTextFocus && hxEnabled && Sv"
       },
       {
         "key": "shift+w",
         "command": "extension.helixKeymap.shift_w",
-        "when": "editorTextFocus && Sw"
+        "when": "editorTextFocus && hxEnabled && Sw"
       },
       {
         "key": "shift+x",
         "command": "extension.helixKeymap.shift_x",
-        "when": "editorTextFocus && Sx"
+        "when": "editorTextFocus && hxEnabled && Sx"
       },
       {
         "key": "shift+y",
         "command": "extension.helixKeymap.shift_y",
-        "when": "editorTextFocus && Sy"
+        "when": "editorTextFocus && hxEnabled && Sy"
       },
       {
         "key": "shift+z",
         "command": "extension.helixKeymap.shift_z",
-        "when": "editorTextFocus && Sz"
+        "when": "editorTextFocus && hxEnabled && Sz"
       },
       {
         "key": "shift+pageup",
         "command": "extension.helixKeymap.shift_pageup",
-        "when": "editorTextFocus && Spageup"
+        "when": "editorTextFocus && hxEnabled && Spageup"
       },
       {
         "key": "shift+pagedown",
         "command": "extension.helixKeymap.shift_pagedown",
-        "when": "editorTextFocus && Spagedown"
+        "when": "editorTextFocus && hxEnabled && Spagedown"
       },
       {
         "key": "shift+home",
         "command": "extension.helixKeymap.shift_home",
-        "when": "editorTextFocus && Shome"
+        "when": "editorTextFocus && hxEnabled && Shome"
       },
       {
         "key": "shift+end",
         "command": "extension.helixKeymap.shift_end",
-        "when": "editorTextFocus && Send"
+        "when": "editorTextFocus && hxEnabled && Send"
       },
       {
         "key": "shift+escape",
@@ -767,1172 +767,1172 @@
       {
         "key": "shift+backspace",
         "command": "extension.helixKeymap.shift_backspace",
-        "when": "editorTextFocus && Sbackspace"
+        "when": "editorTextFocus && hxEnabled && Sbackspace"
       },
       {
         "key": "shift+[",
         "command": "extension.helixKeymap.shift_[",
-        "when": "editorTextFocus && S["
+        "when": "editorTextFocus && hxEnabled && S["
       },
       {
         "key": "shift+]",
         "command": "extension.helixKeymap.shift_]",
-        "when": "editorTextFocus && S]"
+        "when": "editorTextFocus && hxEnabled && S]"
       },
       {
-        "key": "shift+backtick",
+        "key": "shift+`",
         "command": "extension.helixKeymap.shift_backtick",
-        "when": "editorTextFocus && Sbacktick"
+        "when": "editorTextFocus && hxEnabled && Sbacktick"
       },
       {
         "key": "shift+;",
         "command": "extension.helixKeymap.shift_;",
-        "when": "editorTextFocus && S;"
+        "when": "editorTextFocus && hxEnabled && S;"
       },
       {
-        "key": "shift+squote",
+        "key": "shift+'",
         "command": "extension.helixKeymap.shift_squote",
-        "when": "editorTextFocus && Ssquote"
+        "when": "editorTextFocus && hxEnabled && Ssquote"
       },
       {
         "key": "shift+,",
         "command": "extension.helixKeymap.shift_,",
-        "when": "editorTextFocus && S,"
+        "when": "editorTextFocus && hxEnabled && S,"
       },
       {
         "key": "shift+.",
         "command": "extension.helixKeymap.shift_.",
-        "when": "editorTextFocus && S."
+        "when": "editorTextFocus && hxEnabled && S."
       },
       {
         "key": "shift+/",
         "command": "extension.helixKeymap.shift_/",
-        "when": "editorTextFocus && S/"
+        "when": "editorTextFocus && hxEnabled && S/"
       },
       {
         "key": "shift+\\",
-        "command": "extension.helixKeymap.shift_\\",
-        "when": "editorTextFocus && S\\"
+        "command": "extension.helixKeymap.shift_bslash",
+        "when": "editorTextFocus && hxEnabled && Sbslash"
       },
       {
-        "key": "shift+eq",
+        "key": "shift+=",
         "command": "extension.helixKeymap.shift_eq",
-        "when": "editorTextFocus && Seq"
+        "when": "editorTextFocus && hxEnabled && Seq"
       },
       {
         "key": "shift+-",
         "command": "extension.helixKeymap.shift_-",
-        "when": "editorTextFocus && S-"
+        "when": "editorTextFocus && hxEnabled && S-"
       },
       {
         "key": "shift+1",
         "command": "extension.helixKeymap.shift_1",
-        "when": "editorTextFocus && S1"
+        "when": "editorTextFocus && hxEnabled && S1"
       },
       {
         "key": "shift+2",
         "command": "extension.helixKeymap.shift_2",
-        "when": "editorTextFocus && S2"
+        "when": "editorTextFocus && hxEnabled && S2"
       },
       {
         "key": "shift+3",
         "command": "extension.helixKeymap.shift_3",
-        "when": "editorTextFocus && S3"
+        "when": "editorTextFocus && hxEnabled && S3"
       },
       {
         "key": "shift+4",
         "command": "extension.helixKeymap.shift_4",
-        "when": "editorTextFocus && S4"
+        "when": "editorTextFocus && hxEnabled && S4"
       },
       {
         "key": "shift+5",
         "command": "extension.helixKeymap.shift_5",
-        "when": "editorTextFocus && S5"
+        "when": "editorTextFocus && hxEnabled && S5"
       },
       {
         "key": "shift+6",
         "command": "extension.helixKeymap.shift_6",
-        "when": "editorTextFocus && S6"
+        "when": "editorTextFocus && hxEnabled && S6"
       },
       {
         "key": "shift+7",
         "command": "extension.helixKeymap.shift_7",
-        "when": "editorTextFocus && S7"
+        "when": "editorTextFocus && hxEnabled && S7"
       },
       {
         "key": "shift+8",
         "command": "extension.helixKeymap.shift_8",
-        "when": "editorTextFocus && S8"
+        "when": "editorTextFocus && hxEnabled && S8"
       },
       {
         "key": "shift+9",
         "command": "extension.helixKeymap.shift_9",
-        "when": "editorTextFocus && S9"
+        "when": "editorTextFocus && hxEnabled && S9"
       },
       {
         "key": "shift+0",
         "command": "extension.helixKeymap.shift_0",
-        "when": "editorTextFocus && S0"
+        "when": "editorTextFocus && hxEnabled && S0"
       },
       {
         "key": "ctrl+alt+a",
         "command": "extension.helixKeymap.ctrl_alt_a",
-        "when": "editorTextFocus && CAa"
+        "when": "editorTextFocus && hxEnabled && CAa"
       },
       {
         "key": "ctrl+alt+b",
         "command": "extension.helixKeymap.ctrl_alt_b",
-        "when": "editorTextFocus && CAb"
+        "when": "editorTextFocus && hxEnabled && CAb"
       },
       {
         "key": "ctrl+alt+c",
         "command": "extension.helixKeymap.ctrl_alt_c",
-        "when": "editorTextFocus && CAc"
+        "when": "editorTextFocus && hxEnabled && CAc"
       },
       {
         "key": "ctrl+alt+d",
         "command": "extension.helixKeymap.ctrl_alt_d",
-        "when": "editorTextFocus && CAd"
+        "when": "editorTextFocus && hxEnabled && CAd"
       },
       {
         "key": "ctrl+alt+e",
         "command": "extension.helixKeymap.ctrl_alt_e",
-        "when": "editorTextFocus && CAe"
+        "when": "editorTextFocus && hxEnabled && CAe"
       },
       {
         "key": "ctrl+alt+f",
         "command": "extension.helixKeymap.ctrl_alt_f",
-        "when": "editorTextFocus && CAf"
+        "when": "editorTextFocus && hxEnabled && CAf"
       },
       {
         "key": "ctrl+alt+g",
         "command": "extension.helixKeymap.ctrl_alt_g",
-        "when": "editorTextFocus && CAg"
+        "when": "editorTextFocus && hxEnabled && CAg"
       },
       {
         "key": "ctrl+alt+h",
         "command": "extension.helixKeymap.ctrl_alt_h",
-        "when": "editorTextFocus && CAh"
+        "when": "editorTextFocus && hxEnabled && CAh"
       },
       {
         "key": "ctrl+alt+i",
         "command": "extension.helixKeymap.ctrl_alt_i",
-        "when": "editorTextFocus && CAi"
+        "when": "editorTextFocus && hxEnabled && CAi"
       },
       {
         "key": "ctrl+alt+j",
         "command": "extension.helixKeymap.ctrl_alt_j",
-        "when": "editorTextFocus && CAj"
+        "when": "editorTextFocus && hxEnabled && CAj"
       },
       {
         "key": "ctrl+alt+k",
         "command": "extension.helixKeymap.ctrl_alt_k",
-        "when": "editorTextFocus && CAk"
+        "when": "editorTextFocus && hxEnabled && CAk"
       },
       {
         "key": "ctrl+alt+l",
         "command": "extension.helixKeymap.ctrl_alt_l",
-        "when": "editorTextFocus && CAl"
+        "when": "editorTextFocus && hxEnabled && CAl"
       },
       {
         "key": "ctrl+alt+m",
         "command": "extension.helixKeymap.ctrl_alt_m",
-        "when": "editorTextFocus && CAm"
+        "when": "editorTextFocus && hxEnabled && CAm"
       },
       {
         "key": "ctrl+alt+n",
         "command": "extension.helixKeymap.ctrl_alt_n",
-        "when": "editorTextFocus && CAn"
+        "when": "editorTextFocus && hxEnabled && CAn"
       },
       {
         "key": "ctrl+alt+o",
         "command": "extension.helixKeymap.ctrl_alt_o",
-        "when": "editorTextFocus && CAo"
+        "when": "editorTextFocus && hxEnabled && CAo"
       },
       {
         "key": "ctrl+alt+p",
         "command": "extension.helixKeymap.ctrl_alt_p",
-        "when": "editorTextFocus && CAp"
+        "when": "editorTextFocus && hxEnabled && CAp"
       },
       {
         "key": "ctrl+alt+q",
         "command": "extension.helixKeymap.ctrl_alt_q",
-        "when": "editorTextFocus && CAq"
+        "when": "editorTextFocus && hxEnabled && CAq"
       },
       {
         "key": "ctrl+alt+r",
         "command": "extension.helixKeymap.ctrl_alt_r",
-        "when": "editorTextFocus && CAr"
+        "when": "editorTextFocus && hxEnabled && CAr"
       },
       {
         "key": "ctrl+alt+s",
         "command": "extension.helixKeymap.ctrl_alt_s",
-        "when": "editorTextFocus && CAs"
+        "when": "editorTextFocus && hxEnabled && CAs"
       },
       {
         "key": "ctrl+alt+t",
         "command": "extension.helixKeymap.ctrl_alt_t",
-        "when": "editorTextFocus && CAt"
+        "when": "editorTextFocus && hxEnabled && CAt"
       },
       {
         "key": "ctrl+alt+u",
         "command": "extension.helixKeymap.ctrl_alt_u",
-        "when": "editorTextFocus && CAu"
+        "when": "editorTextFocus && hxEnabled && CAu"
       },
       {
         "key": "ctrl+alt+v",
         "command": "extension.helixKeymap.ctrl_alt_v",
-        "when": "editorTextFocus && CAv"
+        "when": "editorTextFocus && hxEnabled && CAv"
       },
       {
         "key": "ctrl+alt+w",
         "command": "extension.helixKeymap.ctrl_alt_w",
-        "when": "editorTextFocus && CAw"
+        "when": "editorTextFocus && hxEnabled && CAw"
       },
       {
         "key": "ctrl+alt+x",
         "command": "extension.helixKeymap.ctrl_alt_x",
-        "when": "editorTextFocus && CAx"
+        "when": "editorTextFocus && hxEnabled && CAx"
       },
       {
         "key": "ctrl+alt+y",
         "command": "extension.helixKeymap.ctrl_alt_y",
-        "when": "editorTextFocus && CAy"
+        "when": "editorTextFocus && hxEnabled && CAy"
       },
       {
         "key": "ctrl+alt+z",
         "command": "extension.helixKeymap.ctrl_alt_z",
-        "when": "editorTextFocus && CAz"
+        "when": "editorTextFocus && hxEnabled && CAz"
       },
       {
         "key": "ctrl+alt+pageup",
         "command": "extension.helixKeymap.ctrl_alt_pageup",
-        "when": "editorTextFocus && CApageup"
+        "when": "editorTextFocus && hxEnabled && CApageup"
       },
       {
         "key": "ctrl+alt+pagedown",
         "command": "extension.helixKeymap.ctrl_alt_pagedown",
-        "when": "editorTextFocus && CApagedown"
+        "when": "editorTextFocus && hxEnabled && CApagedown"
       },
       {
         "key": "ctrl+alt+home",
         "command": "extension.helixKeymap.ctrl_alt_home",
-        "when": "editorTextFocus && CAhome"
+        "when": "editorTextFocus && hxEnabled && CAhome"
       },
       {
         "key": "ctrl+alt+end",
         "command": "extension.helixKeymap.ctrl_alt_end",
-        "when": "editorTextFocus && CAend"
+        "when": "editorTextFocus && hxEnabled && CAend"
       },
       {
         "key": "ctrl+alt+escape",
         "command": "extension.helixKeymap.ctrl_alt_escape",
-        "when": "editorTextFocus && CAescape"
+        "when": "editorTextFocus && hxEnabled && CAescape"
       },
       {
         "key": "ctrl+alt+backspace",
         "command": "extension.helixKeymap.ctrl_alt_backspace",
-        "when": "editorTextFocus && CAbackspace"
+        "when": "editorTextFocus && hxEnabled && CAbackspace"
       },
       {
         "key": "ctrl+alt+[",
         "command": "extension.helixKeymap.ctrl_alt_[",
-        "when": "editorTextFocus && CA["
+        "when": "editorTextFocus && hxEnabled && CA["
       },
       {
         "key": "ctrl+alt+]",
         "command": "extension.helixKeymap.ctrl_alt_]",
-        "when": "editorTextFocus && CA]"
+        "when": "editorTextFocus && hxEnabled && CA]"
       },
       {
-        "key": "ctrl+alt+backtick",
+        "key": "ctrl+alt+`",
         "command": "extension.helixKeymap.ctrl_alt_backtick",
-        "when": "editorTextFocus && CAbacktick"
+        "when": "editorTextFocus && hxEnabled && CAbacktick"
       },
       {
         "key": "ctrl+alt+;",
         "command": "extension.helixKeymap.ctrl_alt_;",
-        "when": "editorTextFocus && CA;"
+        "when": "editorTextFocus && hxEnabled && CA;"
       },
       {
-        "key": "ctrl+alt+squote",
+        "key": "ctrl+alt+'",
         "command": "extension.helixKeymap.ctrl_alt_squote",
-        "when": "editorTextFocus && CAsquote"
+        "when": "editorTextFocus && hxEnabled && CAsquote"
       },
       {
         "key": "ctrl+alt+,",
         "command": "extension.helixKeymap.ctrl_alt_,",
-        "when": "editorTextFocus && CA,"
+        "when": "editorTextFocus && hxEnabled && CA,"
       },
       {
         "key": "ctrl+alt+.",
         "command": "extension.helixKeymap.ctrl_alt_.",
-        "when": "editorTextFocus && CA."
+        "when": "editorTextFocus && hxEnabled && CA."
       },
       {
         "key": "ctrl+alt+/",
         "command": "extension.helixKeymap.ctrl_alt_/",
-        "when": "editorTextFocus && CA/"
+        "when": "editorTextFocus && hxEnabled && CA/"
       },
       {
         "key": "ctrl+alt+\\",
-        "command": "extension.helixKeymap.ctrl_alt_\\",
-        "when": "editorTextFocus && CA\\"
+        "command": "extension.helixKeymap.ctrl_alt_bslash",
+        "when": "editorTextFocus && hxEnabled && CAbslash"
       },
       {
-        "key": "ctrl+alt+eq",
+        "key": "ctrl+alt+=",
         "command": "extension.helixKeymap.ctrl_alt_eq",
-        "when": "editorTextFocus && CAeq"
+        "when": "editorTextFocus && hxEnabled && CAeq"
       },
       {
         "key": "ctrl+alt+-",
         "command": "extension.helixKeymap.ctrl_alt_-",
-        "when": "editorTextFocus && CA-"
+        "when": "editorTextFocus && hxEnabled && CA-"
       },
       {
         "key": "ctrl+alt+1",
         "command": "extension.helixKeymap.ctrl_alt_1",
-        "when": "editorTextFocus && CA1"
+        "when": "editorTextFocus && hxEnabled && CA1"
       },
       {
         "key": "ctrl+alt+2",
         "command": "extension.helixKeymap.ctrl_alt_2",
-        "when": "editorTextFocus && CA2"
+        "when": "editorTextFocus && hxEnabled && CA2"
       },
       {
         "key": "ctrl+alt+3",
         "command": "extension.helixKeymap.ctrl_alt_3",
-        "when": "editorTextFocus && CA3"
+        "when": "editorTextFocus && hxEnabled && CA3"
       },
       {
         "key": "ctrl+alt+4",
         "command": "extension.helixKeymap.ctrl_alt_4",
-        "when": "editorTextFocus && CA4"
+        "when": "editorTextFocus && hxEnabled && CA4"
       },
       {
         "key": "ctrl+alt+5",
         "command": "extension.helixKeymap.ctrl_alt_5",
-        "when": "editorTextFocus && CA5"
+        "when": "editorTextFocus && hxEnabled && CA5"
       },
       {
         "key": "ctrl+alt+6",
         "command": "extension.helixKeymap.ctrl_alt_6",
-        "when": "editorTextFocus && CA6"
+        "when": "editorTextFocus && hxEnabled && CA6"
       },
       {
         "key": "ctrl+alt+7",
         "command": "extension.helixKeymap.ctrl_alt_7",
-        "when": "editorTextFocus && CA7"
+        "when": "editorTextFocus && hxEnabled && CA7"
       },
       {
         "key": "ctrl+alt+8",
         "command": "extension.helixKeymap.ctrl_alt_8",
-        "when": "editorTextFocus && CA8"
+        "when": "editorTextFocus && hxEnabled && CA8"
       },
       {
         "key": "ctrl+alt+9",
         "command": "extension.helixKeymap.ctrl_alt_9",
-        "when": "editorTextFocus && CA9"
+        "when": "editorTextFocus && hxEnabled && CA9"
       },
       {
         "key": "ctrl+alt+0",
         "command": "extension.helixKeymap.ctrl_alt_0",
-        "when": "editorTextFocus && CA0"
+        "when": "editorTextFocus && hxEnabled && CA0"
       },
       {
         "key": "ctrl+shift+a",
         "command": "extension.helixKeymap.ctrl_shift_a",
-        "when": "editorTextFocus && CSa"
+        "when": "editorTextFocus && hxEnabled && CSa"
       },
       {
         "key": "ctrl+shift+b",
         "command": "extension.helixKeymap.ctrl_shift_b",
-        "when": "editorTextFocus && CSb"
+        "when": "editorTextFocus && hxEnabled && CSb"
       },
       {
         "key": "ctrl+shift+c",
         "command": "extension.helixKeymap.ctrl_shift_c",
-        "when": "editorTextFocus && CSc"
+        "when": "editorTextFocus && hxEnabled && CSc"
       },
       {
         "key": "ctrl+shift+d",
         "command": "extension.helixKeymap.ctrl_shift_d",
-        "when": "editorTextFocus && CSd"
+        "when": "editorTextFocus && hxEnabled && CSd"
       },
       {
         "key": "ctrl+shift+e",
         "command": "extension.helixKeymap.ctrl_shift_e",
-        "when": "editorTextFocus && CSe"
+        "when": "editorTextFocus && hxEnabled && CSe"
       },
       {
         "key": "ctrl+shift+f",
         "command": "extension.helixKeymap.ctrl_shift_f",
-        "when": "editorTextFocus && CSf"
+        "when": "editorTextFocus && hxEnabled && CSf"
       },
       {
         "key": "ctrl+shift+g",
         "command": "extension.helixKeymap.ctrl_shift_g",
-        "when": "editorTextFocus && CSg"
+        "when": "editorTextFocus && hxEnabled && CSg"
       },
       {
         "key": "ctrl+shift+h",
         "command": "extension.helixKeymap.ctrl_shift_h",
-        "when": "editorTextFocus && CSh"
+        "when": "editorTextFocus && hxEnabled && CSh"
       },
       {
         "key": "ctrl+shift+i",
         "command": "extension.helixKeymap.ctrl_shift_i",
-        "when": "editorTextFocus && CSi"
+        "when": "editorTextFocus && hxEnabled && CSi"
       },
       {
         "key": "ctrl+shift+j",
         "command": "extension.helixKeymap.ctrl_shift_j",
-        "when": "editorTextFocus && CSj"
+        "when": "editorTextFocus && hxEnabled && CSj"
       },
       {
         "key": "ctrl+shift+k",
         "command": "extension.helixKeymap.ctrl_shift_k",
-        "when": "editorTextFocus && CSk"
+        "when": "editorTextFocus && hxEnabled && CSk"
       },
       {
         "key": "ctrl+shift+l",
         "command": "extension.helixKeymap.ctrl_shift_l",
-        "when": "editorTextFocus && CSl"
+        "when": "editorTextFocus && hxEnabled && CSl"
       },
       {
         "key": "ctrl+shift+m",
         "command": "extension.helixKeymap.ctrl_shift_m",
-        "when": "editorTextFocus && CSm"
+        "when": "editorTextFocus && hxEnabled && CSm"
       },
       {
         "key": "ctrl+shift+n",
         "command": "extension.helixKeymap.ctrl_shift_n",
-        "when": "editorTextFocus && CSn"
+        "when": "editorTextFocus && hxEnabled && CSn"
       },
       {
         "key": "ctrl+shift+o",
         "command": "extension.helixKeymap.ctrl_shift_o",
-        "when": "editorTextFocus && CSo"
+        "when": "editorTextFocus && hxEnabled && CSo"
       },
       {
         "key": "ctrl+shift+p",
         "command": "extension.helixKeymap.ctrl_shift_p",
-        "when": "editorTextFocus && CSp"
+        "when": "editorTextFocus && hxEnabled && CSp"
       },
       {
         "key": "ctrl+shift+q",
         "command": "extension.helixKeymap.ctrl_shift_q",
-        "when": "editorTextFocus && CSq"
+        "when": "editorTextFocus && hxEnabled && CSq"
       },
       {
         "key": "ctrl+shift+r",
         "command": "extension.helixKeymap.ctrl_shift_r",
-        "when": "editorTextFocus && CSr"
+        "when": "editorTextFocus && hxEnabled && CSr"
       },
       {
         "key": "ctrl+shift+s",
         "command": "extension.helixKeymap.ctrl_shift_s",
-        "when": "editorTextFocus && CSs"
+        "when": "editorTextFocus && hxEnabled && CSs"
       },
       {
         "key": "ctrl+shift+t",
         "command": "extension.helixKeymap.ctrl_shift_t",
-        "when": "editorTextFocus && CSt"
+        "when": "editorTextFocus && hxEnabled && CSt"
       },
       {
         "key": "ctrl+shift+u",
         "command": "extension.helixKeymap.ctrl_shift_u",
-        "when": "editorTextFocus && CSu"
+        "when": "editorTextFocus && hxEnabled && CSu"
       },
       {
         "key": "ctrl+shift+v",
         "command": "extension.helixKeymap.ctrl_shift_v",
-        "when": "editorTextFocus && CSv"
+        "when": "editorTextFocus && hxEnabled && CSv"
       },
       {
         "key": "ctrl+shift+w",
         "command": "extension.helixKeymap.ctrl_shift_w",
-        "when": "editorTextFocus && CSw"
+        "when": "editorTextFocus && hxEnabled && CSw"
       },
       {
         "key": "ctrl+shift+x",
         "command": "extension.helixKeymap.ctrl_shift_x",
-        "when": "editorTextFocus && CSx"
+        "when": "editorTextFocus && hxEnabled && CSx"
       },
       {
         "key": "ctrl+shift+y",
         "command": "extension.helixKeymap.ctrl_shift_y",
-        "when": "editorTextFocus && CSy"
+        "when": "editorTextFocus && hxEnabled && CSy"
       },
       {
         "key": "ctrl+shift+z",
         "command": "extension.helixKeymap.ctrl_shift_z",
-        "when": "editorTextFocus && CSz"
+        "when": "editorTextFocus && hxEnabled && CSz"
       },
       {
         "key": "ctrl+shift+pageup",
         "command": "extension.helixKeymap.ctrl_shift_pageup",
-        "when": "editorTextFocus && CSpageup"
+        "when": "editorTextFocus && hxEnabled && CSpageup"
       },
       {
         "key": "ctrl+shift+pagedown",
         "command": "extension.helixKeymap.ctrl_shift_pagedown",
-        "when": "editorTextFocus && CSpagedown"
+        "when": "editorTextFocus && hxEnabled && CSpagedown"
       },
       {
         "key": "ctrl+shift+home",
         "command": "extension.helixKeymap.ctrl_shift_home",
-        "when": "editorTextFocus && CShome"
+        "when": "editorTextFocus && hxEnabled && CShome"
       },
       {
         "key": "ctrl+shift+end",
         "command": "extension.helixKeymap.ctrl_shift_end",
-        "when": "editorTextFocus && CSend"
+        "when": "editorTextFocus && hxEnabled && CSend"
       },
       {
         "key": "ctrl+shift+escape",
         "command": "extension.helixKeymap.ctrl_shift_escape",
-        "when": "editorTextFocus && CSescape"
+        "when": "editorTextFocus && hxEnabled && CSescape"
       },
       {
         "key": "ctrl+shift+backspace",
         "command": "extension.helixKeymap.ctrl_shift_backspace",
-        "when": "editorTextFocus && CSbackspace"
+        "when": "editorTextFocus && hxEnabled && CSbackspace"
       },
       {
         "key": "ctrl+shift+[",
         "command": "extension.helixKeymap.ctrl_shift_[",
-        "when": "editorTextFocus && CS["
+        "when": "editorTextFocus && hxEnabled && CS["
       },
       {
         "key": "ctrl+shift+]",
         "command": "extension.helixKeymap.ctrl_shift_]",
-        "when": "editorTextFocus && CS]"
+        "when": "editorTextFocus && hxEnabled && CS]"
       },
       {
-        "key": "ctrl+shift+backtick",
+        "key": "ctrl+shift+`",
         "command": "extension.helixKeymap.ctrl_shift_backtick",
-        "when": "editorTextFocus && CSbacktick"
+        "when": "editorTextFocus && hxEnabled && CSbacktick"
       },
       {
         "key": "ctrl+shift+;",
         "command": "extension.helixKeymap.ctrl_shift_;",
-        "when": "editorTextFocus && CS;"
+        "when": "editorTextFocus && hxEnabled && CS;"
       },
       {
-        "key": "ctrl+shift+squote",
+        "key": "ctrl+shift+'",
         "command": "extension.helixKeymap.ctrl_shift_squote",
-        "when": "editorTextFocus && CSsquote"
+        "when": "editorTextFocus && hxEnabled && CSsquote"
       },
       {
         "key": "ctrl+shift+,",
         "command": "extension.helixKeymap.ctrl_shift_,",
-        "when": "editorTextFocus && CS,"
+        "when": "editorTextFocus && hxEnabled && CS,"
       },
       {
         "key": "ctrl+shift+.",
         "command": "extension.helixKeymap.ctrl_shift_.",
-        "when": "editorTextFocus && CS."
+        "when": "editorTextFocus && hxEnabled && CS."
       },
       {
         "key": "ctrl+shift+/",
         "command": "extension.helixKeymap.ctrl_shift_/",
-        "when": "editorTextFocus && CS/"
+        "when": "editorTextFocus && hxEnabled && CS/"
       },
       {
         "key": "ctrl+shift+\\",
-        "command": "extension.helixKeymap.ctrl_shift_\\",
-        "when": "editorTextFocus && CS\\"
+        "command": "extension.helixKeymap.ctrl_shift_bslash",
+        "when": "editorTextFocus && hxEnabled && CSbslash"
       },
       {
-        "key": "ctrl+shift+eq",
+        "key": "ctrl+shift+=",
         "command": "extension.helixKeymap.ctrl_shift_eq",
-        "when": "editorTextFocus && CSeq"
+        "when": "editorTextFocus && hxEnabled && CSeq"
       },
       {
         "key": "ctrl+shift+-",
         "command": "extension.helixKeymap.ctrl_shift_-",
-        "when": "editorTextFocus && CS-"
+        "when": "editorTextFocus && hxEnabled && CS-"
       },
       {
         "key": "ctrl+shift+1",
         "command": "extension.helixKeymap.ctrl_shift_1",
-        "when": "editorTextFocus && CS1"
+        "when": "editorTextFocus && hxEnabled && CS1"
       },
       {
         "key": "ctrl+shift+2",
         "command": "extension.helixKeymap.ctrl_shift_2",
-        "when": "editorTextFocus && CS2"
+        "when": "editorTextFocus && hxEnabled && CS2"
       },
       {
         "key": "ctrl+shift+3",
         "command": "extension.helixKeymap.ctrl_shift_3",
-        "when": "editorTextFocus && CS3"
+        "when": "editorTextFocus && hxEnabled && CS3"
       },
       {
         "key": "ctrl+shift+4",
         "command": "extension.helixKeymap.ctrl_shift_4",
-        "when": "editorTextFocus && CS4"
+        "when": "editorTextFocus && hxEnabled && CS4"
       },
       {
         "key": "ctrl+shift+5",
         "command": "extension.helixKeymap.ctrl_shift_5",
-        "when": "editorTextFocus && CS5"
+        "when": "editorTextFocus && hxEnabled && CS5"
       },
       {
         "key": "ctrl+shift+6",
         "command": "extension.helixKeymap.ctrl_shift_6",
-        "when": "editorTextFocus && CS6"
+        "when": "editorTextFocus && hxEnabled && CS6"
       },
       {
         "key": "ctrl+shift+7",
         "command": "extension.helixKeymap.ctrl_shift_7",
-        "when": "editorTextFocus && CS7"
+        "when": "editorTextFocus && hxEnabled && CS7"
       },
       {
         "key": "ctrl+shift+8",
         "command": "extension.helixKeymap.ctrl_shift_8",
-        "when": "editorTextFocus && CS8"
+        "when": "editorTextFocus && hxEnabled && CS8"
       },
       {
         "key": "ctrl+shift+9",
         "command": "extension.helixKeymap.ctrl_shift_9",
-        "when": "editorTextFocus && CS9"
+        "when": "editorTextFocus && hxEnabled && CS9"
       },
       {
         "key": "ctrl+shift+0",
         "command": "extension.helixKeymap.ctrl_shift_0",
-        "when": "editorTextFocus && CS0"
+        "when": "editorTextFocus && hxEnabled && CS0"
       },
       {
         "key": "shift+alt+a",
         "command": "extension.helixKeymap.shift_alt_a",
-        "when": "editorTextFocus && SAa"
+        "when": "editorTextFocus && hxEnabled && SAa"
       },
       {
         "key": "shift+alt+b",
         "command": "extension.helixKeymap.shift_alt_b",
-        "when": "editorTextFocus && SAb"
+        "when": "editorTextFocus && hxEnabled && SAb"
       },
       {
         "key": "shift+alt+c",
         "command": "extension.helixKeymap.shift_alt_c",
-        "when": "editorTextFocus && SAc"
+        "when": "editorTextFocus && hxEnabled && SAc"
       },
       {
         "key": "shift+alt+d",
         "command": "extension.helixKeymap.shift_alt_d",
-        "when": "editorTextFocus && SAd"
+        "when": "editorTextFocus && hxEnabled && SAd"
       },
       {
         "key": "shift+alt+e",
         "command": "extension.helixKeymap.shift_alt_e",
-        "when": "editorTextFocus && SAe"
+        "when": "editorTextFocus && hxEnabled && SAe"
       },
       {
         "key": "shift+alt+f",
         "command": "extension.helixKeymap.shift_alt_f",
-        "when": "editorTextFocus && SAf"
+        "when": "editorTextFocus && hxEnabled && SAf"
       },
       {
         "key": "shift+alt+g",
         "command": "extension.helixKeymap.shift_alt_g",
-        "when": "editorTextFocus && SAg"
+        "when": "editorTextFocus && hxEnabled && SAg"
       },
       {
         "key": "shift+alt+h",
         "command": "extension.helixKeymap.shift_alt_h",
-        "when": "editorTextFocus && SAh"
+        "when": "editorTextFocus && hxEnabled && SAh"
       },
       {
         "key": "shift+alt+i",
         "command": "extension.helixKeymap.shift_alt_i",
-        "when": "editorTextFocus && SAi"
+        "when": "editorTextFocus && hxEnabled && SAi"
       },
       {
         "key": "shift+alt+j",
         "command": "extension.helixKeymap.shift_alt_j",
-        "when": "editorTextFocus && SAj"
+        "when": "editorTextFocus && hxEnabled && SAj"
       },
       {
         "key": "shift+alt+k",
         "command": "extension.helixKeymap.shift_alt_k",
-        "when": "editorTextFocus && SAk"
+        "when": "editorTextFocus && hxEnabled && SAk"
       },
       {
         "key": "shift+alt+l",
         "command": "extension.helixKeymap.shift_alt_l",
-        "when": "editorTextFocus && SAl"
+        "when": "editorTextFocus && hxEnabled && SAl"
       },
       {
         "key": "shift+alt+m",
         "command": "extension.helixKeymap.shift_alt_m",
-        "when": "editorTextFocus && SAm"
+        "when": "editorTextFocus && hxEnabled && SAm"
       },
       {
         "key": "shift+alt+n",
         "command": "extension.helixKeymap.shift_alt_n",
-        "when": "editorTextFocus && SAn"
+        "when": "editorTextFocus && hxEnabled && SAn"
       },
       {
         "key": "shift+alt+o",
         "command": "extension.helixKeymap.shift_alt_o",
-        "when": "editorTextFocus && SAo"
+        "when": "editorTextFocus && hxEnabled && SAo"
       },
       {
         "key": "shift+alt+p",
         "command": "extension.helixKeymap.shift_alt_p",
-        "when": "editorTextFocus && SAp"
+        "when": "editorTextFocus && hxEnabled && SAp"
       },
       {
         "key": "shift+alt+q",
         "command": "extension.helixKeymap.shift_alt_q",
-        "when": "editorTextFocus && SAq"
+        "when": "editorTextFocus && hxEnabled && SAq"
       },
       {
         "key": "shift+alt+r",
         "command": "extension.helixKeymap.shift_alt_r",
-        "when": "editorTextFocus && SAr"
+        "when": "editorTextFocus && hxEnabled && SAr"
       },
       {
         "key": "shift+alt+s",
         "command": "extension.helixKeymap.shift_alt_s",
-        "when": "editorTextFocus && SAs"
+        "when": "editorTextFocus && hxEnabled && SAs"
       },
       {
         "key": "shift+alt+t",
         "command": "extension.helixKeymap.shift_alt_t",
-        "when": "editorTextFocus && SAt"
+        "when": "editorTextFocus && hxEnabled && SAt"
       },
       {
         "key": "shift+alt+u",
         "command": "extension.helixKeymap.shift_alt_u",
-        "when": "editorTextFocus && SAu"
+        "when": "editorTextFocus && hxEnabled && SAu"
       },
       {
         "key": "shift+alt+v",
         "command": "extension.helixKeymap.shift_alt_v",
-        "when": "editorTextFocus && SAv"
+        "when": "editorTextFocus && hxEnabled && SAv"
       },
       {
         "key": "shift+alt+w",
         "command": "extension.helixKeymap.shift_alt_w",
-        "when": "editorTextFocus && SAw"
+        "when": "editorTextFocus && hxEnabled && SAw"
       },
       {
         "key": "shift+alt+x",
         "command": "extension.helixKeymap.shift_alt_x",
-        "when": "editorTextFocus && SAx"
+        "when": "editorTextFocus && hxEnabled && SAx"
       },
       {
         "key": "shift+alt+y",
         "command": "extension.helixKeymap.shift_alt_y",
-        "when": "editorTextFocus && SAy"
+        "when": "editorTextFocus && hxEnabled && SAy"
       },
       {
         "key": "shift+alt+z",
         "command": "extension.helixKeymap.shift_alt_z",
-        "when": "editorTextFocus && SAz"
+        "when": "editorTextFocus && hxEnabled && SAz"
       },
       {
         "key": "shift+alt+pageup",
         "command": "extension.helixKeymap.shift_alt_pageup",
-        "when": "editorTextFocus && SApageup"
+        "when": "editorTextFocus && hxEnabled && SApageup"
       },
       {
         "key": "shift+alt+pagedown",
         "command": "extension.helixKeymap.shift_alt_pagedown",
-        "when": "editorTextFocus && SApagedown"
+        "when": "editorTextFocus && hxEnabled && SApagedown"
       },
       {
         "key": "shift+alt+home",
         "command": "extension.helixKeymap.shift_alt_home",
-        "when": "editorTextFocus && SAhome"
+        "when": "editorTextFocus && hxEnabled && SAhome"
       },
       {
         "key": "shift+alt+end",
         "command": "extension.helixKeymap.shift_alt_end",
-        "when": "editorTextFocus && SAend"
+        "when": "editorTextFocus && hxEnabled && SAend"
       },
       {
         "key": "shift+alt+escape",
         "command": "extension.helixKeymap.shift_alt_escape",
-        "when": "editorTextFocus && SAescape"
+        "when": "editorTextFocus && hxEnabled && SAescape"
       },
       {
         "key": "shift+alt+backspace",
         "command": "extension.helixKeymap.shift_alt_backspace",
-        "when": "editorTextFocus && SAbackspace"
+        "when": "editorTextFocus && hxEnabled && SAbackspace"
       },
       {
         "key": "shift+alt+[",
         "command": "extension.helixKeymap.shift_alt_[",
-        "when": "editorTextFocus && SA["
+        "when": "editorTextFocus && hxEnabled && SA["
       },
       {
         "key": "shift+alt+]",
         "command": "extension.helixKeymap.shift_alt_]",
-        "when": "editorTextFocus && SA]"
+        "when": "editorTextFocus && hxEnabled && SA]"
       },
       {
-        "key": "shift+alt+backtick",
+        "key": "shift+alt+`",
         "command": "extension.helixKeymap.shift_alt_backtick",
-        "when": "editorTextFocus && SAbacktick"
+        "when": "editorTextFocus && hxEnabled && SAbacktick"
       },
       {
         "key": "shift+alt+;",
         "command": "extension.helixKeymap.shift_alt_;",
-        "when": "editorTextFocus && SA;"
+        "when": "editorTextFocus && hxEnabled && SA;"
       },
       {
-        "key": "shift+alt+squote",
+        "key": "shift+alt+'",
         "command": "extension.helixKeymap.shift_alt_squote",
-        "when": "editorTextFocus && SAsquote"
+        "when": "editorTextFocus && hxEnabled && SAsquote"
       },
       {
         "key": "shift+alt+,",
         "command": "extension.helixKeymap.shift_alt_,",
-        "when": "editorTextFocus && SA,"
+        "when": "editorTextFocus && hxEnabled && SA,"
       },
       {
         "key": "shift+alt+.",
         "command": "extension.helixKeymap.shift_alt_.",
-        "when": "editorTextFocus && SA."
+        "when": "editorTextFocus && hxEnabled && SA."
       },
       {
         "key": "shift+alt+/",
         "command": "extension.helixKeymap.shift_alt_/",
-        "when": "editorTextFocus && SA/"
+        "when": "editorTextFocus && hxEnabled && SA/"
       },
       {
         "key": "shift+alt+\\",
-        "command": "extension.helixKeymap.shift_alt_\\",
-        "when": "editorTextFocus && SA\\"
+        "command": "extension.helixKeymap.shift_alt_bslash",
+        "when": "editorTextFocus && hxEnabled && SAbslash"
       },
       {
-        "key": "shift+alt+eq",
+        "key": "shift+alt+=",
         "command": "extension.helixKeymap.shift_alt_eq",
-        "when": "editorTextFocus && SAeq"
+        "when": "editorTextFocus && hxEnabled && SAeq"
       },
       {
         "key": "shift+alt+-",
         "command": "extension.helixKeymap.shift_alt_-",
-        "when": "editorTextFocus && SA-"
+        "when": "editorTextFocus && hxEnabled && SA-"
       },
       {
         "key": "shift+alt+1",
         "command": "extension.helixKeymap.shift_alt_1",
-        "when": "editorTextFocus && SA1"
+        "when": "editorTextFocus && hxEnabled && SA1"
       },
       {
         "key": "shift+alt+2",
         "command": "extension.helixKeymap.shift_alt_2",
-        "when": "editorTextFocus && SA2"
+        "when": "editorTextFocus && hxEnabled && SA2"
       },
       {
         "key": "shift+alt+3",
         "command": "extension.helixKeymap.shift_alt_3",
-        "when": "editorTextFocus && SA3"
+        "when": "editorTextFocus && hxEnabled && SA3"
       },
       {
         "key": "shift+alt+4",
         "command": "extension.helixKeymap.shift_alt_4",
-        "when": "editorTextFocus && SA4"
+        "when": "editorTextFocus && hxEnabled && SA4"
       },
       {
         "key": "shift+alt+5",
         "command": "extension.helixKeymap.shift_alt_5",
-        "when": "editorTextFocus && SA5"
+        "when": "editorTextFocus && hxEnabled && SA5"
       },
       {
         "key": "shift+alt+6",
         "command": "extension.helixKeymap.shift_alt_6",
-        "when": "editorTextFocus && SA6"
+        "when": "editorTextFocus && hxEnabled && SA6"
       },
       {
         "key": "shift+alt+7",
         "command": "extension.helixKeymap.shift_alt_7",
-        "when": "editorTextFocus && SA7"
+        "when": "editorTextFocus && hxEnabled && SA7"
       },
       {
         "key": "shift+alt+8",
         "command": "extension.helixKeymap.shift_alt_8",
-        "when": "editorTextFocus && SA8"
+        "when": "editorTextFocus && hxEnabled && SA8"
       },
       {
         "key": "shift+alt+9",
         "command": "extension.helixKeymap.shift_alt_9",
-        "when": "editorTextFocus && SA9"
+        "when": "editorTextFocus && hxEnabled && SA9"
       },
       {
         "key": "shift+alt+0",
         "command": "extension.helixKeymap.shift_alt_0",
-        "when": "editorTextFocus && SA0"
+        "when": "editorTextFocus && hxEnabled && SA0"
       },
       {
         "key": "ctrl+shift+alt+a",
         "command": "extension.helixKeymap.ctrl_shift_alt_a",
-        "when": "editorTextFocus && CSAa"
+        "when": "editorTextFocus && hxEnabled && CSAa"
       },
       {
         "key": "ctrl+shift+alt+b",
         "command": "extension.helixKeymap.ctrl_shift_alt_b",
-        "when": "editorTextFocus && CSAb"
+        "when": "editorTextFocus && hxEnabled && CSAb"
       },
       {
         "key": "ctrl+shift+alt+c",
         "command": "extension.helixKeymap.ctrl_shift_alt_c",
-        "when": "editorTextFocus && CSAc"
+        "when": "editorTextFocus && hxEnabled && CSAc"
       },
       {
         "key": "ctrl+shift+alt+d",
         "command": "extension.helixKeymap.ctrl_shift_alt_d",
-        "when": "editorTextFocus && CSAd"
+        "when": "editorTextFocus && hxEnabled && CSAd"
       },
       {
         "key": "ctrl+shift+alt+e",
         "command": "extension.helixKeymap.ctrl_shift_alt_e",
-        "when": "editorTextFocus && CSAe"
+        "when": "editorTextFocus && hxEnabled && CSAe"
       },
       {
         "key": "ctrl+shift+alt+f",
         "command": "extension.helixKeymap.ctrl_shift_alt_f",
-        "when": "editorTextFocus && CSAf"
+        "when": "editorTextFocus && hxEnabled && CSAf"
       },
       {
         "key": "ctrl+shift+alt+g",
         "command": "extension.helixKeymap.ctrl_shift_alt_g",
-        "when": "editorTextFocus && CSAg"
+        "when": "editorTextFocus && hxEnabled && CSAg"
       },
       {
         "key": "ctrl+shift+alt+h",
         "command": "extension.helixKeymap.ctrl_shift_alt_h",
-        "when": "editorTextFocus && CSAh"
+        "when": "editorTextFocus && hxEnabled && CSAh"
       },
       {
         "key": "ctrl+shift+alt+i",
         "command": "extension.helixKeymap.ctrl_shift_alt_i",
-        "when": "editorTextFocus && CSAi"
+        "when": "editorTextFocus && hxEnabled && CSAi"
       },
       {
         "key": "ctrl+shift+alt+j",
         "command": "extension.helixKeymap.ctrl_shift_alt_j",
-        "when": "editorTextFocus && CSAj"
+        "when": "editorTextFocus && hxEnabled && CSAj"
       },
       {
         "key": "ctrl+shift+alt+k",
         "command": "extension.helixKeymap.ctrl_shift_alt_k",
-        "when": "editorTextFocus && CSAk"
+        "when": "editorTextFocus && hxEnabled && CSAk"
       },
       {
         "key": "ctrl+shift+alt+l",
         "command": "extension.helixKeymap.ctrl_shift_alt_l",
-        "when": "editorTextFocus && CSAl"
+        "when": "editorTextFocus && hxEnabled && CSAl"
       },
       {
         "key": "ctrl+shift+alt+m",
         "command": "extension.helixKeymap.ctrl_shift_alt_m",
-        "when": "editorTextFocus && CSAm"
+        "when": "editorTextFocus && hxEnabled && CSAm"
       },
       {
         "key": "ctrl+shift+alt+n",
         "command": "extension.helixKeymap.ctrl_shift_alt_n",
-        "when": "editorTextFocus && CSAn"
+        "when": "editorTextFocus && hxEnabled && CSAn"
       },
       {
         "key": "ctrl+shift+alt+o",
         "command": "extension.helixKeymap.ctrl_shift_alt_o",
-        "when": "editorTextFocus && CSAo"
+        "when": "editorTextFocus && hxEnabled && CSAo"
       },
       {
         "key": "ctrl+shift+alt+p",
         "command": "extension.helixKeymap.ctrl_shift_alt_p",
-        "when": "editorTextFocus && CSAp"
+        "when": "editorTextFocus && hxEnabled && CSAp"
       },
       {
         "key": "ctrl+shift+alt+q",
         "command": "extension.helixKeymap.ctrl_shift_alt_q",
-        "when": "editorTextFocus && CSAq"
+        "when": "editorTextFocus && hxEnabled && CSAq"
       },
       {
         "key": "ctrl+shift+alt+r",
         "command": "extension.helixKeymap.ctrl_shift_alt_r",
-        "when": "editorTextFocus && CSAr"
+        "when": "editorTextFocus && hxEnabled && CSAr"
       },
       {
         "key": "ctrl+shift+alt+s",
         "command": "extension.helixKeymap.ctrl_shift_alt_s",
-        "when": "editorTextFocus && CSAs"
+        "when": "editorTextFocus && hxEnabled && CSAs"
       },
       {
         "key": "ctrl+shift+alt+t",
         "command": "extension.helixKeymap.ctrl_shift_alt_t",
-        "when": "editorTextFocus && CSAt"
+        "when": "editorTextFocus && hxEnabled && CSAt"
       },
       {
         "key": "ctrl+shift+alt+u",
         "command": "extension.helixKeymap.ctrl_shift_alt_u",
-        "when": "editorTextFocus && CSAu"
+        "when": "editorTextFocus && hxEnabled && CSAu"
       },
       {
         "key": "ctrl+shift+alt+v",
         "command": "extension.helixKeymap.ctrl_shift_alt_v",
-        "when": "editorTextFocus && CSAv"
+        "when": "editorTextFocus && hxEnabled && CSAv"
       },
       {
         "key": "ctrl+shift+alt+w",
         "command": "extension.helixKeymap.ctrl_shift_alt_w",
-        "when": "editorTextFocus && CSAw"
+        "when": "editorTextFocus && hxEnabled && CSAw"
       },
       {
         "key": "ctrl+shift+alt+x",
         "command": "extension.helixKeymap.ctrl_shift_alt_x",
-        "when": "editorTextFocus && CSAx"
+        "when": "editorTextFocus && hxEnabled && CSAx"
       },
       {
         "key": "ctrl+shift+alt+y",
         "command": "extension.helixKeymap.ctrl_shift_alt_y",
-        "when": "editorTextFocus && CSAy"
+        "when": "editorTextFocus && hxEnabled && CSAy"
       },
       {
         "key": "ctrl+shift+alt+z",
         "command": "extension.helixKeymap.ctrl_shift_alt_z",
-        "when": "editorTextFocus && CSAz"
+        "when": "editorTextFocus && hxEnabled && CSAz"
       },
       {
         "key": "ctrl+shift+alt+pageup",
         "command": "extension.helixKeymap.ctrl_shift_alt_pageup",
-        "when": "editorTextFocus && CSApageup"
+        "when": "editorTextFocus && hxEnabled && CSApageup"
       },
       {
         "key": "ctrl+shift+alt+pagedown",
         "command": "extension.helixKeymap.ctrl_shift_alt_pagedown",
-        "when": "editorTextFocus && CSApagedown"
+        "when": "editorTextFocus && hxEnabled && CSApagedown"
       },
       {
         "key": "ctrl+shift+alt+home",
         "command": "extension.helixKeymap.ctrl_shift_alt_home",
-        "when": "editorTextFocus && CSAhome"
+        "when": "editorTextFocus && hxEnabled && CSAhome"
       },
       {
         "key": "ctrl+shift+alt+end",
         "command": "extension.helixKeymap.ctrl_shift_alt_end",
-        "when": "editorTextFocus && CSAend"
+        "when": "editorTextFocus && hxEnabled && CSAend"
       },
       {
         "key": "ctrl+shift+alt+escape",
         "command": "extension.helixKeymap.ctrl_shift_alt_escape",
-        "when": "editorTextFocus && CSAescape"
+        "when": "editorTextFocus && hxEnabled && CSAescape"
       },
       {
         "key": "ctrl+shift+alt+backspace",
         "command": "extension.helixKeymap.ctrl_shift_alt_backspace",
-        "when": "editorTextFocus && CSAbackspace"
+        "when": "editorTextFocus && hxEnabled && CSAbackspace"
       },
       {
         "key": "ctrl+shift+alt+[",
         "command": "extension.helixKeymap.ctrl_shift_alt_[",
-        "when": "editorTextFocus && CSA["
+        "when": "editorTextFocus && hxEnabled && CSA["
       },
       {
         "key": "ctrl+shift+alt+]",
         "command": "extension.helixKeymap.ctrl_shift_alt_]",
-        "when": "editorTextFocus && CSA]"
+        "when": "editorTextFocus && hxEnabled && CSA]"
       },
       {
-        "key": "ctrl+shift+alt+backtick",
+        "key": "ctrl+shift+alt+`",
         "command": "extension.helixKeymap.ctrl_shift_alt_backtick",
-        "when": "editorTextFocus && CSAbacktick"
+        "when": "editorTextFocus && hxEnabled && CSAbacktick"
       },
       {
         "key": "ctrl+shift+alt+;",
         "command": "extension.helixKeymap.ctrl_shift_alt_;",
-        "when": "editorTextFocus && CSA;"
+        "when": "editorTextFocus && hxEnabled && CSA;"
       },
       {
-        "key": "ctrl+shift+alt+squote",
+        "key": "ctrl+shift+alt+'",
         "command": "extension.helixKeymap.ctrl_shift_alt_squote",
-        "when": "editorTextFocus && CSAsquote"
+        "when": "editorTextFocus && hxEnabled && CSAsquote"
       },
       {
         "key": "ctrl+shift+alt+,",
         "command": "extension.helixKeymap.ctrl_shift_alt_,",
-        "when": "editorTextFocus && CSA,"
+        "when": "editorTextFocus && hxEnabled && CSA,"
       },
       {
         "key": "ctrl+shift+alt+.",
         "command": "extension.helixKeymap.ctrl_shift_alt_.",
-        "when": "editorTextFocus && CSA."
+        "when": "editorTextFocus && hxEnabled && CSA."
       },
       {
         "key": "ctrl+shift+alt+/",
         "command": "extension.helixKeymap.ctrl_shift_alt_/",
-        "when": "editorTextFocus && CSA/"
+        "when": "editorTextFocus && hxEnabled && CSA/"
       },
       {
         "key": "ctrl+shift+alt+\\",
-        "command": "extension.helixKeymap.ctrl_shift_alt_\\",
-        "when": "editorTextFocus && CSA\\"
+        "command": "extension.helixKeymap.ctrl_shift_alt_bslash",
+        "when": "editorTextFocus && hxEnabled && CSAbslash"
       },
       {
-        "key": "ctrl+shift+alt+eq",
+        "key": "ctrl+shift+alt+=",
         "command": "extension.helixKeymap.ctrl_shift_alt_eq",
-        "when": "editorTextFocus && CSAeq"
+        "when": "editorTextFocus && hxEnabled && CSAeq"
       },
       {
         "key": "ctrl+shift+alt+-",
         "command": "extension.helixKeymap.ctrl_shift_alt_-",
-        "when": "editorTextFocus && CSA-"
+        "when": "editorTextFocus && hxEnabled && CSA-"
       },
       {
         "key": "ctrl+shift+alt+1",
         "command": "extension.helixKeymap.ctrl_shift_alt_1",
-        "when": "editorTextFocus && CSA1"
+        "when": "editorTextFocus && hxEnabled && CSA1"
       },
       {
         "key": "ctrl+shift+alt+2",
         "command": "extension.helixKeymap.ctrl_shift_alt_2",
-        "when": "editorTextFocus && CSA2"
+        "when": "editorTextFocus && hxEnabled && CSA2"
       },
       {
         "key": "ctrl+shift+alt+3",
         "command": "extension.helixKeymap.ctrl_shift_alt_3",
-        "when": "editorTextFocus && CSA3"
+        "when": "editorTextFocus && hxEnabled && CSA3"
       },
       {
         "key": "ctrl+shift+alt+4",
         "command": "extension.helixKeymap.ctrl_shift_alt_4",
-        "when": "editorTextFocus && CSA4"
+        "when": "editorTextFocus && hxEnabled && CSA4"
       },
       {
         "key": "ctrl+shift+alt+5",
         "command": "extension.helixKeymap.ctrl_shift_alt_5",
-        "when": "editorTextFocus && CSA5"
+        "when": "editorTextFocus && hxEnabled && CSA5"
       },
       {
         "key": "ctrl+shift+alt+6",
         "command": "extension.helixKeymap.ctrl_shift_alt_6",
-        "when": "editorTextFocus && CSA6"
+        "when": "editorTextFocus && hxEnabled && CSA6"
       },
       {
         "key": "ctrl+shift+alt+7",
         "command": "extension.helixKeymap.ctrl_shift_alt_7",
-        "when": "editorTextFocus && CSA7"
+        "when": "editorTextFocus && hxEnabled && CSA7"
       },
       {
         "key": "ctrl+shift+alt+8",
         "command": "extension.helixKeymap.ctrl_shift_alt_8",
-        "when": "editorTextFocus && CSA8"
+        "when": "editorTextFocus && hxEnabled && CSA8"
       },
       {
         "key": "ctrl+shift+alt+9",
         "command": "extension.helixKeymap.ctrl_shift_alt_9",
-        "when": "editorTextFocus && CSA9"
+        "when": "editorTextFocus && hxEnabled && CSA9"
       },
       {
         "key": "ctrl+shift+alt+0",
         "command": "extension.helixKeymap.ctrl_shift_alt_0",
-        "when": "editorTextFocus && CSA0"
+        "when": "editorTextFocus && hxEnabled && CSA0"
       }
     ],
     "configuration": {
@@ -1978,6 +1978,7 @@
   },
   "dependencies": {
     "json5": "^2.2.3",
+    "path": "^0.12.7",
     "smol-toml": "^1.2.1"
   }
 }

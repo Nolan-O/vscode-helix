@@ -1,18 +1,19 @@
 const dirty_strings: { [key: string]: string | undefined } = {
   ["`"]: "backtick",
   ["'"]: "squote",
-  ["="]: "eq"
+  ["="]: "eq",
+  ["\\"]: "bslash"
 }
 
 export const keys = [
   "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
   "pageup", "pagedown", "home", "end", "escape", "backspace",
-  "[", "]", "`", ";", "'", ",", ".", "/", "\\\\", "=", "-",
+  "[", "]", "`", ";", "'", ",", ".", "/", "\\", "=", "-",
   "1", "2", "3", "4", "5", "6", "7", "8", "9", "0",
 ];
 
 export const symbols = [
-  "[", "]", "`", ";", "'", ",", ".", "/", "\\\\", "=", "-"
+  "[", "]", "`", ";", "'", ",", ".", "/", "\\", "=", "-"
 ]
 
 export const shiftedSymbols = {
@@ -24,14 +25,14 @@ export const shiftedSymbols = {
   [","]: "<",
   ["."]: ">",
   ["/"]: "?",
-  ["\\\\"]: "|",
+  ["\\"]: "|",
   ["="]: "+",
   ["-"]: "_",
 }
 
 // special keys which don't get sent to type handlers and therefore always need to be bound
 export const superkeys = [
-  "pageup", "pagedown", "home", "end", "escape", "backspace",
+  "pageup", "pagedown", "home", "end", "escape", "backspace"
 ]
 
 export const superkeysObj: { [key: string]: boolean | undefined } = {
@@ -97,6 +98,21 @@ export function literalizeChord(chord: string[]): string[] {
   }
 
   return ret
+}
+
+export const escapes: { [key: string]: string | undefined } = {
+  ["\\"]: "\\\\"
+}
+
+export function escapeLiteral(str: string) {
+  return escapes[str] ? escapes[str] : str
+}
+
+export function unescape(str: string) {
+  if (str === "\\")
+    return "\\"
+  else
+    return str
 }
 
 export function getMatchPairs(char: string) {

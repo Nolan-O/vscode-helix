@@ -36,7 +36,8 @@ export let bindings: BindingStructure = {
   [Mode.Match]: {},
   [Mode.Find]: {},
   [Mode.Replace]: {},
-  [Mode.InputGathering]: {}
+  [Mode.InputGathering]: {},
+  [Mode.VSCode]: {},
 }
 
 export let bindingContextVars: ContextStructure = {
@@ -54,7 +55,8 @@ export let bindingContextVars: ContextStructure = {
   [Mode.Match]: {},
   [Mode.Find]: {},
   [Mode.Replace]: {},
-  [Mode.InputGathering]: {}
+  [Mode.InputGathering]: {},
+  [Mode.VSCode]: {},
 }
 
 async function open_file(windows_uri: vscode.Uri, other_uri: vscode.Uri): Promise<string> {
@@ -309,13 +311,14 @@ export function addBinding(actions: Action[], cfg: BindingActionList[]) {
 
 export function loadDefaultConfig() {
   resetBindings()
-  /*
-    Unknown/custom
-  */
   addBinding([actionFuncs.window_mode], [[Mode.Normal, ["ctrl", "w"]]])
-  addBinding([actionFuncs.view_mode], [[Mode.Normal, ["shift", "z"]]])
 
-  addBinding([actionFuncs.delete_char_backward], [[Mode.Insert, ["backspace"]]])
+  // Deviation: After using and reading the differences between sticky view and view
+  // I still am not sure an actual difference exists
+  addBinding([actionFuncs.view_mode], [[Mode.Normal, ["z"]], [Mode.View, ["z"]]])
+  addBinding([actionFuncs.view_mode], [[Mode.Normal, ["shift", "z"]], [Mode.View, ["shift", "z"]]])
+
+  addBinding([actionFuncs.delete_char_backward], [[Mode.Insert, ["backspace"]], [Mode.Insert, ["ctrl", "h"]]])
   addBinding([actionFuncs.delete_char_forward], [[Mode.Insert, ["ctrl", "d"]]])
   addBinding([actionFuncs.delete_word_backward], [[Mode.Insert, ["ctrl", "w"]]])
   // Deviation: ctrl+backspace makes more sense to begin with; we keep alt+backspace too for people with such muscle memory
@@ -323,16 +326,20 @@ export function loadDefaultConfig() {
   addBinding([actionFuncs.delete_word_backward], [[Mode.Insert, ["alt", "backspace"]]])
   addBinding([actionFuncs.delete_word_forward], [[Mode.Insert, ["alt", "d"]]])
   addBinding([actionFuncs.delete_word_forward], [[Mode.Insert, ["alt", "delete"]]])
-  addBinding([actionFuncs.searchBackspaceOverride], [[Mode.SearchInProgress, ["backspace"]]])
+  addBinding([actionFuncs.completion], [[Mode.Insert, ["ctrl", "x"]]])
+  addBinding([actionFuncs.kill_to_line_start], [[Mode.Insert, ["ctrl", "u"]]])
+  // Deviation: ctrl+k reserved so use alt+u to remain related to the ctrl+u binding
+  addBinding([actionFuncs.kill_to_line_end], [[Mode.Insert, ["alt", "u"]]])
+
+  addBinding([actionFuncs.searchBackspaceOverride], [[Mode.SearchInProgress, ["backspace"]], [Mode.Select, ["backspace"]]])
 
   addBinding([actionFuncs.completion], [[Mode.Insert, ["ctrl", "x"]]])
-  addBinding([actionFuncs.incriment], [[Mode.Normal, ["ctrl", "a"]]])
-  addBinding([actionFuncs.decriment], [[Mode.Normal, ["ctrl", "x"]]])
+  addBinding([actionFuncs.incriment], [[Mode.Normal, ["ctrl", "a"]], [Mode.Visual, ["ctrl", "a"]]])
+  addBinding([actionFuncs.decriment], [[Mode.Normal, ["ctrl", "x"]], [Mode.Visual, ["ctrl", "x"]]])
 
-  addBinding([actionFuncs.yank_to_clipboard], [[Mode.Normal, ["y"]], [Mode.Visual, ["y"]], [Mode.VisualLine, ["y"]]])
   addBinding([actionFuncs.repeat_last_motion], [[Mode.Normal, ["alt", "."]], [Mode.Visual, ["alt", "."]], [Mode.VisualLine, ["alt", "."]]])
-  addBinding([actionFuncs.goto_line_end], [[Mode.Normal, ["end"]], [Mode.Visual, ["end"]], [Mode.VisualLine, ["end"]]])
-  addBinding([actionFuncs.goto_line_start], [[Mode.Normal, ["home"]], [Mode.Visual, ["home"]], [Mode.VisualLine, ["home"]]])
+  addBinding([actionFuncs.goto_line_end], [[Mode.Normal, ["end"]], [Mode.Visual, ["end"]], [Mode.Insert, ["end"]]])
+  addBinding([actionFuncs.goto_line_start], [[Mode.Normal, ["home"]], [Mode.Visual, ["home"]], [Mode.Insert, ["home"]]])
   addBinding([actionFuncs.page_up], [
     [Mode.Normal, ["ctrl", "b"]], [Mode.Normal, ["pageup"]],
     [Mode.Visual, ["ctrl", "b"]], [Mode.Visual, ["pageup"]],
@@ -353,7 +360,8 @@ export function loadDefaultConfig() {
   addBinding([actionFuncs.yank_to_clipboard], [[Mode.Normal, ["shift", "y"]], [Mode.Visual, ["shift", "y"]]])
   addBinding([actionFuncs.paste_after], [[Mode.Normal, ["p"]], [Mode.Visual, ["p"]]])
   addBinding([actionFuncs.paste_before], [[Mode.Normal, ["shift", "p"]], [Mode.Visual, ["shift", "p"]]])
-
+  addBinding([actionFuncs.split_selection_on_newline], [[Mode.Normal, ["alt", "s"]], [Mode.Visual, ["alt", "s"]]])
+  addBinding([actionFuncs.join_selections], [[Mode.Normal, ["shift", "j"]], [Mode.Visual, ["shift", "j"]]])
 
   addBinding([actionFuncs.match_mode], [[Mode.Normal, ["m"]], [Mode.Visual, ["m"]], [Mode.VisualLine, ["m"]]])
   addBinding([actionFuncs.match_brackets], [[Mode.Match, ["m"]]])
@@ -390,15 +398,16 @@ export function loadDefaultConfig() {
     [Mode.Match, ["backspace"]],
     [Mode.Find, ["escape"]],
     [Mode.Find, ["backspace"]],
-    [Mode.InputGathering, ["escape"]]
+    [Mode.InputGathering, ["escape"]],
+    [Mode.VSCode, ["escape"]]
   ])
   addBinding([actionFuncs.search_next], [[Mode.Normal, ["n"]]])
   addBinding([actionFuncs.search_prev], [[Mode.Normal, ["shift", "n"]]])
   addBinding([actionFuncs.search_selection], [[Mode.Normal, ["*"]]])
   addBinding([actionFuncs.insert_mode], [[Mode.Normal, ["i"]], [Mode.Visual, ["i"]], [Mode.VisualLine, ["i"]], [Mode.Occurrence, ["i"]]])
   addBinding([actionFuncs.append_mode], [[Mode.Normal, ["a"]], [Mode.Visual, ["a"]], [Mode.VisualLine, ["a"]], [Mode.Occurrence, ["a"]]])
-  addBinding([actionFuncs.insert_at_line_start], [[Mode.Normal, ["shift", "i"]]])
-  addBinding([actionFuncs.insert_at_line_end], [[Mode.Normal, ["shift", "a"]]])
+  addBinding([actionFuncs.insert_at_line_start], [[Mode.Normal, ["shift", "i"]], [Mode.Visual, ["shift", "i"]]])
+  addBinding([actionFuncs.insert_at_line_end], [[Mode.Normal, ["shift", "a"]], [Mode.Visual, ["shift", "a"]]])
   addBinding([actionFuncs.search], [[Mode.Normal, ["/"]]])
   addBinding([actionFuncs.rsearch], [[Mode.Normal, ["?"]]])
   addBinding([actionFuncs.select_regex], [[Mode.Normal, ["s"]], [Mode.Visual, ["s"]]])
@@ -411,15 +420,18 @@ export function loadDefaultConfig() {
   addBinding([actionFuncs.switch_case], [[Mode.Normal, ["~"]]])
   addBinding([actionFuncs.select_mode], [[Mode.Normal, ["v"]]])
   addBinding([actionFuncs.open_below], [[Mode.Normal, ["o"]], [Mode.Visual, ["o"]], [Mode.VisualLine, ["o"]]])
-  addBinding([actionFuncs.open_below], [[Mode.Normal, ["shift", "o"]], [Mode.Visual, ["shift", "o"]], [Mode.VisualLine, ["shift", "o"]]])
+  addBinding([actionFuncs.open_above], [[Mode.Normal, ["shift", "o"]], [Mode.Visual, ["shift", "o"]], [Mode.VisualLine, ["shift", "o"]]])
   addBinding([actionFuncs.undo], [[Mode.Normal, ["u"]], [Mode.Visual, ["u"]], [Mode.VisualLine, ["u"]]])
   addBinding([actionFuncs.redo], [[Mode.Normal, ["shift", "u"]], [Mode.Visual, ["shift", "u"]], [Mode.VisualLine, ["shift", "u"]]])
   addBinding([actionFuncs.extend_line_below], [[Mode.Normal, ["x"]], [Mode.Visual, ["x"]]])
+  addBinding([actionFuncs.extend_to_line_bounds], [[Mode.Normal, ["shift", "x"]], [Mode.Visual, ["shift", "x"]]])
+  addBinding([actionFuncs.shrink_to_line_bounds], [[Mode.Normal, ["alt", "x"]], [Mode.Visual, ["alt", "x"]]])
   addBinding([actionFuncs.collapse_selection], [[Mode.Normal, [";"]], [Mode.Visual, [";"]]])
+  addBinding([actionFuncs.change_selection], [[Mode.Normal, ["c"]], [Mode.Visual, ["c"]], [Mode.VisualLine, ["c"]]])
+  addBinding([actionFuncs.change_selection_noyank], [[Mode.Normal, ["alt", "c"]], [Mode.Visual, ["alt", "c"]], [Mode.VisualLine, ["alt", "c"]]])
   addBinding([actionFuncs.delete_selection], [[Mode.Normal, ["d"]], [Mode.Visual, ["d"]], [Mode.VisualLine, ["d"]]])
-  addBinding([actionFuncs.kill_to_line_start], [[Mode.Insert, ["ctrl", "u"]]])
-  // Deviation: ctrl+k reserved so use alt+u to remain related to the ctrl+u binding
-  addBinding([actionFuncs.kill_to_line_end], [[Mode.Insert, ["alt", "u"]]])
+  addBinding([actionFuncs.delete_selection_noyank], [[Mode.Normal, ["alt", "d"]], [Mode.Visual, ["alt", "d"]], [Mode.VisualLine, ["alt", "d"]]])
+  addBinding([actionFuncs.replace_with_yanked], [[Mode.Normal, ["shift", "r"]], [Mode.Visual, ["shift", "r"]], [Mode.VisualLine, ["shift", "r"]]])
 
   addBinding([actionFuncs.find_till_char], [[Mode.Normal, ["t"]], [Mode.Visual, ["t"]]])
   addBinding([actionFuncs.find_next_char], [[Mode.Normal, ["f"]], [Mode.Visual, ["f"]]])
@@ -458,8 +470,10 @@ export function loadDefaultConfig() {
   addBinding([actionFuncs.goto_window_top], [[Mode.Normal, ["g", "t"]], [Mode.Visual, ["g", "t"]], [Mode.VisualLine, ["g", "t"]]])
   addBinding([actionFuncs.goto_window_center], [[Mode.Normal, ["g", "c"]], [Mode.Visual, ["g", "c"]], [Mode.VisualLine, ["g", "c"]]])
   addBinding([actionFuncs.goto_window_bottom], [[Mode.Normal, ["g", "b"]], [Mode.Visual, ["g", "b"]], [Mode.VisualLine, ["g", "b"]]])
-  addBinding([actionFuncs.move_line_up], [[Mode.Normal, ["g", "k"]]])
-  addBinding([actionFuncs.move_line_down], [[Mode.Normal, ["g", "j"]]])
+  // TODO: Deviation: helix says these don't move down "visually" but I can't find a difference in their behavior
+  // from j/k movements
+  addBinding([actionFuncs.move_visual_line_up], [[Mode.Normal, ["g", "k"]]])
+  addBinding([actionFuncs.move_visual_line_down], [[Mode.Normal, ["g", "j"]]])
   addBinding([actionFuncs.goto_last_accessed_file], [[Mode.Normal, ["g", "a"]]])
   addBinding([actionFuncs.goto_last_modified_file], [[Mode.Normal, ["g", "m"]]])
   addBinding([actionFuncs.goto_next_buffer], [[Mode.Normal, ["g", "n"]]])
@@ -469,6 +483,7 @@ export function loadDefaultConfig() {
     Space menu
   */
   addBinding([actionFuncs.file_picker], [[Mode.Normal, [" ", "f"]]])
+  addBinding([actionFuncs.file_picker_in_current_directory], [[Mode.Normal, [" ", "shift", "f"]]])
   addBinding([actionFuncs.debugView], [[Mode.Normal, [" ", "g"]]])
   addBinding([actionFuncs.hover], [[Mode.Normal, [" ", "k"]]])
   addBinding([actionFuncs.symbol_picker], [[Mode.Normal, [" ", "s"]]])
@@ -479,17 +494,22 @@ export function loadDefaultConfig() {
   addBinding([actionFuncs.code_action], [[Mode.Normal, [" ", "a"]]])
   addBinding([actionFuncs.window_mode], [[Mode.Normal, [" ", "w"]]])
   addBinding([actionFuncs.global_search], [[Mode.Normal, [" ", "/"]]])
-  addBinding([actionFuncs.command_palette], [[Mode.Normal, [" ", "shift", "-"]]])
+  addBinding([actionFuncs.command_palette], [[Mode.Normal, [" ", "shift", "/"]]])
+  addBinding([actionFuncs.yank_to_clipboard], [[Mode.Normal, [" ", "y"]]])
+  addBinding([actionFuncs.paste_clipboard_after], [[Mode.Normal, [" ", "p"]]])
+  addBinding([actionFuncs.paste_clipboard_before], [[Mode.Normal, [" ", "shift", "p"]]])
+  addBinding([actionFuncs.replace_selections_with_clipboard], [[Mode.Normal, [" ", "shift", "r"]]])
 
   /*
     View menu
   */
-  addBinding([actionFuncs.goto_window_center], [[Mode.View, ["c"]]])
-  addBinding([actionFuncs.goto_window_center], [[Mode.View, ["m"]]])
-  addBinding([actionFuncs.goto_window_top], [[Mode.View, ["t"]]])
-  addBinding([actionFuncs.goto_window_bottom], [[Mode.View, ["b"]]])
-  addBinding([actionFuncs.move_line_up], [[Mode.View, ["k"]]])
-  addBinding([actionFuncs.move_line_down], [[Mode.View, ["j"]]])
+  addBinding([actionFuncs.align_view_center], [[Mode.View, ["c"]], [Mode.View, ["z"]]])
+  // Deviation: aligning to middle will center the line's width as well, we do not do this yet
+  addBinding([actionFuncs.align_view_center], [[Mode.View, ["m"]]])
+  addBinding([actionFuncs.align_view_top], [[Mode.View, ["t"]]])
+  addBinding([actionFuncs.align_view_bottom], [[Mode.View, ["b"]]])
+  addBinding([actionFuncs.scroll_up], [[Mode.View, ["k"]], [Mode.View, ["down"]]])
+  addBinding([actionFuncs.scroll_down], [[Mode.View, ["j"]], [Mode.View, ["up"]]])
 
   /*
     Brackets
@@ -498,10 +518,10 @@ export function loadDefaultConfig() {
   addBinding([actionFuncs.goto_prev_diag], [[Mode.Normal, ["[", "d"]]])
   addBinding([actionFuncs.goto_last_diag], [[Mode.Normal, ["]", "shift", "d"]]])
   addBinding([actionFuncs.goto_first_diag], [[Mode.Normal, ["[", "shift", "d"]]])
-  addBinding([actionFuncs.goto_next_change], [[Mode.Normal, ["[", "g"]]])
-  addBinding([actionFuncs.goto_prev_change], [[Mode.Normal, ["]", "g"]]])
   addBinding([actionFuncs.goto_next_function], [[Mode.Normal, ["[", "f"]]])
   addBinding([actionFuncs.goto_prev_function], [[Mode.Normal, ["]", "f"]]])
+  addBinding([actionFuncs.goto_next_change], [[Mode.Normal, ["[", "g"]]])
+  addBinding([actionFuncs.goto_prev_change], [[Mode.Normal, ["]", "g"]]])
   addBinding([actionFuncs.goto_next_paragraph], [[Mode.Normal, ["]", "p"]], [Mode.Visual, ["]", "p"]], [Mode.VisualLine, ["]", "p"]]])
   addBinding([actionFuncs.goto_prev_paragraph], [[Mode.Normal, ["[", "p"]], [Mode.Visual, ["[", "p"]], [Mode.VisualLine, ["[", "p"]]])
 
@@ -514,24 +534,27 @@ export function loadDefaultConfig() {
   addBinding([actionFuncs.moveEditorLeft], [[Mode.Window, ["m", "p"]]])
   addBinding([actionFuncs.moveEditorNewWindow], [[Mode.Window, ["m", "w"]]])
   addBinding([actionFuncs.moveEditorMainWindow], [[Mode.Window, ["m", "j"]]])
+  addBinding([actionFuncs.vscode_mode], [[Mode.Normal, ["shift", "escape"]]])
+  addBinding([actionFuncs.normal_mode], [[Mode.VSCode, ["shift", "escape"]]])
+
   // Helix
-  addBinding([actionFuncs.rotate_view], [[Mode.Window, ["w"]]])
-  addBinding([actionFuncs.vsplit], [[Mode.Window, ["v"]]])
-  addBinding([actionFuncs.hsplit], [[Mode.Window, ["s"]]])
+  addBinding([actionFuncs.rotate_view], [[Mode.Window, ["w"]], [Mode.Window, ["ctrl", "w"]]])
+  addBinding([actionFuncs.vsplit], [[Mode.Window, ["v"]], [Mode.Window, ["ctrl", "v"]]])
+  addBinding([actionFuncs.hsplit], [[Mode.Window, ["s"]], [Mode.Window, ["ctrl", "s"]]])
   addBinding([actionFuncs.goto_file], [[Mode.Window, ["f"]]])
   addBinding([actionFuncs.goto_file], [[Mode.Window, ["shift", "f"]]])
-  addBinding([actionFuncs.jump_view_left], [[Mode.Window, ["h"]]])
-  addBinding([actionFuncs.jump_view_right], [[Mode.Window, ["l"]]])
-  addBinding([actionFuncs.jump_view_down], [[Mode.Window, ["j"]]])
-  addBinding([actionFuncs.jump_view_up], [[Mode.Window, ["k"]]])
-  addBinding([actionFuncs.wclose], [[Mode.Window, ["q"]]])
+  addBinding([actionFuncs.jump_view_left], [[Mode.Window, ["h"]], [Mode.Window, ["ctrl", "h"]]])
+  addBinding([actionFuncs.jump_view_right], [[Mode.Window, ["l"]], [Mode.Window, ["ctrl", "l"]]])
+  addBinding([actionFuncs.jump_view_down], [[Mode.Window, ["j"]], [Mode.Window, ["ctrl", "j"]]])
+  addBinding([actionFuncs.jump_view_up], [[Mode.Window, ["k"]], [Mode.Window, ["ctrl", "k"]]])
+  addBinding([actionFuncs.wclose], [[Mode.Window, ["q"]], [Mode.Window, ["ctrl", "q"]]])
   // For some reason, a vim alias
   addBinding([actionFuncs.wclose], [[Mode.Window, ["c"]]])
   addBinding([actionFuncs.wonly], [[Mode.Window, ["o"]]])
   addBinding([actionFuncs.swap_view_left], [[Mode.Window, ["shift", "h"]]])
   addBinding([actionFuncs.swap_view_right], [[Mode.Window, ["shift", "l"]]])
   addBinding([actionFuncs.swap_view_up], [[Mode.Window, ["shift", "k"]]])
-  addBinding([actionFuncs.swap_view_down], [[Mode.Window, ["shift", "l"]]])
+  addBinding([actionFuncs.swap_view_down], [[Mode.Window, ["shift", "j"]]])
   addBinding([actionFuncs.newFile], [[Mode.Window, ["n"]]])
   addBinding([actionFuncs.toggleSidebarVisibility], [[Mode.Window, ["b"]]])
 }

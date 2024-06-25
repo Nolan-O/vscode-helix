@@ -27,11 +27,9 @@ import * as inputTools from "../src/input_utils";
     for (let j = 0; j < keys.length; j++) {
       const key = keys[j]
       const char_sanitized = inputTools.sanitizeCharForContext(key)
-      /*       if (modifiers.length === 1 && modifiers[0] === "shift" && inputTools.isSymbolKey(key)) {
-              continue
-            } */
+      const escaped = inputTools.escapeLiteral(key)
 
-      let entry = `commands.registerCommand("${command_prefix}_${char_sanitized}", () => { pushKP([${pushed_strs}]); globalhelixState.typeSubscription(globalhelixState, "${key}"); }),\n`
+      let entry = `commands.registerCommand("${command_prefix}_${char_sanitized}", () => { pushKP([${pushed_strs}]); globalhelixState.typeSubscription(globalhelixState, "${escaped}"); }),\n`
       out += entry
     }
   }

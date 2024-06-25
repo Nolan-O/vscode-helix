@@ -103,7 +103,7 @@ export function vimToVscodeVisualLineSelection(
   }
 }
 
-export function toLinewiseSelection(document: vscode.TextDocument, selection: vscode.Selection) {
+export function toOuterLinewiseSelection(document: vscode.TextDocument, selection: vscode.Selection) {
   const anchorLineLength = document.lineAt(selection.anchor.line).text.length;
   const activeLineLength = document.lineAt(selection.active.line).text.length;
 
@@ -117,6 +117,33 @@ export function toLinewiseSelection(document: vscode.TextDocument, selection: vs
       selection.anchor.with({ character: 0 }),
       selection.active.with({ character: activeLineLength }),
     );
+  }
+}
+
+export function toInnerLinewiseSelection(document: vscode.TextDocument, selection: vscode.Selection) {
+  const anchorLineLength = document.lineAt(selection.anchor.line).text.length;
+  const activeLineLength = document.lineAt(selection.active.line).text.length;
+  let anchor = selection.anchor
+  let active = selection.active
+
+  if (active.isBefore(anchor)) {
+    if (anchor.character !== 0 && anchor.character !== anchorLineLength) {
+      const len = document.lineAt(anchor.line - 1).text.length
+      anchor = anchor.with({ line: anchor.line - 1, character: len })
+    }
+    if (active.character !== 0)
+      active = active.with({ line: active.line + 1, character: 0 })
+
+    return new vscode.Selection(anchor, active);
+  } else {
+    if (active.character !== 0 && active.character !== activeLineLength) {
+      const len = document.lineAt(active.line - 1).text.length
+      active = active.with({ line: active.line - 1, character: len })
+    }
+    if (anchor.character !== 0)
+      anchor = anchor.with({ line: anchor.line + 1, character: 0 })
+
+    return new vscode.Selection(anchor, active);
   }
 }
 

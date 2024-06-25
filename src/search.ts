@@ -119,47 +119,76 @@ export class SearchState {
 
   findInstancesInDocument(helixState: HelixState): void {
     const editor = helixState.editorState.activeEditor;
-    if (editor) {
-      const document = editor.document;
-      const flags = this.getFlags();
-      const searchRegex = new RegExp(this.getNormalisedSearchString(), flags);
-      const match = searchRegex.exec(document.getText());
-      let startPos: vscode.Position | undefined;
-      let endPos: vscode.Position | undefined;
-      if (match) {
-        startPos = document.positionAt(match.index);
-        endPos = document.positionAt(match.index + match[0].length);
-        editor.selection = new vscode.Selection(startPos, endPos);
-        // We should also move the viewport to our match if there is one
-        editor.revealRange(new vscode.Range(startPos, endPos));
-      } else {
-        // If we can't find a match view the last saved position
-        if (this.lastActivePosition) {
-          editor.selection = new vscode.Selection(this.lastActivePosition, this.lastActivePosition);
-          editor.revealRange(new vscode.Range(this.lastActivePosition, this.lastActivePosition));
-        }
+    if (editor === undefined) {
+      return
+    }
+
+    const document = editor.document;
+    const flags = this.getFlags();
+
+    let searchRegex
+    try {
+      searchRegex = new RegExp(this.getNormalisedSearchString(), flags);
+    } catch (e) {
+      return;
+    }
+
+    const match = searchRegex.exec(document.getText());
+    let startPos: vscode.Position | undefined;
+    let endPos: vscode.Position | undefined;
+    if (match) {
+      startPos = document.positionAt(match.index);
+      endPos = document.positionAt(match.index + match[0].length);
+      editor.selection = new vscode.Selection(startPos, endPos);
+      // We should also move the viewport to our match if there is one
+      editor.revealRange(new vscode.Range(startPos, endPos));
+    } else {
+      // If we can't find a match view the last saved position
+      if (this.lastActivePosition) {
+        editor.selection = new vscode.Selection(this.lastActivePosition, this.lastActivePosition);
+        editor.revealRange(new vscode.Range(this.lastActivePosition, this.lastActivePosition));
       }
     }
   }
 
   findInstancesInRange(helixState: HelixState): void {
     const editor = helixState.editorState.activeEditor;
-    if (editor) {
-      const document = editor.document;
-      const foundRanges: vscode.Range[] = [];
-      const flags = this.getFlags();
-      const searchRegex = new RegExp(this.getNormalisedSearchString(), flags);
-      let match;
-      while ((match = searchRegex.exec(document.getText()))) {
-        const startPos = document.positionAt(match.index);
-        const endPos = document.positionAt(match.index + match[0].length);
-        const foundRange = new vscode.Range(startPos, endPos);
-        if (helixState.currentSelection?.contains(foundRange)) {
-          foundRanges.push(foundRange);
-        }
-      }
-      editor.selections = foundRanges.map((range) => new vscode.Selection(range.start, range.end));
+    if (editor === undefined) {
+      return
     }
+
+    if (helixState.currentSelection === null) {
+      console.warn("Tried to search selection without a set selection")
+      ModeEnterFuncs[Mode.Normal](helixState);
+      return
+    }
+
+    const document = editor.document;
+    const foundRanges: vscode.Range[] = [];
+    const flags = this.getFlags();
+
+    let searchRegex
+    try {
+      searchRegex = new RegExp(this.getNormalisedSearchString(), flags);
+    } catch (e) {
+      return;
+    }
+
+    let match
+    const text = document.getText()
+    while ((match = searchRegex.exec(text))) {
+      const startPos = document.positionAt(match.index);
+      const endPos = document.positionAt(match.index + match[0].length);
+      const foundRange = new vscode.Range(startPos, endPos);
+      if (helixState.currentSelection?.contains(foundRange)) {
+        foundRanges.push(foundRange);
+      }
+
+      if (match[0].length === 0)
+        searchRegex.lastIndex++
+    }
+
+    editor.selections = foundRanges.map((range) => new vscode.Selection(range.start, range.end));
   }
 
   /** Go to the previous search result in our search history */

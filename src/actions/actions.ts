@@ -15,11 +15,12 @@ import { flashYankHighlight } from '../yank_highlight';
 import { paragraphBackward, paragraphForward } from '../paragraph_utils';
 import { setVisualLineSelections } from '../visual_line_utils';
 import { setVisualSelections } from '../visual_utils';
-import { toLinewiseSelection, vscodeToVimVisualSelection } from '../selection_utils';
+import { toOuterLinewiseSelection, toInnerLinewiseSelection, vscodeToVimVisualSelection } from '../selection_utils';
 import { whitespaceWordRanges, wordRanges } from '../word_utils';
 import * as typeHandlers from '../type_handler';
 import * as motions from './motions';
 import * as operatorRanges from './operator_ranges';
+import * as path from 'path'
 
 export enum Direction {
   Up,
@@ -43,11 +44,6 @@ export const actionFuncs: { [key: string]: Action } = {
   */
   normal_mode: (helixState, editor) => {
     if (helixState.mode === Mode.Insert || helixState.mode === Mode.Occurrence) {
-      editor.selections = editor.selections.map((selection) => {
-        const newPosition = positionUtils.left(selection.active);
-        return new vscode.Selection(newPosition, newPosition);
-      });
-
       ModeEnterFuncs[Mode.Normal](helixState);
       setModeCursorStyle(helixState.mode, editor);
       setTypeSubscription(helixState, typeHandlers.typeHandler);
@@ -86,22 +82,38 @@ export const actionFuncs: { [key: string]: Action } = {
           vscode.TextEditorRevealType.InCenterIfOutsideViewport,
         );
       }
-    } else if (helixState.mode === Mode.View) {
+    } else {
       ModeEnterFuncs[Mode.Normal](helixState);
     }
 
     helixState.keysPressed = [];
+  },
+  vscode_mode: (helixState, editor) => {
+    ModeEnterFuncs[Mode.VSCode](helixState);
+    setModeCursorStyle(helixState.mode, editor);
   },
   select_mode: (vimState, editor) => {
     ModeEnterFuncs[Mode.Visual](vimState);
     setModeCursorStyle(vimState.mode, editor);
   },
   insert_mode: (vimState, editor) => {
+    editor.selections = editor.selections.map((selection) => {
+      return new vscode.Selection(selection.start, selection.start);
+    });
+
     ModeEnterFuncs[Mode.Insert](vimState);
     setModeCursorStyle(vimState.mode, editor);
     removeTypeSubscription(vimState);
   },
   append_mode: (vimState, editor) => {
+    editor.selections = editor.selections.map((selection) => {
+      let newPosition = selection.end
+      if (selection.anchor.compareTo(selection.active) <= 0)
+        newPosition = positionUtils.rightWrap(editor.document, selection.end);
+
+      return new vscode.Selection(newPosition, newPosition);
+    });
+
     ModeEnterFuncs[Mode.Insert](vimState, false);
     setModeCursorStyle(vimState.mode, editor);
     removeTypeSubscription(vimState);
@@ -118,7 +130,7 @@ export const actionFuncs: { [key: string]: Action } = {
     // if we enter select mode we should save the current selection
     helixState.currentSelection = editor.selection;
   },
-  enterWindowMode: (helixState) => {
+  window_mode: (helixState) => {
     ModeEnterFuncs[Mode.Window](helixState);
   },
   view_mode: (helixState) => {
@@ -150,6 +162,16 @@ export const actionFuncs: { [key: string]: Action } = {
       )
     }))
   },
+  extend_to_line_bounds: (vimState: HelixState, editor) => {
+    editor.selections = editor.selections.map((sel => {
+      return toOuterLinewiseSelection(editor.document, sel)
+    }))
+  },
+  shrink_to_line_bounds: (vimState: HelixState, editor) => {
+    editor.selections = editor.selections.map((sel => {
+      return toInnerLinewiseSelection(editor.document, sel)
+    }))
+  },
   addSelectionToPreviousFindMatch: () => {
     vscode.commands.executeCommand('editor.action.addSelectionToPreviousFindMatch');
   },
@@ -173,6 +195,39 @@ export const actionFuncs: { [key: string]: Action } = {
       helixState.searchState.selectModeActive = false;
       return;
     }
+  },
+  split_selection_on_newline: (helixState, editor) => {
+    let selections = []
+    for (const sel of editor.selections) {
+      for (let i = sel.start.line; i <= sel.end.line; i++) {
+        if (i === sel.start.line) {
+          const lineLen = editor.document.lineAt(i).text.length;
+          selections.push(
+            new vscode.Selection(
+              sel.start,
+              sel.start.with({ character: lineLen - 1 })
+            )
+          )
+        } else if (i === sel.end.line) {
+          selections.push(
+            new vscode.Selection(
+              sel.end.with({ character: 0 }),
+              sel.end.translate({ characterDelta: -1 })
+            )
+          )
+        } else {
+          const lineLen = editor.document.lineAt(i).text.length;
+          selections.push(
+            new vscode.Selection(
+              new vscode.Position(i, 0),
+              new vscode.Position(i, (lineLen - 1 < 0 ? 0 : lineLen - 1))
+            )
+          )
+        }
+      }
+    }
+
+    editor.selections = selections
   },
   insert_at_line_start: (vimState, editor) => {
     editor.selections = editor.selections.map((selection) => {
@@ -256,6 +311,12 @@ export const actionFuncs: { [key: string]: Action } = {
   },
   paste_after: putAfter,
   paste_before: putBefore,
+  paste_clipboard_after: (vimState, editor) => {
+    putAfter(vimState, editor, true);
+  },
+  paste_clipboard_before: (vimState, editor) => {
+    putBefore(vimState, editor, true);
+  },
   undo: () => {
     vscode.commands.executeCommand('undo');
   },
@@ -416,32 +477,32 @@ export const actionFuncs: { [key: string]: Action } = {
     }
   },
   goto_last_line: (helixState) => {
-    if (helixState.mode === Mode.Normal) {
-      vscode.commands.executeCommand('cursorBottom');
-    } else if (helixState.mode === Mode.Visual) {
+    if (helixState.mode === Mode.Visual) {
       vscode.commands.executeCommand('cursorBottomSelect');
+    } else {
+      vscode.commands.executeCommand('cursorBottom');
     }
   },
 
   goto_line_start: (helixState) => {
-    if (helixState.mode === Mode.Normal) {
-      vscode.commands.executeCommand('cursorLineStart');
-    } else if (helixState.mode === Mode.Visual) {
+    if (helixState.mode === Mode.Visual) {
       vscode.commands.executeCommand('cursorLineStartSelect');
+    } else {
+      vscode.commands.executeCommand('cursorLineStart');
     }
   },
   goto_line_end: (helixState) => {
-    if (helixState.mode === Mode.Normal) {
-      vscode.commands.executeCommand('cursorLineEnd');
-    } else if (helixState.mode === Mode.Visual) {
+    if (helixState.mode === Mode.Visual) {
       vscode.commands.executeCommand('cursorLineEndSelect');
+    } else {
+      vscode.commands.executeCommand('cursorLineEnd');
     }
   },
   goto_first_nonwhitespace: (helixState) => {
-    if (helixState.mode === Mode.Normal) {
-      vscode.commands.executeCommand('cursorHome');
-    } else if (helixState.mode === Mode.Visual) {
+    if (helixState.mode === Mode.Visual) {
       vscode.commands.executeCommand('cursorHomeSelect');
+    } else {
+      vscode.commands.executeCommand('cursorHome');
     }
   },
   goto_definition: () => {
@@ -454,10 +515,10 @@ export const actionFuncs: { [key: string]: Action } = {
     vscode.commands.executeCommand('editor.action.goToReferences');
   },
   page_up: (helixState) => {
-    if (helixState.mode === Mode.Normal) {
-      vscode.commands.executeCommand('cursorPageUp');
-    } else if (helixState.mode === Mode.Visual) {
+    if (helixState.mode === Mode.Visual) {
       vscode.commands.executeCommand('cursorPageUpSelect');
+    } else {
+      vscode.commands.executeCommand('cursorPageUp');
     }
   },
   page_down: (helixState) => {
@@ -490,14 +551,14 @@ export const actionFuncs: { [key: string]: Action } = {
     vscode.commands.executeCommand('workbench.action.navigateBack');
   },
   gotoWindowCenter: (helixState) => {
-    if (helixState.mode === Mode.Normal) {
-      vscode.commands.executeCommand('cursorMove', {
-        to: 'viewPortCenter',
-      });
-    } else if (helixState.mode === Mode.Visual) {
+    if (helixState.mode === Mode.Visual) {
       vscode.commands.executeCommand('cursorMove', {
         to: 'viewPortCenter',
         select: true,
+      });
+    } else {
+      vscode.commands.executeCommand('cursorMove', {
+        to: 'viewPortCenter',
       });
     }
   },
@@ -533,6 +594,21 @@ export const actionFuncs: { [key: string]: Action } = {
    */
   file_picker: () => {
     vscode.commands.executeCommand('workbench.action.quickOpen');
+  },
+  // Deviation: helix *seems* to do the same thing as normal file picker for this
+  // but this is a cool feature and we should make it work
+  file_picker_in_current_directory: (helixState, editor) => {
+    const documentFolder = path.dirname(editor.document.uri.path)
+    const wsFolder = vscode.workspace.getWorkspaceFolder(editor.document.uri)
+
+    if (wsFolder && documentFolder) {
+      let prefix
+      try { prefix = path.relative(wsFolder.uri.path, documentFolder) } catch { return }
+      vscode.commands.executeCommand('workbench.action.quickOpen', prefix);
+    } else {
+      // fallback to normal file picker
+      vscode.commands.executeCommand('workbench.action.quickOpen', "index.js");
+    }
   },
   debugView: () => {
     vscode.commands.executeCommand('workbench.debug.action.focusBreakpointsView');
@@ -682,7 +758,7 @@ export const actionFuncs: { [key: string]: Action } = {
     // If the cursor is not on a number, then do nothing
     editor.edit((editBuilder) => {
       editor.selections.forEach((selection) => {
-        const translatedSelection = selection.with(selection.start, selection.start.translate(0, 1));
+        const translatedSelection = selection.with(selection.active, selection.active.translate(0, 1));
         const text = editor.document.getText(translatedSelection);
         const number = parseInt(text, 10);
         if (!isNaN(number)) {
@@ -699,11 +775,11 @@ export const actionFuncs: { [key: string]: Action } = {
     // If the cursor is not on a number, then do nothing
     editor.edit((editBuilder) => {
       editor.selections.forEach((selection) => {
-        const translatedSelection = selection.with(selection.start, selection.start.translate(0, 1));
+        const translatedSelection = selection.with(selection.active, selection.active.translate(0, 1));
         const text = editor.document.getText(translatedSelection);
         const number = parseInt(text, 10);
         if (!isNaN(number)) {
-          editBuilder.replace(translatedSelection, (number - 1).toString());
+          editBuilder.replace(translatedSelection, (number - 1).toString())
         }
       });
     });
@@ -717,12 +793,6 @@ export const actionFuncs: { [key: string]: Action } = {
     setModeCursorStyle(helixState.mode, editor);
     removeTypeSubscription(helixState);
   },
-  // Delete match
-  deleteMatch: (helixState, editor) => {
-    const ranges = editor.selections.map((selection) => selection.with());
-    yank(helixState, editor, ranges, false);
-    delete_(editor, ranges, false);
-  },
 
   match_brackets: (helixState, editor) => {
     enterPreviousMode(helixState);
@@ -734,16 +804,13 @@ export const actionFuncs: { [key: string]: Action } = {
     }
   },
   surround_add: (helixState, editor) => {
-    ModeEnterFuncs[Mode.InputGathering](helixState);
-    setTypeSubscription(helixState, typeHandlers.surroundAddTypeHandler)
+    ModeEnterFuncs[Mode.InputGathering](helixState, typeHandlers.surroundAddTypeHandler);
   },
   surround_replace: (helixState, editor) => {
-    ModeEnterFuncs[Mode.InputGathering](helixState);
-    setTypeSubscription(helixState, typeHandlers.surroundReplaceTypeHandler)
+    ModeEnterFuncs[Mode.InputGathering](helixState, typeHandlers.surroundReplaceTypeHandler);
   },
   surround_delete: (helixState, editor) => {
-    ModeEnterFuncs[Mode.InputGathering](helixState);
-    setTypeSubscription(helixState, typeHandlers.surroundDeleteTypeHandler)
+    ModeEnterFuncs[Mode.InputGathering](helixState, typeHandlers.surroundDeleteTypeHandler);
   },
 
   // Selection commands for match mode which, while making up individual actions, do not have individual helix bindings
@@ -801,7 +868,7 @@ export const actionFuncs: { [key: string]: Action } = {
       motions.execMotion(vimState, editor, ({ document, position }) => {
         return positionUtils.rightWrap(document, position);
       }, Direction.Unknown);
-    } else if (vimState.mode === Mode.Normal) {
+    } else {
       vscode.commands.executeCommand('cursorRight');
     }
   },
@@ -810,18 +877,12 @@ export const actionFuncs: { [key: string]: Action } = {
       motions.execMotion(vimState, editor, ({ document, position }) => {
         return positionUtils.leftWrap(document, position);
       }, Direction.Unknown);
-    } else if (vimState.mode === Mode.Normal) {
+    } else {
       vscode.commands.executeCommand('cursorLeft');
     }
   },
   move_visual_line_up: (vimState, editor) => {
-    if (vimState.mode === Mode.Normal) {
-      vscode.commands.executeCommand('cursorMove', {
-        to: 'up',
-        by: 'wrappedLine',
-        value: vimState.resolveCount(),
-      });
-    } else if (vimState.mode === Mode.Visual) {
+    if (vimState.mode === Mode.Visual) {
       const originalSelections = editor.selections;
 
       vscode.commands
@@ -840,16 +901,16 @@ export const actionFuncs: { [key: string]: Action } = {
         .then(() => {
           setVisualLineSelections(editor);
         });
-    }
-  },
-  move_visual_line_down: (vimState, editor) => {
-    if (vimState.mode === Mode.Normal) {
+    } else {
       vscode.commands.executeCommand('cursorMove', {
-        to: 'down',
+        to: 'up',
         by: 'wrappedLine',
         value: vimState.resolveCount(),
       });
-    } else if (vimState.mode === Mode.Visual) {
+    }
+  },
+  move_visual_line_down: (vimState, editor) => {
+    if (vimState.mode === Mode.Visual) {
       const originalSelections = editor.selections;
 
       vscode.commands
@@ -865,6 +926,12 @@ export const actionFuncs: { [key: string]: Action } = {
     } else if (vimState.mode === Mode.VisualLine) {
       vscode.commands.executeCommand('cursorMove', { to: 'down', by: 'line', select: true }).then(() => {
         setVisualLineSelections(editor);
+      });
+    } else {
+      vscode.commands.executeCommand('cursorMove', {
+        to: 'down',
+        by: 'wrappedLine',
+        value: vimState.resolveCount(),
       });
     }
   },
@@ -901,17 +968,42 @@ export const actionFuncs: { [key: string]: Action } = {
     }, Direction.Left);
   },
   goto_window_top: (vimState, editor) => {
-    if (vimState.mode === Mode.Normal) {
+    if (vimState.mode === Mode.Visual) {
+      const originalSelections = editor.selections;
+
+      vscode.commands
+        .executeCommand('cursorMove', {
+          to: 'viewPortTop',
+          by: 'line',
+          select: true,
+        })
+        .then(() => {
+          setVisualSelections(editor, originalSelections);
+        });
+    } else if (vimState.mode === Mode.VisualLine) {
+      vscode.commands
+        .executeCommand('cursorMove', {
+          to: 'viewPortTop',
+          by: 'line',
+          select: true,
+        })
+        .then(() => {
+          setVisualLineSelections(editor);
+        });
+    } else {
       vscode.commands.executeCommand('cursorMove', {
         to: 'viewPortTop',
         by: 'line',
       });
-    } else if (vimState.mode === Mode.Visual) {
+    }
+  },
+  goto_window_center: (vimState, editor) => {
+    if (vimState.mode === Mode.Visual) {
       const originalSelections = editor.selections;
 
       vscode.commands
         .executeCommand('cursorMove', {
-          to: 'viewPortTop',
+          to: 'viewPortCenter',
           by: 'line',
           select: true,
         })
@@ -921,27 +1013,27 @@ export const actionFuncs: { [key: string]: Action } = {
     } else if (vimState.mode === Mode.VisualLine) {
       vscode.commands
         .executeCommand('cursorMove', {
-          to: 'viewPortTop',
+          to: 'viewPortCenter',
           by: 'line',
           select: true,
         })
         .then(() => {
           setVisualLineSelections(editor);
         });
-    }
-  },
-  goto_window_center: (vimState, editor) => {
-    if (vimState.mode === Mode.Normal) {
+    } else {
       vscode.commands.executeCommand('cursorMove', {
         to: 'viewPortCenter',
         by: 'line',
       });
-    } else if (vimState.mode === Mode.Visual) {
+    }
+  },
+  goto_window_bottom: (vimState, editor) => {
+    if (vimState.mode === Mode.Visual) {
       const originalSelections = editor.selections;
 
       vscode.commands
         .executeCommand('cursorMove', {
-          to: 'viewPortCenter',
+          to: 'viewPortBottom',
           by: 'line',
           select: true,
         })
@@ -951,44 +1043,102 @@ export const actionFuncs: { [key: string]: Action } = {
     } else if (vimState.mode === Mode.VisualLine) {
       vscode.commands
         .executeCommand('cursorMove', {
-          to: 'viewPortCenter',
+          to: 'viewPortBottom',
           by: 'line',
           select: true,
         })
         .then(() => {
           setVisualLineSelections(editor);
         });
-    }
-  },
-  goto_window_bottom: (vimState, editor) => {
-    if (vimState.mode === Mode.Normal) {
+    } else {
       vscode.commands.executeCommand('cursorMove', {
         to: 'viewPortBottom',
         by: 'line',
       });
-    } else if (vimState.mode === Mode.Visual) {
-      const originalSelections = editor.selections;
-
-      vscode.commands
-        .executeCommand('cursorMove', {
-          to: 'viewPortBottom',
-          by: 'line',
-          select: true,
-        })
-        .then(() => {
-          setVisualSelections(editor, originalSelections);
-        });
-    } else if (vimState.mode === Mode.VisualLine) {
-      vscode.commands
-        .executeCommand('cursorMove', {
-          to: 'viewPortBottom',
-          by: 'line',
-          select: true,
-        })
-        .then(() => {
-          setVisualLineSelections(editor);
-        });
     }
+  },
+
+  align_view_center: (helixState, editor) => {
+    const line = editor.selection.active.line;
+    const char = editor.selection.active.character;
+    vscode.commands.executeCommand('cursorMove', {
+      to: 'viewPortCenter',
+    }).then(() => {
+      const delta = line - editor.selection.active.line;
+      if (delta === 0)
+        return;
+
+      vscode.commands.executeCommand('editorScroll', {
+        to: "down",
+        by: "line",
+        value: delta
+      })
+
+      editor.selection = new vscode.Selection(
+        new vscode.Position(line, char),
+        new vscode.Position(line, char)
+      )
+    });
+  },
+  align_view_top: (helixState, editor) => {
+    const line = editor.selection.active.line;
+    const char = editor.selection.active.character;
+    vscode.commands.executeCommand('cursorMove', {
+      to: 'viewPortTop',
+    }).then(() => {
+      const delta = line - editor.selection.active.line;
+      if (delta === 0)
+        return;
+
+      vscode.commands.executeCommand('editorScroll', {
+        to: "down",
+        by: "line",
+        value: delta
+      })
+
+      editor.selection = new vscode.Selection(
+        new vscode.Position(line, char),
+        new vscode.Position(line, char)
+      )
+    });
+  },
+  align_view_bottom: (helixState, editor) => {
+    const line = editor.selection.active.line;
+    const char = editor.selection.active.character;
+    vscode.commands.executeCommand('cursorMove', {
+      to: 'viewPortBottom',
+    }).then(() => {
+      const delta = line - editor.selection.active.line;
+      if (delta === 0)
+        return;
+
+      vscode.commands.executeCommand('editorScroll', {
+        to: "down",
+        by: "line",
+        value: delta
+      })
+
+      editor.selection = new vscode.Selection(
+        new vscode.Position(line, char),
+        new vscode.Position(line, char)
+      )
+    });
+  },
+  scroll_down: (helixState, editor) => {
+    const delta = helixState.resolveCount();
+    vscode.commands.executeCommand('editorScroll', {
+      to: "down",
+      by: "line",
+      value: delta
+    })
+  },
+  scroll_up: (helixState, editor) => {
+    const delta = helixState.resolveCount();
+    vscode.commands.executeCommand('editorScroll', {
+      to: "up",
+      by: "line",
+      value: delta
+    })
   },
 
   find_till_char: (helixState, editor) => {
@@ -1003,39 +1153,39 @@ export const actionFuncs: { [key: string]: Action } = {
   find_prev_char: (helixState, editor) => {
     ModeEnterFuncs[Mode.Find](helixState, motions.findBackward);
   },
-
-  delete_selection: (vimState, editor) => {
-    yank(vimState, editor, false);
-
-    editor.edit((builder) => {
-      editor.selections.forEach((sel, i) => {
-        if (sel.isEmpty) {
-          const sel_ch = new vscode.Selection(
-            sel.active,
-            positionUtils.rightWrap(editor.document, sel.active),
-          )
-          builder.replace(sel_ch, '')
-        } else {
-          builder.replace(sel, '')
-        }
+  delete_selection_noyank: async (vimState, editor) => {
+    await editor.edit((builder) => {
+      editor.selections = editor.selections.map((sel, i) => {
+        const new_sel = vscodeToVimVisualSelection(editor.document, sel, Direction.Auto)
+        builder.replace(new_sel, '')
+        return new vscode.Selection(new_sel.start, new_sel.start)
       });
     })
+  },
+  delete_selection: (vimState, editor) => {
+    yank(vimState, editor, false);
+    actionFuncs.delete_selection_noyank(vimState, editor);
   },
   replace: (vimState, editor) => {
     ModeEnterFuncs[Mode.Replace](vimState);
   },
-  change: (helixState, editor) => {
+  replace_with_yanked: async (vimState, editor) => {
+    await actionFuncs.delete_selection_noyank(vimState, editor);
+    actionFuncs.paste_before(vimState, editor);
+  },
+  replace_selections_with_clipboard: async (vimState, editor) => {
+    await actionFuncs.delete_selection_noyank(vimState, editor);
+    actionFuncs.paste_clipboard_before(vimState, editor);
+  },
+  change_selection: (helixState, editor) => {
+    yank(helixState, editor, false);
+
+    actionFuncs.change_selection_noyank(helixState, editor);
+  },
+  change_selection_noyank: (helixState, editor) => {
     editor.edit((editBuilder) => {
       editor.selections.forEach((selection) => {
-        const line = editor.document.lineAt(selection.active.line);
-        editBuilder.delete(
-          new vscode.Range(
-            selection.active.with({
-              character: line.firstNonWhitespaceCharacterIndex,
-            }),
-            selection.active.with({ character: line.text.length }),
-          ),
-        );
+        editBuilder.delete(vscodeToVimVisualSelection(editor.document, selection, Direction.Auto));
       });
     });
 
@@ -1047,6 +1197,16 @@ export const actionFuncs: { [key: string]: Action } = {
   },
   kill_to_line_start: () => {
     vscode.commands.executeCommand('deleteAllLeft');
+  },
+
+  join_selections: (helixState, editor) => {
+    editor.edit((editBuilder) => {
+      editor.selections.forEach((selection) => {
+        let text = editor.document.getText(selection);
+        text = text.replace(new RegExp('\r?\n', 'g'), "")
+        editBuilder.replace(selection, text)
+      })
+    })
   }
 }
 
@@ -1223,7 +1383,7 @@ export function yank(
 ) {
   let text_arr = editor.selections.map((sel, i) => {
     if (linewise)
-      return editor.document.getText(toLinewiseSelection(editor.document, sel))
+      return editor.document.getText(toOuterLinewiseSelection(editor.document, sel))
     else {
       return editor.document.getText(vscodeToVimVisualSelection(editor.document, sel, Direction.Auto))
     }

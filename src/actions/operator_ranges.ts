@@ -283,7 +283,7 @@ function createInnerWordHandler(
       if (result) {
         return new vscode.Selection(
           position.with({ character: result.start }),
-          positionUtils.right(document, position.with({ character: result.end })),
+          positionUtils.right(document, position.with({ character: result.end - 1 })),
         );
       } else {
         return sel;
@@ -311,12 +311,13 @@ function createOuterWordHandler(
           if (i < ranges.length - 1) {
             return new vscode.Selection(
               position.with({ character: range.start }),
-              position.with({ character: ranges[i + 1].start }),
+              position.with({ character: ranges[i + 1].start - 1 }),
             );
           } else if (i > 0) {
+            // word goes to end of line
             return new vscode.Selection(
-              positionUtils.right(document, position.with({ character: ranges[i - 1].end })),
-              positionUtils.right(document, position.with({ character: range.end })),
+              position.with({ character: range.start }),
+              position.with({ character: range.end }),
             );
           } else {
             return new vscode.Selection(
