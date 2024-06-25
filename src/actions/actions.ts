@@ -144,12 +144,9 @@ export const actionFuncs: { [key: string]: Action } = {
       let end_line_length = editor.document.lineAt(sel.end.line).text.length
       let start = sel.start
       let end = sel.end
-      if (sel.start.compareTo(sel.end) === 0 && sel.start.character === end_line_length) {
-        start = positionUtils.leftWrap(editor.document, sel.start)
-        end = positionUtils.leftWrap(editor.document, sel.end)
-      }
 
-      if (end.character === end_line_length) {
+      // Detect if we are either on a blank line or if the line is already selected fully
+      if (end.character === end_line_length && (end_line_length === 0 || start.character === 0)) {
         end_line_length = editor.document.lineAt(end.line + 1).text.length
         end = new vscode.Position(end.line + 1, end_line_length)
       } else {
