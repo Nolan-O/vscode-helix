@@ -273,32 +273,36 @@ function resetBindings() {
 
 export function addBinding(actions: Action[], cfg: BindingActionList[]) {
   for (const [mode, keys] of cfg) {
+    // Sort modifiers, encode them as a small string, and save them as a list of context vars for bindings
     let has_modifiers = sortModifiers(keys)
     if (has_modifiers === true) {
       let binding_strs = getModifierBindings(keys)
-      // TODO: the vim extension uses an async wrapper around this because of latency, probably a good idea
       for (let str of binding_strs) {
         bindingContextVars[mode][str] = true
       }
     }
 
-    let existing: Action[] | BindingLayer = bindings[mode]
+    // Start by acquiring the bindings tree for this mode
+    let layer: Action[] | BindingLayer = bindings[mode]
 
     keys.forEach((key, idx) => {
+      // Check if we're not on the last key
       if (idx < keys.length - 1) {
-        if (Array.isArray(existing)) {
+        // Check that a binding hasn't already been made out of a sub-chord of this chord
+        if (Array.isArray(layer)) {
           configError(mode, idx, keys)
           return false
         } else {
-          existing[key] = existing[key] ? existing[key] : {}
-          existing = existing[key]
+          layer[key] = layer[key] ? layer[key] : {}
+          layer = layer[key]
         }
       } else {
-        if (Array.isArray(existing)) {
+        // If so, we expect it to not be bound (we expect it to not be an array)
+        if (Array.isArray(layer)) {
           configError(mode, idx, keys)
           return false
         } else {
-          existing[key] = actions
+          layer[key] = actions
         }
       }
     })
@@ -443,7 +447,14 @@ export function loadDefaultConfig() {
   addBinding([actionFuncs.select_all], [[Mode.Normal, ["shift", "5"]]])
   addBinding([actionFuncs.expand_selection], [[Mode.Normal, ["alt", "o"]], [Mode.Normal, ["alt", "up"]]])
   addBinding([actionFuncs.shrink_selection], [[Mode.Normal, ["alt", "i"]], [Mode.Normal, ["alt", "down"]]])
-  addBinding([actionFuncs.command_mode], [[Mode.Normal, ["shift", ";"]]])
+  addBinding([actionFuncs.command_mode], [
+    [Mode.Normal, ["shift", ";"]],
+    [Mode.Select, ["shift", ";"]],
+    [Mode.Window, ["shift", ";"]],
+    [Mode.Visual, ["shift", ";"]],
+    [Mode.View, ["shift", ";"]],
+    [Mode.Match, ["shift", ";"]]
+  ])
 
   /*
     Motions

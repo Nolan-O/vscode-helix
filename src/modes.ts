@@ -116,6 +116,7 @@ function enterModeCommon(mode: Mode, modeEnterFunc: (helixState: HelixState, ...
     setPreviousMode(helixState);
     helixState.mode = mode;
 
+    // TODO: the vim extension uses an async wrapper around setContext because of latency, probably a good idea
     for (const key in bindingContextVars[helixState.previousMode]) {
       vscode.commands.executeCommand('setContext', key, false);
     }
