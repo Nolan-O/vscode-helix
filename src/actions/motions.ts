@@ -188,7 +188,7 @@ export function createWordForwardHandler(
         const result = ranges.find((x) => x.start > character);
 
         if (result) {
-          return position.with({ character: result.start, line: position.line + i });
+          return position.with({ character: result.start - 1, line: position.line + i });
         }
         // If we don't find anything on this line, search the next and reset the character to 0
         character = 0;

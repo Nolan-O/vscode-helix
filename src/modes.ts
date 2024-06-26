@@ -8,7 +8,7 @@ import {
   searchTypeHandler,
   tillCharTypeHandler,
   replaceTypeHandler,
-  insertTypeHandler
+  insertTypeHandler,
 } from './type_handler';
 import { setTypeSubscription, removeTypeSubscription } from './type_subscription';
 import { MotionWrapper } from './actions/motions';
@@ -23,102 +23,87 @@ export enum Mode {
   Occurrence = "5",
   Window = "6",
   SearchInProgress = "7",
-  CommandlineInProgress = "8",
-  Select = "9",
-  View = "10",
-  Match = "11",
+  Select = "8",
+  View = "9",
+  Match = "10",
 
-  Find = "12",
-  Replace = "13",
+  Find = "11",
+  Replace = "12",
   // A special-ish mode for gathering input, see match replace/add for example
   // any mode can set this mode to unbind its sub-bindings without changing a type handler
-  InputGathering = "14",
+  InputGathering = "13",
 
   // Functionally disables helix
-  VSCode = "15",
+  VSCode = "14",
 }
 
 function enterInsertMode(helixState: HelixState, before = true): void {
-  helixState.mode = Mode.Insert;
   setTypeSubscription(helixState, insertTypeHandler);
   helixState.commandLine.setText('', helixState);
 }
 
 function enterNormalMode(helixState: HelixState): void {
-  helixState.mode = Mode.Normal;
   setTypeSubscription(helixState, typeHandler);
   helixState.commandLine.setText('', helixState);
 }
 
 function enterSearchMode(helixState: HelixState): void {
-  helixState.mode = Mode.SearchInProgress;
   setTypeSubscription(helixState, searchTypeHandler);
   helixState.commandLine.setText('', helixState);
 }
 
 function enterSelectMode(helixState: HelixState): void {
-  helixState.mode = Mode.Select;
   setTypeSubscription(helixState, searchTypeHandler);
   helixState.commandLine.setText('', helixState);
 }
 
 function enterWindowMode(helixState: HelixState): void {
-  helixState.mode = Mode.Window;
   setTypeSubscription(helixState, typeHandler);
   helixState.commandLine.setText('', helixState);
 }
 
 function enterVisualMode(helixState: HelixState): void {
-  helixState.mode = Mode.Visual;
   setTypeSubscription(helixState, typeHandler);
   helixState.commandLine.setText('', helixState);
 }
 
 function enterVisualLineMode(helixState: HelixState): void {
-  helixState.mode = Mode.VisualLine;
   setTypeSubscription(helixState, typeHandler);
 }
 
 function enterViewMode(helixState: HelixState): void {
-  helixState.mode = Mode.View;
   setTypeSubscription(helixState, typeHandler);
   helixState.commandLine.setText('', helixState);
 }
 
 function enterDisabledMode(helixState: HelixState): void {
-  helixState.mode = Mode.Disabled;
   setModeCursorStyle(helixState.mode, helixState.editorState.activeEditor!);
   removeTypeSubscription(helixState);
   helixState.commandLine.setText('', helixState);
 }
 
 function enterFindMode(helixState: HelixState, motionWrapper: MotionWrapper): void {
-  helixState.mode = Mode.Find;
   helixState.motionForMode = motionWrapper;
   setTypeSubscription(helixState, tillCharTypeHandler);
   helixState.commandLine.setText('', helixState);
 }
 
 function enterReplaceMode(helixState: HelixState): void {
-  helixState.mode = Mode.Replace;
   setTypeSubscription(helixState, replaceTypeHandler);
   helixState.commandLine.setText('', helixState);
 }
 
 function enterMatchMode(helixState: HelixState): void {
-  helixState.mode = Mode.Match;
   setTypeSubscription(helixState, execOrAbortTypeHandler);
   helixState.commandLine.setText('', helixState);
 }
 
 function enterVSCodeMode(helixState: HelixState): void {
-  helixState.mode = Mode.VSCode;
   removeTypeSubscription(helixState);
   helixState.commandLine.setText('', helixState);
 }
 
 function enterInputGatheringMode(helixState: HelixState, subscription: (helixState: HelixState, char: string) => void): void {
-  helixState.mode = Mode.InputGathering;
   setTypeSubscription(helixState, subscription);
 }
 
@@ -129,6 +114,8 @@ type ModeEnterFuncs = {
 function enterModeCommon(mode: Mode, modeEnterFunc: (helixState: HelixState, ...args: any) => void): (helixState: HelixState, ...args: any) => void {
   return (helixState: HelixState, ...args: any) => {
     setPreviousMode(helixState);
+    helixState.mode = mode;
+
     for (const key in bindingContextVars[helixState.previousMode]) {
       vscode.commands.executeCommand('setContext', key, false);
     }
@@ -163,7 +150,6 @@ export const ModeEnterFuncs: ModeEnterFuncs = {
   [Mode.InputGathering]: enterModeCommon(Mode.InputGathering, enterInputGatheringMode),
   [Mode.VSCode]: enterModeCommon(Mode.VSCode, enterVSCodeMode),
   [Mode.Occurrence]: () => { },
-  [Mode.CommandlineInProgress]: () => { },
 }
 
 // Somewhat misleading name, this only enters the previous mode which was set with setPreviousMode

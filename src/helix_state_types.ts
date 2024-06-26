@@ -25,6 +25,7 @@ export type HelixState = {
     lastModifiedDocument: TextDocument | undefined;
   };
   commandLine: CommandLine;
+  commandContents: string;
   searchState: SearchState;
   /**
    * The current range we're searching in when calling select

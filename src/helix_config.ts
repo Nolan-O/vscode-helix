@@ -30,7 +30,6 @@ export let bindings: BindingStructure = {
   [Mode.Occurrence]: {},
   [Mode.Window]: {},
   [Mode.SearchInProgress]: {},
-  [Mode.CommandlineInProgress]: {},
   [Mode.Select]: {},
   [Mode.View]: {},
   [Mode.Match]: {},
@@ -49,7 +48,6 @@ export let bindingContextVars: ContextStructure = {
   [Mode.Occurrence]: {},
   [Mode.Window]: {},
   [Mode.SearchInProgress]: {},
-  [Mode.CommandlineInProgress]: {},
   [Mode.Select]: {},
   [Mode.View]: {},
   [Mode.Match]: {},
@@ -362,6 +360,7 @@ export function loadDefaultConfig() {
   addBinding([actionFuncs.paste_before], [[Mode.Normal, ["shift", "p"]], [Mode.Visual, ["shift", "p"]]])
   addBinding([actionFuncs.split_selection_on_newline], [[Mode.Normal, ["alt", "s"]], [Mode.Visual, ["alt", "s"]]])
   addBinding([actionFuncs.join_selections], [[Mode.Normal, ["shift", "j"]], [Mode.Visual, ["shift", "j"]]])
+  addBinding([actionFuncs.goto_file], [[Mode.Normal, ["g", "f"]], [Mode.Visual, ["g", "f"]]])
 
   addBinding([actionFuncs.match_mode], [[Mode.Normal, ["m"]], [Mode.Visual, ["m"]], [Mode.VisualLine, ["m"]]])
   addBinding([actionFuncs.match_brackets], [[Mode.Match, ["m"]]])
@@ -369,18 +368,18 @@ export function loadDefaultConfig() {
   addBinding([actionFuncs.surround_replace], [[Mode.Match, ["r"]]])
   addBinding([actionFuncs.surround_delete], [[Mode.Match, ["d"]]])
   // Missing tree sitter ones: argument "a", comment "c", test "shift", "t"
-  addBinding([actionFuncs.selectOuterParagraph], [[Mode.Match, ["a", "p"]]])
-  addBinding([actionFuncs.selectOuterWord], [[Mode.Match, ["a", "w"]]])
-  addBinding([actionFuncs.selectOuterLongWord], [[Mode.Match, ["a", "shift", "w"]]])
-  addBinding([actionFuncs.selectOuterSurroundingPair], [[Mode.Match, ["a", "m"]]])
-  addBinding([actionFuncs.selectOuterFunction], [[Mode.Match, ["a", "f"]]])
-  addBinding([actionFuncs.selectOuterType], [[Mode.Match, ["a", "t"]]])
-  addBinding([actionFuncs.selectInnerParagraph], [[Mode.Match, ["i", "p"]]])
-  addBinding([actionFuncs.selectInnerWord], [[Mode.Match, ["i", "w"]]])
-  addBinding([actionFuncs.selectInnerLongWord], [[Mode.Match, ["i", "shift", "w"]]])
-  addBinding([actionFuncs.selectInnerSurroundingPair], [[Mode.Match, ["i", "m"]]])
-  addBinding([actionFuncs.selectInnerFunction], [[Mode.Match, ["i", "f"]]])
-  addBinding([actionFuncs.selectInnerType], [[Mode.Match, ["i", "t"]]])
+  addBinding([actionFuncs.vs_select_paragraph_around], [[Mode.Match, ["a", "p"]]])
+  addBinding([actionFuncs.vs_select_word_around], [[Mode.Match, ["a", "w"]]])
+  addBinding([actionFuncs.vs_select_longword_around], [[Mode.Match, ["a", "shift", "w"]]])
+  addBinding([actionFuncs.vs_select_pair_around], [[Mode.Match, ["a", "m"]]])
+  addBinding([actionFuncs.vs_select_function_around], [[Mode.Match, ["a", "f"]]])
+  addBinding([actionFuncs.vs_select_type_around], [[Mode.Match, ["a", "t"]]])
+  addBinding([actionFuncs.vs_select_paragraph_inner], [[Mode.Match, ["i", "p"]]])
+  addBinding([actionFuncs.vs_select_word_inner], [[Mode.Match, ["i", "w"]]])
+  addBinding([actionFuncs.vs_select_longword_inner], [[Mode.Match, ["i", "shift", "w"]]])
+  addBinding([actionFuncs.vs_select_pair_inner], [[Mode.Match, ["i", "m"]]])
+  addBinding([actionFuncs.vs_select_function_inner], [[Mode.Match, ["i", "f"]]])
+  addBinding([actionFuncs.vs_select_type_inner], [[Mode.Match, ["i", "t"]]])
 
   /*
     Basic
@@ -401,8 +400,8 @@ export function loadDefaultConfig() {
     [Mode.InputGathering, ["escape"]],
     [Mode.VSCode, ["escape"]]
   ])
-  addBinding([actionFuncs.search_next], [[Mode.Normal, ["n"]]])
-  addBinding([actionFuncs.search_prev], [[Mode.Normal, ["shift", "n"]]])
+  addBinding([actionFuncs.search_next], [[Mode.Normal, ["n"]], [Mode.Visual, ["n"]]])
+  addBinding([actionFuncs.search_prev], [[Mode.Normal, ["shift", "n"]], [Mode.Visual, ["shift", "n"]]])
   addBinding([actionFuncs.search_selection], [[Mode.Normal, ["*"]]])
   addBinding([actionFuncs.insert_mode], [[Mode.Normal, ["i"]], [Mode.Visual, ["i"]], [Mode.VisualLine, ["i"]], [Mode.Occurrence, ["i"]]])
   addBinding([actionFuncs.append_mode], [[Mode.Normal, ["a"]], [Mode.Visual, ["a"]], [Mode.VisualLine, ["a"]], [Mode.Occurrence, ["a"]]])
@@ -439,6 +438,12 @@ export function loadDefaultConfig() {
   addBinding([actionFuncs.find_prev_char], [[Mode.Normal, ["shift", "f"]], [Mode.Visual, ["shift", "f"]]])
   addBinding([actionFuncs.replace], [[Mode.Normal, ["r"]], [Mode.Visual, ["r"]]])
   addBinding([actionFuncs.no_op], [[Mode.Find, ["backspace"]]])
+  addBinding([actionFuncs.flip_selections], [[Mode.Normal, ["alt", ";"]]])
+  addBinding([actionFuncs.ensure_selections_forward], [[Mode.Normal, ["alt", "shift", ";"]]])
+  addBinding([actionFuncs.select_all], [[Mode.Normal, ["shift", "5"]]])
+  addBinding([actionFuncs.expand_selection], [[Mode.Normal, ["alt", "o"]], [Mode.Normal, ["alt", "up"]]])
+  addBinding([actionFuncs.shrink_selection], [[Mode.Normal, ["alt", "i"]], [Mode.Normal, ["alt", "down"]]])
+  addBinding([actionFuncs.command_mode], [[Mode.Normal, ["shift", ";"]]])
 
   /*
     Motions
@@ -484,7 +489,7 @@ export function loadDefaultConfig() {
   */
   addBinding([actionFuncs.file_picker], [[Mode.Normal, [" ", "f"]]])
   addBinding([actionFuncs.file_picker_in_current_directory], [[Mode.Normal, [" ", "shift", "f"]]])
-  addBinding([actionFuncs.debugView], [[Mode.Normal, [" ", "g"]]])
+  addBinding([actionFuncs.vs_debug_view], [[Mode.Normal, [" ", "g"]]])
   addBinding([actionFuncs.hover], [[Mode.Normal, [" ", "k"]]])
   addBinding([actionFuncs.symbol_picker], [[Mode.Normal, [" ", "s"]]])
   addBinding([actionFuncs.workspace_symbol_picker], [[Mode.Normal, [" ", "shift", "s"]]])
@@ -529,13 +534,15 @@ export function loadDefaultConfig() {
     window actions
   */
   // VSCode specific
-  addBinding([actionFuncs.moveEditorRight], [[Mode.Window, ["m", "v"]]])
-  addBinding([actionFuncs.moveEditorDown], [[Mode.Window, ["m", "s"]]])
-  addBinding([actionFuncs.moveEditorLeft], [[Mode.Window, ["m", "p"]]])
-  addBinding([actionFuncs.moveEditorNewWindow], [[Mode.Window, ["m", "w"]]])
-  addBinding([actionFuncs.moveEditorMainWindow], [[Mode.Window, ["m", "j"]]])
+  addBinding([actionFuncs.vs_move_editor_right], [[Mode.Window, ["m", "l"]]])
+  addBinding([actionFuncs.vs_move_editor_down], [[Mode.Window, ["m", "j"]]])
+  addBinding([actionFuncs.vs_move_editor_up], [[Mode.Window, ["m", "k"]]])
+  addBinding([actionFuncs.vs_move_editor_left], [[Mode.Window, ["m", "h"]]])
+  addBinding([actionFuncs.vs_move_editor_new_window], [[Mode.Window, ["m", "w"]]])
+  addBinding([actionFuncs.vs_move_editor_main_window], [[Mode.Window, ["m", "j"]]])
   addBinding([actionFuncs.vscode_mode], [[Mode.Normal, ["shift", "escape"]]])
   addBinding([actionFuncs.normal_mode], [[Mode.VSCode, ["shift", "escape"]]])
+  addBinding([actionFuncs.goto_file], [[Mode.Normal, ["f"]], [Mode.Visual, ["shift", "f"]]])
 
   // Helix
   addBinding([actionFuncs.rotate_view], [[Mode.Window, ["w"]], [Mode.Window, ["ctrl", "w"]]])
@@ -555,8 +562,8 @@ export function loadDefaultConfig() {
   addBinding([actionFuncs.swap_view_right], [[Mode.Window, ["shift", "l"]]])
   addBinding([actionFuncs.swap_view_up], [[Mode.Window, ["shift", "k"]]])
   addBinding([actionFuncs.swap_view_down], [[Mode.Window, ["shift", "j"]]])
-  addBinding([actionFuncs.newFile], [[Mode.Window, ["n"]]])
-  addBinding([actionFuncs.toggleSidebarVisibility], [[Mode.Window, ["b"]]])
+  addBinding([actionFuncs.new_file], [[Mode.Window, ["n"]]])
+  addBinding([actionFuncs.vs_toggle_sidebar_visibility], [[Mode.Window, ["b"]]])
 }
 
 /*

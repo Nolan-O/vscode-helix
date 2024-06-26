@@ -37,6 +37,7 @@ const globalhelixState: HelixState = {
     lastModifiedDocument: undefined,
   },
   commandLine,
+  commandContents: '',
   searchState,
   currentSelection: null,
   repeatLastMotion: () => undefined,
