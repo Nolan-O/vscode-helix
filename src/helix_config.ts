@@ -313,8 +313,8 @@ export function loadDefaultConfig() {
 
   // Deviation: After using and reading the differences between sticky view and view
   // I still am not sure an actual difference exists
-  addBinding([actionFuncs.view_mode], [[Mode.Normal, ["z"]], [Mode.View, ["z"]]])
-  addBinding([actionFuncs.view_mode], [[Mode.Normal, ["shift", "z"]], [Mode.View, ["shift", "z"]]])
+  addBinding([actionFuncs.vs_view_mode], [[Mode.Normal, ["z"]], [Mode.Visual, ["z"]]])
+  addBinding([actionFuncs.vs_view_mode], [[Mode.Normal, ["shift", "z"]], [Mode.Visual, ["shift", "z"]]])
 
   addBinding([actionFuncs.delete_char_backward], [[Mode.Insert, ["backspace"]], [Mode.Insert, ["ctrl", "h"]]])
   addBinding([actionFuncs.delete_char_forward], [[Mode.Insert, ["ctrl", "d"]]])
@@ -513,6 +513,10 @@ export function loadDefaultConfig() {
   addBinding([actionFuncs.align_view_center], [[Mode.View, ["m"]]])
   addBinding([actionFuncs.align_view_top], [[Mode.View, ["t"]]])
   addBinding([actionFuncs.align_view_bottom], [[Mode.View, ["b"]]])
+  addBinding([actionFuncs.page_down], [[Mode.View, ["ctrl", "f"]], [Mode.View, ["pageup"]]])
+  addBinding([actionFuncs.page_up], [[Mode.View, ["ctrl", "b"]], [Mode.View, ["pagedown"]]])
+  addBinding([actionFuncs.page_cursor_half_up], [[Mode.View, ["ctrl", "u"]]])
+  addBinding([actionFuncs.page_cursor_half_down], [[Mode.View, ["ctrl", "d"]]])
   addBinding([actionFuncs.scroll_up], [[Mode.View, ["k"]], [Mode.View, ["down"]]])
   addBinding([actionFuncs.scroll_down], [[Mode.View, ["j"]], [Mode.View, ["up"]]])
 
@@ -557,7 +561,7 @@ export function loadDefaultConfig() {
   addBinding([actionFuncs.wclose], [[Mode.Window, ["q"]], [Mode.Window, ["ctrl", "q"]]])
   // For some reason, a vim alias
   addBinding([actionFuncs.wclose], [[Mode.Window, ["c"]]])
-  addBinding([actionFuncs.wonly], [[Mode.Window, ["o"]]])
+  addBinding([actionFuncs.wonly], [[Mode.Window, ["o"]], [Mode.Window, ["ctrl", "o"]]])
   addBinding([actionFuncs.swap_view_left], [[Mode.Window, ["shift", "h"]]])
   addBinding([actionFuncs.swap_view_right], [[Mode.Window, ["shift", "l"]]])
   addBinding([actionFuncs.swap_view_up], [[Mode.Window, ["shift", "k"]]])

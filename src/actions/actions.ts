@@ -17,6 +17,7 @@ import { setVisualLineSelections } from '../visual_line_utils';
 import { setVisualSelections } from '../visual_utils';
 import { toOuterLinewiseSelection, toInnerLinewiseSelection, vscodeToVimVisualSelection } from '../selection_utils';
 import { whitespaceWordRanges, wordRanges } from '../word_utils';
+import * as scrollCommands from '../scroll_commands';
 import * as typeHandlers from '../type_handler';
 import * as motions from './motions';
 import * as operatorRanges from './operator_ranges';
@@ -543,32 +544,38 @@ export const actionFuncs: { [key: string]: Action } = {
   page_up: (helixState) => {
     if (helixState.mode === Mode.Visual) {
       vscode.commands.executeCommand('cursorPageUpSelect');
+    } else if (helixState.mode === Mode.View) {
+      // Deviation: doing both a scroll and cursor move command by whole pages at once produces
+      // effects difficult to discern. As an alternative, view mode pageup simply scrolls viewport
+      scrollCommands.scrollUpPage();
+      enterPreviousMode(helixState);
     } else {
       vscode.commands.executeCommand('cursorPageUp');
     }
   },
   page_down: (helixState) => {
-    if (helixState.mode === Mode.Normal) {
-      vscode.commands.executeCommand('cursorPageDown');
-    } else if (helixState.mode === Mode.Visual) {
+    if (helixState.mode === Mode.Visual) {
       vscode.commands.executeCommand('cursorPageDownSelect');
+    } else if (helixState.mode === Mode.View) {
+      // Deviation: doing both a scroll and cursor move command by whole pages at once produces
+      // effects difficult to discern. As an alternative, view mode pagedown simply scrolls viewport
+      scrollCommands.scrollDownPage();
+      enterPreviousMode(helixState);
+    } else {
+      vscode.commands.executeCommand('cursorPageDown');
     }
   },
   page_cursor_half_up: (helixState) => {
-    vscode.commands.executeCommand('editorScroll', {
-      to: 'up',
-      by: 'halfPage',
-      revealCursor: true,
-      value: 1,
-    });
+    if (helixState.mode === Mode.View)
+      enterPreviousMode(helixState);
+
+    scrollCommands.scrollUpHalfPage();
   },
   page_cursor_half_down: (helixState) => {
-    vscode.commands.executeCommand('editorScroll', {
-      to: 'down',
-      by: 'halfPage',
-      revealCursor: true,
-      value: 1,
-    });
+    if (helixState.mode === Mode.View)
+      enterPreviousMode(helixState);
+
+    scrollCommands.scrollDownHalfPage();
   },
   jump_forward: (helixState) => {
     vscode.commands.executeCommand('workbench.action.navigateForward');
@@ -1040,6 +1047,9 @@ export const actionFuncs: { [key: string]: Action } = {
         new vscode.Position(line, char)
       )
     });
+
+    if (helixState.mode === Mode.View)
+      enterPreviousMode(helixState);
   },
   align_view_top: (helixState, editor) => {
     const line = editor.selection.active.line;
@@ -1062,6 +1072,9 @@ export const actionFuncs: { [key: string]: Action } = {
         new vscode.Position(line, char)
       )
     });
+
+    if (helixState.mode === Mode.View)
+      enterPreviousMode(helixState);
   },
   align_view_bottom: (helixState, editor) => {
     const line = editor.selection.active.line;
@@ -1084,6 +1097,9 @@ export const actionFuncs: { [key: string]: Action } = {
         new vscode.Position(line, char)
       )
     });
+
+    if (helixState.mode === Mode.View)
+      enterPreviousMode(helixState);
   },
   scroll_down: (helixState, editor) => {
     const delta = helixState.resolveCount();
@@ -1091,7 +1107,10 @@ export const actionFuncs: { [key: string]: Action } = {
       to: "down",
       by: "line",
       value: delta
-    })
+    });
+
+    if (helixState.mode === Mode.View)
+      enterPreviousMode(helixState);
   },
   scroll_up: (helixState, editor) => {
     const delta = helixState.resolveCount();
@@ -1099,7 +1118,10 @@ export const actionFuncs: { [key: string]: Action } = {
       to: "up",
       by: "line",
       value: delta
-    })
+    });
+
+    if (helixState.mode === Mode.View)
+      enterPreviousMode(helixState);
   },
 
   find_till_char: (helixState, editor) => {

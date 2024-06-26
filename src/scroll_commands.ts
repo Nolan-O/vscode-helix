@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 
 function editorScroll(to: string, by: string) {
-  vscode.commands.executeCommand('editorScroll', {
+  return vscode.commands.executeCommand('editorScroll', {
     to: to,
     by: by,
     revealCursor: true,
@@ -9,18 +9,18 @@ function editorScroll(to: string, by: string) {
   });
 }
 
-export function scrollDownHalfPage(): void {
-  editorScroll('down', 'halfPage');
+export function scrollDownHalfPage(): Thenable<unknown> {
+  return editorScroll('down', 'halfPage');
 }
 
-export function scrollUpHalfPage(): void {
-  editorScroll('up', 'halfPage');
+export function scrollUpHalfPage(): Thenable<unknown> {
+  return editorScroll('up', 'halfPage');
 }
 
-export function scrollDownPage(): void {
-  editorScroll('down', 'page');
+export function scrollDownPage(): Thenable<unknown> {
+  return editorScroll('down', 'page');
 }
 
-export function scrollUpPage(): void {
-  editorScroll('up', 'page');
+export function scrollUpPage(): Thenable<unknown> {
+  return editorScroll('up', 'page');
 }

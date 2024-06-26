@@ -152,9 +152,6 @@ export const ModeEnterFuncs: ModeEnterFuncs = {
   [Mode.Occurrence]: () => { },
 }
 
-// Somewhat misleading name, this only enters the previous mode which was set with setPreviousMode
-// Using this properly can only be done by functions which have knowledge of implied usage of setPreviousMode
-// E.G. match mode's sub commands/type handlers can use this to revert to the mode that was used prior to match mode
 export function enterPreviousMode(helixState: HelixState) {
   let previousMode = helixState.previousMode;
   if (previousMode == undefined) {
