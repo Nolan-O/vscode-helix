@@ -196,9 +196,7 @@ function processBindings(allBindings: ConvertedBindings) {
     for (let i = 0; i < _bindings.length; i++) {
       const binding = _bindings[i]
       if (mode === "2") {
-        console.log(2)
         if (binding.chord[0] === "r")
-          console.log(1)
       }
       addBinding(binding.commands, [[mode, binding.chord]], false)
     }
@@ -207,14 +205,12 @@ function processBindings(allBindings: ConvertedBindings) {
 
 export async function applyConfig() {
   const helixConfig = await getHelixConfig();
-  console.log(helixConfig)
   if (helixConfig === undefined)
     return;
 
   let parsed_config = {}
   try {
     let bindings = extractBindings(helixConfig)
-    console.log(bindings)
     processBindings(bindings)
   } catch (e) {
     console.warn("Helix keymap: Failed to apply config.toml, using defaults: " + e)

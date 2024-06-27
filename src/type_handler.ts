@@ -25,8 +25,6 @@ export function typeHandler(helixState: HelixState, char: string): void {
     return;
   }
 
-  console.log(char)
-
   helixState.keysPressed.push(char);
 
   try {
@@ -42,8 +40,6 @@ export function insertTypeHandler(helixState: HelixState, char: string): void {
   if (char.length == 1 && (char.toLowerCase() != char)) {
     return;
   }
-
-  console.log(char)
 
   helixState.keysPressed.push(char);
 
@@ -72,7 +68,6 @@ export function insertTypeHandler(helixState: HelixState, char: string): void {
   }
 }
 export function searchTypeHandler(helixState: HelixState, char: string): void {
-  console.log("search " + char)
   const editor = vscode.window.activeTextEditor;
   if (!editor) return;
 
@@ -91,7 +86,6 @@ export function searchTypeHandler(helixState: HelixState, char: string): void {
   }
 }
 export function tillCharTypeHandler(helixState: HelixState, char: string): void {
-  console.log("till " + char)
   const editor = vscode.window.activeTextEditor;
   if (!editor) return;
 
@@ -122,7 +116,6 @@ export function tillCharTypeHandler(helixState: HelixState, char: string): void 
 // Valid chords will reset modes on their own since they may target modes other than normal
 // TODO: Undecided: maybe give this function some sort of state which determines which mode to re-enter?
 export function execOrAbortTypeHandler(helixState: HelixState, char: string): void {
-  console.log("abortable " + char)
   const editor = vscode.window.activeTextEditor;
   if (!editor) return;
 
@@ -161,7 +154,6 @@ function replaceSelectionWithRepeatingChar(builder: vscode.TextEditorEdit, sel: 
 }
 
 export function replaceTypeHandler(helixState: HelixState, char: string): void {
-  console.log("replace " + char)
   const editor = vscode.window.activeTextEditor;
   if (!editor) return;
 
@@ -191,7 +183,6 @@ export function replaceTypeHandler(helixState: HelixState, char: string): void {
 }
 
 export function surroundAddTypeHandler(helixState: HelixState, char: string): void {
-  console.log("surround add " + char)
   const editor = vscode.window.activeTextEditor;
   if (!editor) return;
 
@@ -218,7 +209,6 @@ export function surroundAddTypeHandler(helixState: HelixState, char: string): vo
   }
 }
 export function surroundReplaceTypeHandler(helixState: HelixState, char: string): void {
-  console.log("surround rep " + char)
   const editor = vscode.window.activeTextEditor;
   if (!editor) return;
 
@@ -273,7 +263,6 @@ export function surroundReplaceTypeHandler(helixState: HelixState, char: string)
   }
 }
 export function surroundDeleteTypeHandler(helixState: HelixState, char: string): void {
-  console.log("surround del " + char)
   const editor = vscode.window.activeTextEditor;
   if (!editor) return;
 

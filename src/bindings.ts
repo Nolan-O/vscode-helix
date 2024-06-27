@@ -96,7 +96,6 @@ export function tryConsumeChord(helixState: HelixState, clearKeysPressed: boolea
   }
 
   let actions = matchInput(helixState)
-  console.log(helixState.keysPressed)
 
   if (actions === false) {
     if (clearKeysPressed) {
