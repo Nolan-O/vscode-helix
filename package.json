@@ -80,26 +80,6 @@
         "when": "editorTextFocus && hxEnabled"
       },
       {
-        "key": "left",
-        "command": "extension.helixKeymap.left",
-        "when": "editorTextFocus && hxEnabled"
-      },
-      {
-        "key": "right",
-        "command": "extension.helixKeymap.right",
-        "when": "editorTextFocus && hxEnabled"
-      },
-      {
-        "key": "up",
-        "command": "extension.helixKeymap.up",
-        "when": "editorTextFocus && hxEnabled"
-      },
-      {
-        "key": "down",
-        "command": "extension.helixKeymap.down",
-        "when": "editorTextFocus && hxEnabled"
-      },
-      {
         "key": "ctrl+a",
         "command": "extension.helixKeymap.ctrl_a",
         "when": "editorTextFocus && hxEnabled && Ca"

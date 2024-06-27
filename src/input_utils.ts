@@ -46,7 +46,7 @@ export const unshiftedSymbols: { [key: string]: string | undefined } = {
 
 // special keys which don't get sent to type handlers and therefore always need to be bound
 export const superkeys = [
-  "pageup", "pagedown", "home", "end", "escape", "backspace", "left", "right", "up", "down"
+  "pageup", "pagedown", "home", "end", "escape", "backspace"
 ]
 
 export const superkeysObj: { [key: string]: boolean | undefined } = {
