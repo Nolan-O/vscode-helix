@@ -1,6 +1,4 @@
 import * as vscode from 'vscode';
-import * as toml from 'smol-toml';
-import * as json5 from 'json5';
 import { actionFuncs } from './actions/actions';
 import { HelixState } from './helix_state_types';
 import {
@@ -11,7 +9,7 @@ import {
   ContextList,
   ContextStructure
 } from './action_types'
-import { sanitizeCharForContext } from './input_utils';
+import { getBindingContextStr, sortModifiers, sanitizeCharForContext } from './input_utils';
 import { Mode } from './modes';
 
 type VSKeyBinding = {
@@ -57,82 +55,6 @@ export let bindingContextVars: ContextStructure = {
   [Mode.VSCode]: {},
 }
 
-async function open_file(windows_uri: vscode.Uri, other_uri: vscode.Uri): Promise<string> {
-  return new Promise((resolve, reject) => {
-    vscode.workspace.fs.readFile(windows_uri).then((bytes) => {
-      resolve(bytes.toString());
-    }).catch(() => {
-      vscode.workspace.fs.readFile(other_uri).then((bytes) => {
-        resolve(bytes.toString());
-      }).catch(() => {
-        reject()
-      })
-    })
-  })
-}
-
-export async function getHelixConfig() {
-  // os.homedir() returns "home" for some reason
-  // os.userInfo is not available for some reason
-  // But it seems process.env['HOMEPATH'] works
-  let windows_uri = vscode.Uri.file(process.env['HOMEPATH'] + "\\AppData\\Roaming\\helix\\config.toml")
-  // TODO: Test this env var is also set on linux
-  let other_uri = vscode.Uri.file(process.env['HOMEPATH'] + "/.config/helix/config.toml")
-
-  let file = null;
-  await open_file(windows_uri, other_uri).then((str) => {
-    file = str;
-  }).catch(() => { })
-
-  if (file == null) {
-    return;
-  }
-
-  console.log(toml.parse(file))
-  return toml.parse(file);
-}
-
-export async function getVSConfig() {
-  let windows_uri = vscode.Uri.file(process.env['HOMEPATH'] + "\\AppData\\Roaming\\Code\\User\\keybindings.json")
-  let other_uri = vscode.Uri.file(process.env['HOMEPATH'] + "/.config/Code/User/keybindings.json")
-
-  let file = null;
-  await open_file(windows_uri, other_uri).then((str) => {
-    file = str;
-  }).catch(() => { })
-
-  if (file == null) {
-    return;
-  }
-
-  console.log(json5.parse(file))
-  return json5.parse(file);
-}
-
-export async function dostuff() {
-  getHelixConfig();
-  getVSConfig();
-}
-
-function configError(mode: Mode, cur_idx: number, keys: string[]) {
-  let seq = ""
-  let seq_so_far = ""
-  keys.map(e => { seq += e })
-  keys.map((v, i) => { if (i < cur_idx) seq_so_far += v })
-  console.warn(`Error adding config item: Mode ${mode.toString()}, key sequence ${seq_so_far} is already bound to some actions; cannot index it further with ${seq}`)
-}
-
-let modifierOrder: { [key: string]: number } = {
-  ctrl: 1,
-  shift: 2,
-  alt: 3
-}
-let modifierCode: { [key: string]: string } = {
-  ctrl: "C",
-  shift: "S",
-  alt: "A"
-}
-
 // Returns true if a binding was found or if the input has not ruled out the possibility of future keys finding a binding
 function matchInput(vimState: HelixState): Action[] | boolean {
   let chars = vimState.keysPressed
@@ -150,6 +72,14 @@ function matchInput(vimState: HelixState): Action[] | boolean {
   }
 
   return true
+}
+
+function configError(mode: Mode, cur_idx: number, keys: string[]) {
+  let seq = ""
+  let seq_so_far = ""
+  keys.map(e => { seq += e })
+  keys.map((v, i) => { if (i < cur_idx) seq_so_far += v })
+  console.warn(`Error adding config item: Mode ${mode.toString()}, key sequence ${seq_so_far} is already bound to some actions; cannot index it further with ${seq}`)
 }
 
 export enum ChordConsumeResult {
@@ -188,81 +118,7 @@ export function tryConsumeChord(helixState: HelixState, clearKeysPressed: boolea
   }
 }
 
-/*
-  We we have to sort modifiers because:
-  The conditional keybindings in package.json should only rely on one internal variable, ideally
-  which means every combination of modifier orders should end up as one unique string followed by
-  the terminating character.
- 
-  Helix's config allows modifiers in any order, so we must as well, which we'd want to anyway because it's nice
- */
-function sortModifiers(keys: string[]) {
-  let has_modifiers = false
 
-  // keys.sort won't work because we have unique requirements: the sorted area terminates when we find a non-modifier
-  //  a naive sort algorithm seems fine in this case: creating new arrays and then rejoining them seems extra wasteful
-  //  plus the longest chord we could realistically expect should be *maybe* a few dozen for the most insane use cases
-  // The most rational reason to have a dozen keys in a chord is (ctrl + alt + shift + <key>) x3
-  while (true) {
-    let shifted = false
-
-    for (let i = 0; i < keys.length - 1; i++) {
-      const lhs = modifierOrder[keys[i]]
-      const rhs = modifierOrder[keys[i + 1]]
-
-      if (lhs != undefined || rhs != undefined) {
-        has_modifiers = true
-      }
-
-      if (lhs === undefined || rhs === undefined) {
-        continue
-      }
-
-      if (lhs != undefined && rhs != undefined) {
-        if (lhs - rhs > 0) {
-          shifted = true
-          const intermediate = keys[i]
-          keys[i] = keys[i + 1]
-          keys[i + 1] = intermediate
-        }
-      }
-    }
-
-    if (shifted === false) {
-      break;
-    }
-  }
-
-  return has_modifiers
-}
-
-// Sort your modifier keys before using this
-function getModifierBindings(keys: string[]) {
-  let strs = []
-  for (let i = 0; i < keys.length; i++) {
-    const v = keys[i]
-    let code: string | undefined = modifierCode[v]
-
-    if (code != undefined) {
-      let str = ""
-
-      let j = 0
-      for (let k = i + 1; code != undefined; k++) {
-        j += 1
-        str += code
-        code = modifierCode[keys[k]]
-      }
-
-      i += j
-
-      // A final concat to add the key which followed the modifier sequence
-      str += sanitizeCharForContext(keys[i])
-      strs.push(str)
-    }
-  }
-
-  return strs
-}
 
 function resetBindings() {
   for (let key of Object.values(Mode)) {
@@ -271,12 +127,12 @@ function resetBindings() {
   }
 }
 
-export function addBinding(actions: Action[], cfg: BindingActionList[]) {
+export function addBinding(actions: Action[], cfg: BindingActionList[], warnRebinding: boolean = false) {
   for (const [mode, keys] of cfg) {
     // Sort modifiers, encode them as a small string, and save them as a list of context vars for bindings
     let has_modifiers = sortModifiers(keys)
     if (has_modifiers === true) {
-      let binding_strs = getModifierBindings(keys)
+      let binding_strs = getBindingContextStr(keys)
       for (let str of binding_strs) {
         bindingContextVars[mode][str] = true
       }
@@ -298,7 +154,7 @@ export function addBinding(actions: Action[], cfg: BindingActionList[]) {
         }
       } else {
         // If so, we expect it to not be bound (we expect it to not be an array)
-        if (Array.isArray(layer)) {
+        if (Array.isArray(layer) && warnRebinding) {
           configError(mode, idx, keys)
           return false
         } else {
@@ -313,7 +169,7 @@ export function addBinding(actions: Action[], cfg: BindingActionList[]) {
 
 export function loadDefaultConfig() {
   resetBindings()
-  addBinding([actionFuncs.window_mode], [[Mode.Normal, ["ctrl", "w"]]])
+  addBinding([actionFuncs.vs_window_mode], [[Mode.Normal, ["ctrl", "w"]]])
 
   // Deviation: After using and reading the differences between sticky view and view
   // I still am not sure an actual difference exists
@@ -333,7 +189,8 @@ export function loadDefaultConfig() {
   // Deviation: ctrl+k reserved so use alt+u to remain related to the ctrl+u binding
   addBinding([actionFuncs.kill_to_line_end], [[Mode.Insert, ["alt", "u"]]])
 
-  addBinding([actionFuncs.searchBackspaceOverride], [[Mode.SearchInProgress, ["backspace"]], [Mode.Select, ["backspace"]]])
+  addBinding([actionFuncs.vs_search_backspace], [[Mode.SearchInProgress, ["backspace"]], [Mode.Select, ["backspace"]]])
+  addBinding([actionFuncs.vs_search_paste], [[Mode.SearchInProgress, ["ctrl", "v"]], [Mode.Select, ["ctrl", "v"]]])
 
   addBinding([actionFuncs.completion], [[Mode.Insert, ["ctrl", "x"]]])
   addBinding([actionFuncs.incriment], [[Mode.Normal, ["ctrl", "a"]], [Mode.Visual, ["ctrl", "a"]]])
@@ -508,7 +365,7 @@ export function loadDefaultConfig() {
   addBinding([actionFuncs.workspace_diagnostics_picker], [[Mode.Normal, [" ", "shift", "d"]]])
   addBinding([actionFuncs.rename_symbol], [[Mode.Normal, [" ", "r"]]])
   addBinding([actionFuncs.code_action], [[Mode.Normal, [" ", "a"]]])
-  addBinding([actionFuncs.window_mode], [[Mode.Normal, [" ", "w"]]])
+  addBinding([actionFuncs.vs_window_mode], [[Mode.Normal, [" ", "w"]]])
   addBinding([actionFuncs.global_search], [[Mode.Normal, [" ", "/"]]])
   addBinding([actionFuncs.command_palette], [[Mode.Normal, [" ", "shift", "/"]]])
   addBinding([actionFuncs.yank_to_clipboard], [[Mode.Normal, [" ", "y"]]])

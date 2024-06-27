@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 
 import { HelixState } from './helix_state_types';
-import { bindingContextVars } from './helix_config';
+import { bindingContextVars } from './bindings';
 import {
   typeHandler,
   execOrAbortTypeHandler,
@@ -122,7 +122,6 @@ function enterModeCommon(mode: Mode, modeEnterFunc: (helixState: HelixState, ...
     }
     for (const key in bindingContextVars[mode]) {
       vscode.commands.executeCommand('setContext', key, true);
-      console.log(key)
     }
 
     if (mode == Mode.VSCode) {

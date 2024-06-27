@@ -742,8 +742,13 @@ export const actionFuncs: { [key: string]: Action } = {
     const ranges = editor.selections.map((selection) => selection.with(undefined, positionUtils.rightWrap(document, selection.anchor)));
     delete_(editor, ranges, false);
   },
-  searchBackspaceOverride: (helixState, editor) => {
+  vs_search_backspace: (helixState, editor) => {
     helixState.searchState.backspace(helixState)
+  },
+  vs_search_paste: (helixState, editor) => {
+    vscode.env.clipboard.readText().then((text: string) => {
+      helixState.searchState.addText(helixState, text)
+    })
   },
 
   delete_word_backward: (helixState, editor) => {

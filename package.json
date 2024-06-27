@@ -80,6 +80,26 @@
         "when": "editorTextFocus && hxEnabled"
       },
       {
+        "key": "left",
+        "command": "extension.helixKeymap.left",
+        "when": "editorTextFocus && hxEnabled"
+      },
+      {
+        "key": "right",
+        "command": "extension.helixKeymap.right",
+        "when": "editorTextFocus && hxEnabled"
+      },
+      {
+        "key": "up",
+        "command": "extension.helixKeymap.up",
+        "when": "editorTextFocus && hxEnabled"
+      },
+      {
+        "key": "down",
+        "command": "extension.helixKeymap.down",
+        "when": "editorTextFocus && hxEnabled"
+      },
+      {
         "key": "ctrl+a",
         "command": "extension.helixKeymap.ctrl_a",
         "when": "editorTextFocus && hxEnabled && Ca"
@@ -238,6 +258,26 @@
         "key": "ctrl+backspace",
         "command": "extension.helixKeymap.ctrl_backspace",
         "when": "editorTextFocus && hxEnabled && Cbackspace"
+      },
+      {
+        "key": "ctrl+left",
+        "command": "extension.helixKeymap.ctrl_left",
+        "when": "editorTextFocus && hxEnabled && Cleft"
+      },
+      {
+        "key": "ctrl+right",
+        "command": "extension.helixKeymap.ctrl_right",
+        "when": "editorTextFocus && hxEnabled && Cright"
+      },
+      {
+        "key": "ctrl+up",
+        "command": "extension.helixKeymap.ctrl_up",
+        "when": "editorTextFocus && hxEnabled && Cup"
+      },
+      {
+        "key": "ctrl+down",
+        "command": "extension.helixKeymap.ctrl_down",
+        "when": "editorTextFocus && hxEnabled && Cdown"
       },
       {
         "key": "ctrl+[",
@@ -505,6 +545,26 @@
         "when": "editorTextFocus && hxEnabled && Abackspace"
       },
       {
+        "key": "alt+left",
+        "command": "extension.helixKeymap.alt_left",
+        "when": "editorTextFocus && hxEnabled && Aleft"
+      },
+      {
+        "key": "alt+right",
+        "command": "extension.helixKeymap.alt_right",
+        "when": "editorTextFocus && hxEnabled && Aright"
+      },
+      {
+        "key": "alt+up",
+        "command": "extension.helixKeymap.alt_up",
+        "when": "editorTextFocus && hxEnabled && Aup"
+      },
+      {
+        "key": "alt+down",
+        "command": "extension.helixKeymap.alt_down",
+        "when": "editorTextFocus && hxEnabled && Adown"
+      },
+      {
         "key": "alt+[",
         "command": "extension.helixKeymap.alt_[",
         "when": "editorTextFocus && hxEnabled && A["
@@ -768,6 +828,26 @@
         "key": "shift+backspace",
         "command": "extension.helixKeymap.shift_backspace",
         "when": "editorTextFocus && hxEnabled && Sbackspace"
+      },
+      {
+        "key": "shift+left",
+        "command": "extension.helixKeymap.shift_left",
+        "when": "editorTextFocus && hxEnabled && Sleft"
+      },
+      {
+        "key": "shift+right",
+        "command": "extension.helixKeymap.shift_right",
+        "when": "editorTextFocus && hxEnabled && Sright"
+      },
+      {
+        "key": "shift+up",
+        "command": "extension.helixKeymap.shift_up",
+        "when": "editorTextFocus && hxEnabled && Sup"
+      },
+      {
+        "key": "shift+down",
+        "command": "extension.helixKeymap.shift_down",
+        "when": "editorTextFocus && hxEnabled && Sdown"
       },
       {
         "key": "shift+[",
@@ -1035,6 +1115,26 @@
         "when": "editorTextFocus && hxEnabled && CAbackspace"
       },
       {
+        "key": "ctrl+alt+left",
+        "command": "extension.helixKeymap.ctrl_alt_left",
+        "when": "editorTextFocus && hxEnabled && CAleft"
+      },
+      {
+        "key": "ctrl+alt+right",
+        "command": "extension.helixKeymap.ctrl_alt_right",
+        "when": "editorTextFocus && hxEnabled && CAright"
+      },
+      {
+        "key": "ctrl+alt+up",
+        "command": "extension.helixKeymap.ctrl_alt_up",
+        "when": "editorTextFocus && hxEnabled && CAup"
+      },
+      {
+        "key": "ctrl+alt+down",
+        "command": "extension.helixKeymap.ctrl_alt_down",
+        "when": "editorTextFocus && hxEnabled && CAdown"
+      },
+      {
         "key": "ctrl+alt+[",
         "command": "extension.helixKeymap.ctrl_alt_[",
         "when": "editorTextFocus && hxEnabled && CA["
@@ -1298,6 +1398,26 @@
         "key": "ctrl+shift+backspace",
         "command": "extension.helixKeymap.ctrl_shift_backspace",
         "when": "editorTextFocus && hxEnabled && CSbackspace"
+      },
+      {
+        "key": "ctrl+shift+left",
+        "command": "extension.helixKeymap.ctrl_shift_left",
+        "when": "editorTextFocus && hxEnabled && CSleft"
+      },
+      {
+        "key": "ctrl+shift+right",
+        "command": "extension.helixKeymap.ctrl_shift_right",
+        "when": "editorTextFocus && hxEnabled && CSright"
+      },
+      {
+        "key": "ctrl+shift+up",
+        "command": "extension.helixKeymap.ctrl_shift_up",
+        "when": "editorTextFocus && hxEnabled && CSup"
+      },
+      {
+        "key": "ctrl+shift+down",
+        "command": "extension.helixKeymap.ctrl_shift_down",
+        "when": "editorTextFocus && hxEnabled && CSdown"
       },
       {
         "key": "ctrl+shift+[",
@@ -1565,6 +1685,26 @@
         "when": "editorTextFocus && hxEnabled && SAbackspace"
       },
       {
+        "key": "shift+alt+left",
+        "command": "extension.helixKeymap.shift_alt_left",
+        "when": "editorTextFocus && hxEnabled && SAleft"
+      },
+      {
+        "key": "shift+alt+right",
+        "command": "extension.helixKeymap.shift_alt_right",
+        "when": "editorTextFocus && hxEnabled && SAright"
+      },
+      {
+        "key": "shift+alt+up",
+        "command": "extension.helixKeymap.shift_alt_up",
+        "when": "editorTextFocus && hxEnabled && SAup"
+      },
+      {
+        "key": "shift+alt+down",
+        "command": "extension.helixKeymap.shift_alt_down",
+        "when": "editorTextFocus && hxEnabled && SAdown"
+      },
+      {
         "key": "shift+alt+[",
         "command": "extension.helixKeymap.shift_alt_[",
         "when": "editorTextFocus && hxEnabled && SA["
@@ -1828,6 +1968,26 @@
         "key": "ctrl+shift+alt+backspace",
         "command": "extension.helixKeymap.ctrl_shift_alt_backspace",
         "when": "editorTextFocus && hxEnabled && CSAbackspace"
+      },
+      {
+        "key": "ctrl+shift+alt+left",
+        "command": "extension.helixKeymap.ctrl_shift_alt_left",
+        "when": "editorTextFocus && hxEnabled && CSAleft"
+      },
+      {
+        "key": "ctrl+shift+alt+right",
+        "command": "extension.helixKeymap.ctrl_shift_alt_right",
+        "when": "editorTextFocus && hxEnabled && CSAright"
+      },
+      {
+        "key": "ctrl+shift+alt+up",
+        "command": "extension.helixKeymap.ctrl_shift_alt_up",
+        "when": "editorTextFocus && hxEnabled && CSAup"
+      },
+      {
+        "key": "ctrl+shift+alt+down",
+        "command": "extension.helixKeymap.ctrl_shift_alt_down",
+        "when": "editorTextFocus && hxEnabled && CSAdown"
       },
       {
         "key": "ctrl+shift+alt+[",

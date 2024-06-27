@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 
-import { ChordConsumeResult, tryConsumeChord } from './helix_config';
+import { ChordConsumeResult, tryConsumeChord } from './bindings';
 import { HelixState } from './helix_state_types';
 import { enterPreviousMode, Mode, ModeEnterFuncs } from './modes';
 import * as search from './search_utils';
