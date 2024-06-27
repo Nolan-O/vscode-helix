@@ -860,7 +860,7 @@ export function loadDefaultConfig() {
   addBinding([actionFuncs.code_action], [[Mode.Normal, [' ', 'a']]]);
   addBinding([actionFuncs.vs_window_mode], [[Mode.Normal, [' ', 'w']]]);
   addBinding([actionFuncs.global_search], [[Mode.Normal, [' ', '/']]]);
-  addBinding([actionFuncs.command_palette], [[Mode.Normal, [' ', 'shift', '/']]]);
+  addBinding([actionFuncs.vs_command_palette], [[Mode.Normal, [' ', 'shift', '/']]]);
   addBinding([actionFuncs.yank_to_clipboard], [[Mode.Normal, [' ', 'y']]]);
   addBinding([actionFuncs.paste_clipboard_after], [[Mode.Normal, [' ', 'p']]]);
   addBinding([actionFuncs.paste_clipboard_before], [[Mode.Normal, [' ', 'shift', 'p']]]);

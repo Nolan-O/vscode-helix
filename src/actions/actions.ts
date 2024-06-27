@@ -37,7 +37,7 @@ export enum Direction {
  * doesn't implement a command for said action e.g. vs_select_paragraph_around
  */
 export const actionFuncs: { [key: string]: Action } = {
-  no_op: () => {},
+  no_op: () => { },
   /*
     Modes
   */
@@ -136,6 +136,9 @@ export const actionFuncs: { [key: string]: Action } = {
         action(helixState, editor);
       }
     });
+  },
+  vs_command_palette: (helixState, editor) => {
+    vscode.commands.executeCommand('workbench.action.showCommands');
   },
   select_regex: (helixState, editor) => {
     ModeEnterFuncs[Mode.Select](helixState);
@@ -1257,9 +1260,9 @@ function deleteLines(
         const startPos =
           selection.active.line - 1 >= 0
             ? new vscode.Position(
-                selection.active.line - 1,
-                editor.document.lineAt(selection.active.line - 1).text.length,
-              )
+              selection.active.line - 1,
+              editor.document.lineAt(selection.active.line - 1).text.length,
+            )
             : new vscode.Position(selection.active.line, 0);
 
         const endPos = positionUtils.lastChar(editor.document);
