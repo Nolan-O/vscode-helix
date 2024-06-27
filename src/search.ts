@@ -120,13 +120,13 @@ export class SearchState {
   findInstancesInDocument(helixState: HelixState): void {
     const editor = helixState.editorState.activeEditor;
     if (editor === undefined) {
-      return
+      return;
     }
 
     const document = editor.document;
     const flags = this.getFlags();
 
-    let searchRegex
+    let searchRegex;
     try {
       searchRegex = new RegExp(this.getNormalisedSearchString(), flags);
     } catch (e) {
@@ -154,28 +154,28 @@ export class SearchState {
   findInstancesInRange(helixState: HelixState): void {
     const editor = helixState.editorState.activeEditor;
     if (editor === undefined) {
-      return
+      return;
     }
 
     if (helixState.currentSelection === null) {
-      console.warn("Tried to search selection without a set selection")
+      console.warn('Tried to search selection without a set selection');
       ModeEnterFuncs[Mode.Normal](helixState);
-      return
+      return;
     }
 
     const document = editor.document;
     const foundRanges: vscode.Range[] = [];
     const flags = this.getFlags();
 
-    let searchRegex
+    let searchRegex;
     try {
       searchRegex = new RegExp(this.getNormalisedSearchString(), flags);
     } catch (e) {
       return;
     }
 
-    let match
-    const text = document.getText()
+    let match;
+    const text = document.getText();
     while ((match = searchRegex.exec(text))) {
       const startPos = document.positionAt(match.index);
       const endPos = document.positionAt(match.index + match[0].length);
@@ -184,8 +184,7 @@ export class SearchState {
         foundRanges.push(foundRange);
       }
 
-      if (match[0].length === 0)
-        searchRegex.lastIndex++
+      if (match[0].length === 0) searchRegex.lastIndex++;
     }
 
     editor.selections = foundRanges.map((range) => new vscode.Selection(range.start, range.end));

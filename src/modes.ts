@@ -15,26 +15,26 @@ import { MotionWrapper } from './actions/motions';
 
 // We're going to be indexing objects with these so it's safest to make them strings
 export enum Mode {
-  Disabled = "0",
-  Insert = "1",
-  Normal = "2",
-  Visual = "3",
-  VisualLine = "4",
-  Occurrence = "5",
-  Window = "6",
-  SearchInProgress = "7",
-  Select = "8",
-  View = "9",
-  Match = "10",
+  Disabled = '0',
+  Insert = '1',
+  Normal = '2',
+  Visual = '3',
+  VisualLine = '4',
+  Occurrence = '5',
+  Window = '6',
+  SearchInProgress = '7',
+  Select = '8',
+  View = '9',
+  Match = '10',
 
-  Find = "11",
-  Replace = "12",
+  Find = '11',
+  Replace = '12',
   // A special-ish mode for gathering input, see match replace/add for example
   // any mode can set this mode to unbind its sub-bindings without changing a type handler
-  InputGathering = "13",
+  InputGathering = '13',
 
   // Functionally disables helix
-  VSCode = "14",
+  VSCode = '14',
 }
 
 function enterInsertMode(helixState: HelixState, before = true): void {
@@ -103,7 +103,10 @@ function enterVSCodeMode(helixState: HelixState): void {
   helixState.commandLine.setText('', helixState);
 }
 
-function enterInputGatheringMode(helixState: HelixState, subscription: (helixState: HelixState, char: string) => void): void {
+function enterInputGatheringMode(
+  helixState: HelixState,
+  subscription: (helixState: HelixState, char: string) => void,
+): void {
   setTypeSubscription(helixState, subscription);
 }
 
@@ -111,7 +114,10 @@ type ModeEnterFuncs = {
   [key in Mode]: (helixState: HelixState, ...args: any) => void;
 };
 
-function enterModeCommon(mode: Mode, modeEnterFunc: (helixState: HelixState, ...args: any) => void): (helixState: HelixState, ...args: any) => void {
+function enterModeCommon(
+  mode: Mode,
+  modeEnterFunc: (helixState: HelixState, ...args: any) => void,
+): (helixState: HelixState, ...args: any) => void {
   return (helixState: HelixState, ...args: any) => {
     setPreviousMode(helixState);
     helixState.mode = mode;
@@ -130,8 +136,8 @@ function enterModeCommon(mode: Mode, modeEnterFunc: (helixState: HelixState, ...
       vscode.commands.executeCommand('setContext', 'hxEnabled', true);
     }
 
-    modeEnterFunc(helixState, ...args)
-  }
+    modeEnterFunc(helixState, ...args);
+  };
 }
 
 export const ModeEnterFuncs: ModeEnterFuncs = {
@@ -149,8 +155,8 @@ export const ModeEnterFuncs: ModeEnterFuncs = {
   [Mode.Match]: enterModeCommon(Mode.Match, enterMatchMode),
   [Mode.InputGathering]: enterModeCommon(Mode.InputGathering, enterInputGatheringMode),
   [Mode.VSCode]: enterModeCommon(Mode.VSCode, enterVSCodeMode),
-  [Mode.Occurrence]: () => { },
-}
+  [Mode.Occurrence]: () => {},
+};
 
 export function enterPreviousMode(helixState: HelixState) {
   let previousMode = helixState.previousMode;

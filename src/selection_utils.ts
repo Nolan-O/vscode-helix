@@ -5,14 +5,14 @@ import * as positionUtils from './position_utils';
 /**
  * Strange function!
  * The need to supply a direction depends on what context the conversion is happening under
- * 
+ *
  * Direction.Unknown is used by single-character motions
  *    e.g. move_char_left
  * Direction.Left/Right are used by motions which will affect entire words or lines
  *    e.g. goto_next_paragraph or move_next_word_start
  * Direction.Auto is used when there is no motion being executed
  *    e.g. yank
- * 
+ *
  * All this is necessary to maintain consistency in behavior with helix when chaining several motions
  * The caller may still need to adjust results by a character offset for consistency
  *    e.g. motions::createWordForwardHandler does but not motions::createWordBackwardHandler
@@ -20,7 +20,7 @@ import * as positionUtils from './position_utils';
 export function vscodeToVimVisualSelection(
   document: vscode.TextDocument,
   vscodeSelection: vscode.Selection,
-  direction: Direction
+  direction: Direction,
 ): vscode.Selection {
   if (direction === Direction.Left || direction === Direction.Up) {
     if (vscodeSelection.active.isBefore(vscodeSelection.anchor)) {
@@ -38,7 +38,7 @@ export function vscodeToVimVisualSelection(
     }
   } else if (direction === Direction.Auto) {
     if (vscodeSelection.active.compareTo(vscodeSelection.anchor) >= 0) {
-      return new vscode.Selection(vscodeSelection.anchor, positionUtils.rightWrap(document, vscodeSelection.active))
+      return new vscode.Selection(vscodeSelection.anchor, positionUtils.rightWrap(document, vscodeSelection.active));
     } else {
       return new vscode.Selection(vscodeSelection.active, vscodeSelection.anchor);
     }
@@ -50,7 +50,7 @@ export function vscodeToVimVisualSelection(
 export function vimToVscodeVisualSelection(
   document: vscode.TextDocument,
   vimSelection: vscode.Selection,
-  direction: Direction
+  direction: Direction,
 ): vscode.Selection {
   if (direction === Direction.Unknown) {
     return new vscode.Selection(vimSelection.anchor, vimSelection.active);
@@ -113,25 +113,23 @@ export function toOuterLinewiseSelection(document: vscode.TextDocument, selectio
 export function toInnerLinewiseSelection(document: vscode.TextDocument, selection: vscode.Selection) {
   const anchorLineLength = document.lineAt(selection.anchor.line).text.length;
   const activeLineLength = document.lineAt(selection.active.line).text.length;
-  let anchor = selection.anchor
-  let active = selection.active
+  let anchor = selection.anchor;
+  let active = selection.active;
 
   if (active.isBefore(anchor)) {
     if (anchor.character !== 0 && anchor.character !== anchorLineLength) {
-      const len = document.lineAt(anchor.line - 1).text.length
-      anchor = anchor.with({ line: anchor.line - 1, character: len })
+      const len = document.lineAt(anchor.line - 1).text.length;
+      anchor = anchor.with({ line: anchor.line - 1, character: len });
     }
-    if (active.character !== 0)
-      active = active.with({ line: active.line + 1, character: 0 })
+    if (active.character !== 0) active = active.with({ line: active.line + 1, character: 0 });
 
     return new vscode.Selection(anchor, active);
   } else {
     if (active.character !== 0 && active.character !== activeLineLength) {
-      const len = document.lineAt(active.line - 1).text.length
-      active = active.with({ line: active.line - 1, character: len })
+      const len = document.lineAt(active.line - 1).text.length;
+      active = active.with({ line: active.line - 1, character: len });
     }
-    if (anchor.character !== 0)
-      anchor = anchor.with({ line: anchor.line + 1, character: 0 })
+    if (anchor.character !== 0) anchor = anchor.with({ line: anchor.line + 1, character: 0 });
 
     return new vscode.Selection(anchor, active);
   }

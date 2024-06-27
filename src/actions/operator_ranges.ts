@@ -13,7 +13,7 @@ import { searchBackward, searchBackwardBracket, searchForward, searchForwardBrac
 import { getTags } from '../tag_utils';
 import { whitespaceWordRanges, wordRanges } from '../word_utils';
 
-export type OperatorRangeFunc = (vimState: HelixState, editor: vscode.TextEditor) => void
+export type OperatorRangeFunc = (vimState: HelixState, editor: vscode.TextEditor) => void;
 
 export const outer: { [key: string]: OperatorRangeFunc } = {
   Word: createOuterWordHandler(wordRanges),
@@ -32,7 +32,7 @@ export const outer: { [key: string]: OperatorRangeFunc } = {
       } else {
         return sel;
       }
-    })
+    });
   },
 
   SurroundingPair: (helixState, editor) => {
@@ -60,9 +60,12 @@ export const outer: { [key: string]: OperatorRangeFunc } = {
       if (bracketRange == undefined) {
         return sel;
       } else {
-        return new vscode.Selection(new vscode.Position(bracketRange.start.line, bracketRange.start.character), new vscode.Position(bracketRange.end.line, bracketRange.end.character + 1))
+        return new vscode.Selection(
+          new vscode.Position(bracketRange.start.line, bracketRange.start.character),
+          new vscode.Position(bracketRange.end.line, bracketRange.end.character + 1),
+        );
       }
-    })
+    });
   },
   Function: createInnerFunctionHandler(),
 
@@ -101,9 +104,9 @@ export const outer: { [key: string]: OperatorRangeFunc } = {
       } else {
         return sel;
       }
-    })
-  }
-}
+    });
+  },
+};
 
 export const inner: { [key: string]: OperatorRangeFunc } = {
   Word: createInnerWordHandler(wordRanges),
@@ -121,7 +124,7 @@ export const inner: { [key: string]: OperatorRangeFunc } = {
       } else {
         return sel;
       }
-    })
+    });
   },
 
   SurroundingPair: (helixState, editor) => {
@@ -149,9 +152,12 @@ export const inner: { [key: string]: OperatorRangeFunc } = {
       if (bracketRange == undefined) {
         return sel;
       } else {
-        return new vscode.Selection(new vscode.Position(bracketRange.start.line, bracketRange.start.character + 1), new vscode.Position(bracketRange.end.line, bracketRange.end.character))
+        return new vscode.Selection(
+          new vscode.Position(bracketRange.start.line, bracketRange.start.character + 1),
+          new vscode.Position(bracketRange.end.line, bracketRange.end.character),
+        );
       }
-    })
+    });
   },
 
   Function: createInnerFunctionHandler(),
@@ -184,7 +190,7 @@ export const inner: { [key: string]: OperatorRangeFunc } = {
       } else {
         return sel;
       }
-    })
+    });
   },
 
   // TODO: what is this?
@@ -329,7 +335,7 @@ function createOuterWordHandler(
       }
 
       return sel;
-    })
+    });
 
     return undefined;
   };
@@ -409,18 +415,13 @@ function createInnerFunctionHandler(): (vimState: HelixState, editor: vscode.Tex
       const range = helixState.symbolProvider.getContainingSymbolRange(position);
 
       if (range) {
-        return new vscode.Selection(
-          range.start.line, range.start.character,
-          range.end.line, range.end.character
-        );
+        return new vscode.Selection(range.start.line, range.start.character, range.end.line, range.end.character);
       } else {
         return sel;
       }
-    })
+    });
   };
 }
-
-
 
 // createOperatorRangeExactKeys(
 //   [KeyMap.Motions.MoveRight],

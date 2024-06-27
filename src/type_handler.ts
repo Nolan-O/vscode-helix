@@ -21,14 +21,14 @@ export function typeHandler(helixState: HelixState, char: string): void {
   // detect if this has a shift key attached, the only modifier key which triggers this function
   // shift for symbol keys are handled through keybindings setup in package.json:
   // E.G. shift+; pushes "shift" to helixState.keysPressed and then passes ":" here rather than ";"
-  if (char.length == 1 && (char.toLowerCase() != char)) {
+  if (char.length == 1 && char.toLowerCase() != char) {
     return;
   }
 
   helixState.keysPressed.push(char);
 
   try {
-    tryConsumeChord(helixState)
+    tryConsumeChord(helixState);
   } catch (error) {
     console.error(error);
   }
@@ -37,7 +37,7 @@ export function insertTypeHandler(helixState: HelixState, char: string): void {
   const editor = vscode.window.activeTextEditor;
   if (!editor) return;
 
-  if (char.length == 1 && (char.toLowerCase() != char)) {
+  if (char.length == 1 && char.toLowerCase() != char) {
     return;
   }
 
@@ -51,18 +51,18 @@ export function insertTypeHandler(helixState: HelixState, char: string): void {
       editor.selections.forEach((sel) => {
         if (sel.active.compareTo(sel.anchor) > 0) {
           // In theory strs should never have a length > 1 but we'll be forgiving I suppose
-          builder.insert(sel.anchor, strs.join(''))
+          builder.insert(sel.anchor, strs.join(''));
         } else {
-          builder.insert(sel.active, strs.join(''))
+          builder.insert(sel.active, strs.join(''));
         }
-      })
-    })
+      });
+    });
 
     return;
   }
 
   try {
-    tryConsumeChord(helixState)
+    tryConsumeChord(helixState);
   } catch (error) {
     console.error(error);
   }
@@ -73,15 +73,15 @@ export function searchTypeHandler(helixState: HelixState, char: string): void {
 
   // Bindings in search mode are an odd idea but it is how we avoid hardcoded rules for escape and backspace
   helixState.keysPressed.push(char);
-  const str = inputTools.literalizeChord(helixState.keysPressed).join('')
+  const str = inputTools.literalizeChord(helixState.keysPressed).join('');
 
   if (tryConsumeChord(helixState) === ChordConsumeResult.MATCH) {
-    return
+    return;
   } else {
     try {
       helixState.searchState.addChar(helixState, str);
     } catch {
-      return
+      return;
     }
   }
 }
@@ -91,10 +91,10 @@ export function tillCharTypeHandler(helixState: HelixState, char: string): void 
 
   // Bindings in search mode are an odd idea but it is how we avoid hardcoded rules for escape and backspace
   helixState.keysPressed.push(char);
-  const search_str = inputTools.literalizeChord(helixState.keysPressed)
+  const search_str = inputTools.literalizeChord(helixState.keysPressed);
 
   if (tryConsumeChord(helixState) === ChordConsumeResult.MATCH) {
-    return
+    return;
   } else if (search_str.length > 0) {
     try {
       const motionWrapper = helixState.motionForMode;
@@ -130,7 +130,7 @@ export function execOrAbortTypeHandler(helixState: HelixState, char: string): vo
 
   let r = tryConsumeChord(helixState);
   if (r !== ChordConsumeResult.INVALID) {
-    return
+    return;
   } else {
     ModeEnterFuncs[Mode.Normal](helixState);
   }
@@ -145,9 +145,9 @@ function replaceSelectionWithRepeatingChar(builder: vscode.TextEditorEdit, sel: 
 
   const range = new vscode.Range(sel.anchor, sel.end);
   const text = editor.document.getText(range);
-  let final_str = replace_str
+  let final_str = replace_str;
   for (let i = 1; i < text.length; i++) {
-    final_str += replace_str
+    final_str += replace_str;
   }
 
   builder.replace(sel, final_str);
@@ -159,24 +159,24 @@ export function replaceTypeHandler(helixState: HelixState, char: string): void {
 
   // Bindings in search mode are an odd idea but it is how we avoid hardcoded rules for escape and backspace
   helixState.keysPressed.push(char);
-  const replace_str = inputTools.literalizeChord(helixState.keysPressed)
+  const replace_str = inputTools.literalizeChord(helixState.keysPressed);
 
   if (tryConsumeChord(helixState) !== ChordConsumeResult.INVALID) {
-    return
+    return;
   } else if (replace_str.length > 0) {
     editor.edit((builder) => {
       editor.selections.forEach((sel) => {
         if (sel.isEmpty) {
           const sel_ch = new vscode.Selection(
             sel.active,
-            new vscode.Position(sel.active.line, sel.active.character + 1)
-          )
-          replaceSelectionWithRepeatingChar(builder, sel_ch, replace_str[0])
+            new vscode.Position(sel.active.line, sel.active.character + 1),
+          );
+          replaceSelectionWithRepeatingChar(builder, sel_ch, replace_str[0]);
         } else {
-          replaceSelectionWithRepeatingChar(builder, sel, replace_str[0])
+          replaceSelectionWithRepeatingChar(builder, sel, replace_str[0]);
         }
       });
-    })
+    });
 
     ModeEnterFuncs[Mode.Normal](helixState);
   }
@@ -188,17 +188,17 @@ export function surroundAddTypeHandler(helixState: HelixState, char: string): vo
 
   // Bindings in search mode are an odd idea but it is how we avoid hardcoded rules for escape and backspace
   helixState.keysPressed.push(char);
-  const replace_str = inputTools.literalizeChord(helixState.keysPressed)
+  const replace_str = inputTools.literalizeChord(helixState.keysPressed);
 
   if (tryConsumeChord(helixState) !== ChordConsumeResult.INVALID) {
-    return
+    return;
   } else {
     const [startChar, endChar] = inputTools.getMatchPairs(replace_str[0]);
     // Add char to both ends of each selection
     editor.edit((editBuilder) => {
       // Add char to both ends of each selection
       editor.selections.forEach((selection) => {
-        const helixSelection = vscodeToVimVisualSelection(editor.document, selection, Direction.Auto)
+        const helixSelection = vscodeToVimVisualSelection(editor.document, selection, Direction.Auto);
 
         editBuilder.insert(helixSelection.start, startChar);
         editBuilder.insert(helixSelection.end, endChar);
@@ -214,10 +214,10 @@ export function surroundReplaceTypeHandler(helixState: HelixState, char: string)
 
   // Bindings in search mode are an odd idea but it is how we avoid hardcoded rules for escape and backspace
   helixState.keysPressed.push(char);
-  const literal_input = inputTools.literalizeChord(helixState.keysPressed)
+  const literal_input = inputTools.literalizeChord(helixState.keysPressed);
 
   if (tryConsumeChord(helixState, false) !== ChordConsumeResult.INVALID) {
-    return
+    return;
   } else {
     const original = literal_input[0];
     const replacement = literal_input[1];
@@ -268,10 +268,10 @@ export function surroundDeleteTypeHandler(helixState: HelixState, char: string):
 
   // Bindings in search mode are an odd idea but it is how we avoid hardcoded rules for escape and backspace
   helixState.keysPressed.push(char);
-  const literal_input = inputTools.literalizeChord(helixState.keysPressed)
+  const literal_input = inputTools.literalizeChord(helixState.keysPressed);
 
   if (tryConsumeChord(helixState) !== ChordConsumeResult.INVALID) {
-    return
+    return;
   } else {
     enterPreviousMode(helixState);
 
@@ -279,8 +279,20 @@ export function surroundDeleteTypeHandler(helixState: HelixState, char: string):
     const [startChar, endChar] = inputTools.getMatchPairs(char);
     const num = helixState.resolveCount();
 
-    const forwardPosition = search.searchForwardBracket(editor.document, startChar, endChar, editor.selection.active, num);
-    const backwardPosition = search.searchBackwardBracket(editor.document, startChar, endChar, editor.selection.active, num);
+    const forwardPosition = search.searchForwardBracket(
+      editor.document,
+      startChar,
+      endChar,
+      editor.selection.active,
+      num,
+    );
+    const backwardPosition = search.searchBackwardBracket(
+      editor.document,
+      startChar,
+      endChar,
+      editor.selection.active,
+      num,
+    );
 
     if (forwardPosition === undefined || backwardPosition === undefined) return;
 

@@ -4,12 +4,12 @@ import type { SymbolProvider } from './SymbolProvider';
 import { CommandLine } from './commandLine';
 import { Mode } from './modes';
 import { SearchState } from './search';
-import { MotionWrapper } from "./actions/motions"
+import { MotionWrapper } from './actions/motions';
 
 /** This represents the global Helix state used across the board */
 export type HelixState = {
   typeSubscriptionDisposable: Disposable | undefined;
-  typeSubscription: ((vimState: HelixState, char: string) => void);
+  typeSubscription: (vimState: HelixState, char: string) => void;
   mode: Mode;
   keysPressed: string[];
   numbersPressed: string[];

@@ -6,10 +6,7 @@ import { Direction } from '../actions/actions';
 import { adjustInsertPositions, getInsertRangesFromBeginning, getRegisterContentsList } from './common';
 import { Mode, ModeEnterFuncs } from '../modes';
 
-function putText(vimState: HelixState,
-  editor: vscode.TextEditor,
-  registerContentsList: (string | undefined)[]
-) {
+function putText(vimState: HelixState, editor: vscode.TextEditor, registerContentsList: (string | undefined)[]) {
   if (vimState.registers.linewise) {
     normalModeLinewise(vimState, editor, registerContentsList);
   } else {
@@ -17,15 +14,15 @@ function putText(vimState: HelixState,
   }
 
   // Helix does this
-  ModeEnterFuncs[Mode.Normal](vimState)
+  ModeEnterFuncs[Mode.Normal](vimState);
 }
 
 export function putBefore(vimState: HelixState, editor: vscode.TextEditor, clipboard: boolean = false) {
   if (clipboard) {
-    vscode.env.clipboard.readText
+    vscode.env.clipboard.readText;
     vscode.env.clipboard.readText().then((contents) => {
       putText(vimState, editor, [contents]);
-    })
+    });
   } else {
     const registerContentsList = getRegisterContentsList(vimState, editor);
     if (registerContentsList === undefined) return;
@@ -40,8 +37,8 @@ function normalModeCharacterwise(
   registerContentsList: (string | undefined)[],
 ) {
   const insertPositions: vscode.Position[] = editor.selections.map((selection) => {
-    return vscodeToVimVisualSelection(editor.document, selection, Direction.Auto).start
-  })
+    return vscodeToVimVisualSelection(editor.document, selection, Direction.Auto).start;
+  });
   const adjustedInsertPositions = adjustInsertPositions(insertPositions, registerContentsList);
   const insertRanges = getInsertRangesFromBeginning(adjustedInsertPositions, registerContentsList);
 
