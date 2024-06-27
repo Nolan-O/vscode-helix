@@ -186,12 +186,18 @@ export const actionFuncs: { [key: string]: Action } = {
       vscode.commands.executeCommand('editor.action.nextMatchFindAction');
     }
   },
+  extend_search_next: (helixState) => {
+    vscode.commands.executeCommand('addSelectionToNextFindMatch');
+  },
   search_prev: (helixState) => {
     if (helixState.mode === Mode.Visual) {
       vscode.commands.executeCommand('editor.action.addSelectionToPreviousFindMatch');
     } else {
       vscode.commands.executeCommand('editor.action.previousMatchFindAction');
     }
+  },
+  extend_search_prev: (helixState) => {
+    vscode.commands.executeCommand('addSelectionToPrevFindMatch');
   },
   select_all: (helixState) => {
     vscode.commands.executeCommand('editor.action.selectAll');
