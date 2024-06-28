@@ -75,20 +75,18 @@ function matchInput(vimState: HelixState): Action[] | boolean {
 }
 
 function configError(mode: Mode, cur_idx: number, keys: string[]) {
-  let seq = '';
   let seq_so_far = '';
-  keys.map((e) => {
-    seq += e;
-  });
   keys.map((v, i) => {
-    if (i < cur_idx) seq_so_far += v;
+    if (i < cur_idx)
+      seq_so_far += ' ' + v;
   });
-  console.warn(
-    `Error adding config item: Mode ${mode.toString()}, key sequence ${seq_so_far} is already bound to some actions; cannot index it further with ${seq}`,
-  );
+  let seq = keys.join(' ');
+
+  return [seq, seq_so_far];
 }
 
 export enum ChordConsumeResult {
+
   MATCH,
   INVALID,
   INCOMPLETE,
@@ -149,7 +147,11 @@ export function addBinding(actions: Action[], cfg: BindingActionList[], warnRebi
       if (idx < keys.length - 1) {
         // Check that a binding hasn't already been made out of a sub-chord of this chord
         if (Array.isArray(layer)) {
-          configError(mode, idx, keys);
+          let indexState = configError(mode, idx, keys);
+          console.warn(
+            `Error adding config item: Mode ${mode.toString()}, key sequence${indexState[2]} is already bound to some actions; cannot index it further with ${indexState[1]}`,
+          );
+
           return false;
         } else {
           layer[key] = layer[key] ? layer[key] : {};
@@ -158,7 +160,11 @@ export function addBinding(actions: Action[], cfg: BindingActionList[], warnRebi
       } else {
         // If so, we expect it to not be bound (we expect it to not be an array)
         if (Array.isArray(layer) && warnRebinding) {
-          configError(mode, idx, keys);
+          let indexState = configError(mode, idx, keys);
+          console.warn(
+            `Error adding config item: Mode ${mode.toString()}, key sequence${indexState[2]} is already bound to some actions; cannot index it further with ${indexState[1]}`,
+          );
+
           return false;
         } else {
           layer[key] = actions;
@@ -168,6 +174,51 @@ export function addBinding(actions: Action[], cfg: BindingActionList[], warnRebi
   }
 
   return true;
+}
+
+function recursiveRemoveLayers(depth: number, mode: Mode, keys: string[], layer: BindingLayer) {
+  const nextLayer = layer[keys[depth]];
+  if (Array.isArray(layer)) {
+    if (depth === keys.length - 1) {
+      return true;
+    } else {
+      let indexState = configError(mode, depth, keys);
+      console.warn(`Tried to remove a binding that didn't exist: ${indexState[1]}`);
+
+      return false;
+    }
+  } else {
+    const didRemove = recursiveRemoveLayers(depth + 1, mode, keys, nextLayer);
+    if (didRemove && Object.keys(nextLayer).length === 1) {
+      delete layer[keys[depth]];
+      return true;
+    }
+
+    return false
+  }
+}
+
+export function removeBinding(cfg: BindingActionList[]) {
+  let removingContexts: { [key: string]: { [key: string]: boolean } } = {};
+  for (const [mode, keys] of cfg) {
+    removingContexts[mode] = {};
+    let has_modifiers = sortModifiers(keys);
+    if (has_modifiers === true) {
+      let binding_strs = getBindingContextStr(keys);
+      for (let str of binding_strs) {
+        removingContexts[mode][str] = true;
+      }
+    }
+
+    recursiveRemoveLayers(0, mode, keys, bindings[mode]);
+
+
+    for (let mode in removingContexts) {
+      for (let context in removingContexts[mode]) {
+        vscode.commands.executeCommand('setContext', context, false);
+      }
+    }
+  }
 }
 
 export function loadDefaultConfig() {
@@ -380,7 +431,7 @@ export function loadDefaultConfig() {
   );
 
   addBinding(
-    [actionFuncs.match_mode],
+    [actionFuncs.vs_match_mode],
     [
       [Mode.Normal, ['m']],
       [Mode.Visual, ['m']],

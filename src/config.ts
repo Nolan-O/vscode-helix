@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as toml from 'smol-toml';
 import * as json5 from 'json5';
-import { addBinding } from './bindings';
+import { addBinding, removeBinding } from './bindings';
 import * as inputUtils from './input_utils';
 import { actionFuncs } from './actions/actions';
 import { Action } from './action_types';
@@ -40,7 +40,7 @@ export async function getHelixConfig() {
     .then((str) => {
       file = str;
     })
-    .catch(() => {});
+    .catch(() => { });
 
   if (file == null) {
     return;
@@ -58,7 +58,7 @@ export async function getVSConfig() {
     .then((str) => {
       file = str;
     })
-    .catch(() => {});
+    .catch(() => { });
 
   if (file == null) {
     return;
@@ -202,7 +202,11 @@ function processBindings(allBindings: ConvertedBindings) {
     const _bindings = allBindings[mode];
     for (let i = 0; i < _bindings.length; i++) {
       const binding = _bindings[i];
-      addBinding(binding.commands, [[mode, binding.chord]], false);
+      if (binding.commands.length === 1 && binding.commands[0] === 'no_op') {
+        removeBinding([[mode, binding.chord]]);
+      } else {
+        addBinding(binding.commands, [[mode, binding.chord]], false);
+      }
     }
   }
 }
