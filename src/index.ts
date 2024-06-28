@@ -1679,26 +1679,6 @@ export function activate(context: vscode.ExtensionContext): void {
       pushKP(['ctrl', 'shift', 'alt']);
       globalhelixState.typeSubscription(globalhelixState, '0');
     }),
-
-    vscode.commands.registerCommand('extension.helixKeymap.enterDisabledMode', () => {
-      ModeEnterFuncs[Mode.Disabled](globalhelixState);
-    }),
-    vscode.commands.registerCommand('extension.helixKeymap.enableHelix', () => {
-      ModeEnterFuncs[Mode.Normal](globalhelixState);
-      setModeCursorStyle(globalhelixState.mode, vscode.window.activeTextEditor!);
-      setTypeSubscription(globalhelixState, typeHandler);
-    }),
-    vscode.commands.registerCommand('extension.helixKeymap.flipSelection', () => {
-      flipSelection(vscode.window.activeTextEditor);
-    }),
-    vscode.commands.registerCommand('extension.helixKeymap.clipboardPasteAction', () => {
-      vscode.env.clipboard.readText().then((text) => {
-        globalhelixState.searchState.addText(globalhelixState, text);
-      });
-    }),
-    vscode.commands.registerCommand('extension.helixKeymap.repeatLastMotion', () => {
-      globalhelixState.repeatLastMotion(globalhelixState, vscode.window.activeTextEditor!);
-    }),
   );
 
   bindings.loadDefaultConfig();

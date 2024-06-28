@@ -76,8 +76,6 @@ class StatusBarImpl implements vscode.Disposable {
         return 'NOR (V)';
       case Mode.Insert:
         return 'INS';
-      case Mode.Disabled:
-        return '-- HELIX DISABLED --';
       case Mode.SearchInProgress:
         this.statusBarItem.backgroundColor = this.themeBackgroundColor;
         return 'SER:';

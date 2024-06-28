@@ -20,7 +20,6 @@ type VSKeyBinding = {
 type VSKeyBindings = [VSKeyBinding];
 
 export let bindings: BindingStructure = {
-  [Mode.Disabled]: {},
   [Mode.Insert]: {},
   [Mode.Normal]: {},
   [Mode.Visual]: {},
@@ -38,7 +37,6 @@ export let bindings: BindingStructure = {
 };
 
 export let bindingContextVars: ContextStructure = {
-  [Mode.Disabled]: {},
   [Mode.Insert]: {},
   [Mode.Normal]: {},
   [Mode.Visual]: {},

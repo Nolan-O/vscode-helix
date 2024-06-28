@@ -15,26 +15,25 @@ import { MotionWrapper } from './actions/motions';
 
 // We're going to be indexing objects with these so it's safest to make them strings
 export enum Mode {
-  Disabled = '0',
-  Insert = '1',
-  Normal = '2',
-  Visual = '3',
-  VisualLine = '4',
-  Occurrence = '5',
-  Window = '6',
-  SearchInProgress = '7',
-  Select = '8',
-  View = '9',
-  Match = '10',
+  Insert = '0',
+  Normal = '1',
+  Visual = '2',
+  VisualLine = '3',
+  Occurrence = '4',
+  Window = '5',
+  SearchInProgress = '6',
+  Select = '7',
+  View = '8',
+  Match = '9',
 
-  Find = '11',
-  Replace = '12',
+  Find = '10',
+  Replace = '11',
   // A special-ish mode for gathering input, see match replace/add for example
   // any mode can set this mode to unbind its sub-bindings without changing a type handler
-  InputGathering = '13',
+  InputGathering = '12',
 
   // Functionally disables helix
-  VSCode = '14',
+  VSCode = '13',
 }
 
 function enterInsertMode(helixState: HelixState, before = true): void {
@@ -73,12 +72,6 @@ function enterVisualLineMode(helixState: HelixState): void {
 
 function enterViewMode(helixState: HelixState): void {
   setTypeSubscription(helixState, typeHandler);
-  helixState.commandLine.setText('', helixState);
-}
-
-function enterDisabledMode(helixState: HelixState): void {
-  setModeCursorStyle(helixState.mode, helixState.editorState.activeEditor!);
-  removeTypeSubscription(helixState);
   helixState.commandLine.setText('', helixState);
 }
 
@@ -149,13 +142,12 @@ export const ModeEnterFuncs: ModeEnterFuncs = {
   [Mode.Visual]: enterModeCommon(Mode.Visual, enterVisualMode),
   [Mode.VisualLine]: enterModeCommon(Mode.VisualLine, enterVisualLineMode),
   [Mode.View]: enterModeCommon(Mode.View, enterViewMode),
-  [Mode.Disabled]: enterModeCommon(Mode.Disabled, enterDisabledMode),
   [Mode.Find]: enterModeCommon(Mode.Find, enterFindMode),
   [Mode.Replace]: enterModeCommon(Mode.Replace, enterReplaceMode),
   [Mode.Match]: enterModeCommon(Mode.Match, enterMatchMode),
   [Mode.InputGathering]: enterModeCommon(Mode.InputGathering, enterInputGatheringMode),
   [Mode.VSCode]: enterModeCommon(Mode.VSCode, enterVSCodeMode),
-  [Mode.Occurrence]: () => {},
+  [Mode.Occurrence]: () => { },
 };
 
 export function enterPreviousMode(helixState: HelixState) {
@@ -173,7 +165,7 @@ export function setPreviousMode(helixState: HelixState) {
 }
 
 export function setModeCursorStyle(mode: Mode, editor: vscode.TextEditor): void {
-  if (mode === Mode.Insert || mode === Mode.Occurrence || mode === Mode.Disabled || mode == Mode.VSCode) {
+  if (mode === Mode.Insert || mode === Mode.Occurrence || mode == Mode.VSCode) {
     editor.options.cursorStyle = vscode.TextEditorCursorStyle.Line;
   } else {
     editor.options.cursorStyle = vscode.TextEditorCursorStyle.Block;
