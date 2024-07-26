@@ -211,33 +211,6 @@ export const inner: { [key: string]: OperatorRangeFunc } = {
   }), */
 };
 
-// TODO: I can't find the helix equivalent of these
-/* export const directional: { [key: string]: OperatorRangeFunc } = {
-  wordForward: createWordForwardHandler(wordRanges),
-  longWordForward: createWordForwardHandler(whitespaceWordRanges),
-
-  wordBackward: createWordBackwardHandler(wordRanges),
-  longWordBackward: createWordBackwardHandler(whitespaceWordRanges),
-
-  wordForwardEnd: createWordEndHandler(wordRanges),
-  longWordForwardEnd: createWordEndHandler(whitespaceWordRanges),
-
-
-  paragraphForward: (vimState, document, position) => {
-    return new vscode.Range(
-      position.with({ character: 0 }),
-      new vscode.Position(paragraphForward(document, position.line), 0),
-    );
-  },
-
-  paragraphBackward: (vimState, document, position) => {
-    return new vscode.Range(
-      new vscode.Position(paragraphBackward(document, position.line), 0),
-      position.with({ character: 0 }),
-    );
-  },
-}; */
-
 function getBracketRange(
   document: vscode.TextDocument,
   position: vscode.Position,

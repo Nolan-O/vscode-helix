@@ -31,7 +31,7 @@ export function vscodeToVimVisualSelection(
       return new vscode.Selection(vscodeSelection.active, vscodeSelection.anchor);
     }
   } else if (direction === Direction.Right || direction === Direction.Down) {
-    if (vscodeSelection.active.isBefore(vscodeSelection.anchor)) {
+    if (vscodeSelection.active.compareTo(vscodeSelection.anchor) <= 0) {
       return new vscode.Selection(vscodeSelection.active, vscodeSelection.anchor);
     } else {
       return new vscode.Selection(vscodeSelection.anchor, positionUtils.rightWrap(document, vscodeSelection.active));

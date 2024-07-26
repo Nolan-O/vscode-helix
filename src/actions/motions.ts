@@ -10,6 +10,7 @@ import {
   vscodeToVimVisualLineSelection,
   vscodeToVimVisualSelection,
 } from '../selection_utils';
+import { Action } from '../action_types';
 
 type MotionArgs = {
   document: vscode.TextDocument;
@@ -222,42 +223,61 @@ function positionLeftWrap(document: vscode.TextDocument, position: vscode.Positi
   }
 }
 
-export function createWordForwardHandler(
-  wordRangesFunction: (text: string) => { start: number; end: number }[],
-): (vimState: HelixState, editor: vscode.TextEditor) => void {
+export function createWordForwardHandler(wordRangesFunction: (text: string) => { start: number; end: number }[],): Action {
   return (vimState, editor) => {
-    execMotion(
-      vimState,
-      editor,
-      ({ document, position }) => {
-        let character = position.character;
-        // Try the current line and if we're at the end go to the next line
-        // This way we're only keeping one line of text in memory at a time
-        // i is representing the relative line number we're on from where we started
-        for (let i = 0; i < document.lineCount; i++) {
-          const lineText = document.lineAt(position.line + i).text;
-          const ranges = wordRangesFunction(lineText);
+    const document = editor.document;
+    editor.selections = editor.selections.map((selection) => {
+      const hSel = vscodeToVimVisualSelection(document, selection, Direction.Auto);
+      let selStart = hSel.start;
+      let selEnd = hSel.end;
+      let searchLine = selEnd.line;
+      let character = selEnd.character;
 
-          const result = ranges.find((x) => x.start > character);
+      const lineText = document.lineAt(searchLine).text;
+      const ranges = wordRangesFunction(lineText);
 
-          if (result) {
-            return position.with({ character: result.start - 1, line: position.line + i });
-          }
-          // If we don't find anything on this line, search the next and reset the character to 0
-          character = 0;
+      let result, resultBefore;
+      for (let j = 0; j < ranges.length; j++) {
+        let range = ranges[j];
+        if (range.start > character) {
+          result = range;
+          resultBefore = ranges[j - 1];
+
+          break;
         }
+      }
 
-        // We may be at the end of the document or nothing else matches
-        return position;
-      },
-      Direction.Right,
-    );
-  };
+      // If no result, use the last word as the "previous" one
+      resultBefore = result ? resultBefore : ranges[ranges.length - 1];
+
+      let start
+      if (vimState.mode === Mode.Visual) {
+        start = selStart.character;
+      } else if (resultBefore && resultBefore.end === character) {
+        start = resultBefore.end + 1;
+      } else if (resultBefore && resultBefore.start === character) {
+        start = resultBefore.start;
+      } else {
+        start = selStart.character;
+      }
+
+      //if (resultBefore && resultBefore.end <=)
+      const end = result ? result.start - 1 : lineText.length;
+
+      return new vscode.Selection(
+        new vscode.Position(searchLine, start),
+        new vscode.Position(searchLine, end)
+      );
+    });
+  }
 }
 
-export function createWordBackwardHandler(
-  wordRangesFunction: (text: string) => { start: number; end: number }[],
-): (vimState: HelixState, editor: vscode.TextEditor) => void {
+// Implementaiton differs from createWordForwardHandler because the above had to be reworked to handle the fact that
+// word motions aren't really motions at all in vscode. The anchor of the selection behaves differently depending on
+// where the active was within its word; motions are modeled as extensions of the anchor to the new active, but that
+// isn't the case in either of these functions.
+// For some reason, this consideration only matters when going forward in the document
+export function createWordBackwardHandler(wordRangesFunction: (text: string) => { start: number; end: number }[]): Action {
   return (vimState, editor) => {
     execMotion(
       vimState,
@@ -288,10 +308,65 @@ export function createWordBackwardHandler(
   };
 }
 
+// TODO: this will likely need to be split up depending on direction if we ever use the backwards version of it
 export function createWordEndHandler(
-  wordRangesFunction: (text: string) => { start: number; end: number }[],
-  direction: Direction,
-): (vimState: HelixState, editor: vscode.TextEditor) => void {
+  wordRangesFunction: (text: string) => { start: number; end: number }[]
+): Action {
+  return (vimState, editor) => {
+    const document = editor.document;
+    editor.selections = editor.selections.map((selection) => {
+      const hSel = vscodeToVimVisualSelection(document, selection, Direction.Auto);
+      let selStart = hSel.start;
+      let selEnd = hSel.end;
+      let searchLine = selEnd.line;
+      let character = selEnd.character;
+
+      const lineText = document.lineAt(searchLine).text;
+      const ranges = wordRangesFunction(lineText);
+
+      let result, resultBefore;
+      for (let j = 0; j < ranges.length; j++) {
+        let range = ranges[j];
+        if (range.start > character) {
+          result = ranges[j - 1];
+          resultBefore = ranges[j - 2];
+
+          break;
+        }
+      }
+
+      // If no result, use the last word as the "previous" one
+      resultBefore = result ? resultBefore : ranges[ranges.length - 1];
+
+      if (!result) {
+        return new vscode.Selection(
+          new vscode.Position(searchLine, resultBefore ? resultBefore.start : selStart.character),
+          new vscode.Position(searchLine, lineText.length)
+        )
+      }
+
+      let start
+      if (vimState.mode === Mode.Visual) {
+        start = selStart.character;
+      } else if (result.end >= character && result.start < character) {
+        start = selStart.character;
+      } else if (resultBefore) {
+        start = resultBefore.end + 1;
+      } else if (result) {
+        start = result.start
+      } else {
+        start = selStart.character;
+      }
+
+      const end = result ? result.end : lineText.length;
+
+      return new vscode.Selection(
+        new vscode.Position(searchLine, start),
+        new vscode.Position(searchLine, end)
+      );
+    });
+  }
+
   return (vimState, editor) => {
     execMotion(
       vimState,
@@ -303,12 +378,12 @@ export function createWordEndHandler(
         const result = ranges.find((x) => x.end > position.character);
 
         if (result) {
-          return position.with({ character: result.end + 1 });
+          return position.with({ character: result.end });
         } else {
           return position;
         }
       },
-      direction,
+      Direction.Right,
     );
   };
 }
