@@ -11,7 +11,7 @@ import { flashYankHighlight } from '../yank_highlight';
 import { paragraphBackward, paragraphForward } from '../paragraph_utils';
 import { setVisualLineSelections } from '../visual_line_utils';
 import { setVisualSelections } from '../visual_utils';
-import { toOuterLinewiseSelection, toInnerLinewiseSelection, vscodeToVimVisualSelection } from '../selection_utils';
+import { toOuterLinewiseSelection, toInnerLinewiseSelection, vscodeToVimVisualSelection, vimToVscodeVisualSelection } from '../selection_utils';
 import { whitespaceWordRanges, wordRanges } from '../word_utils';
 import * as scrollCommands from '../scroll_commands';
 import * as typeHandlers from '../type_handler';
@@ -719,7 +719,7 @@ export const actionFuncs: { [key: string]: Action } = {
     const document = vscode.window.activeTextEditor?.document;
     if (document == undefined) return;
     const ranges = editor.selections.map((selection) =>
-      selection.with(undefined, positionUtils.leftWrap(document, selection.anchor)),
+      selection.with(selection.active, positionUtils.leftWrap(document, selection.active)),
     );
     delete_(editor, ranges, false);
   },
@@ -727,7 +727,7 @@ export const actionFuncs: { [key: string]: Action } = {
     const document = vscode.window.activeTextEditor?.document;
     if (document == undefined) return;
     const ranges = editor.selections.map((selection) =>
-      selection.with(undefined, positionUtils.rightWrap(document, selection.anchor)),
+      selection.with(selection.active, positionUtils.rightWrap(document, selection.active)),
     );
     delete_(editor, ranges, false);
   },
@@ -926,8 +926,8 @@ export const actionFuncs: { [key: string]: Action } = {
   move_next_long_word_start: motions.createWordForwardHandler(whitespaceWordRanges),
   move_prev_word_start: motions.createWordBackwardHandler(wordRanges),
   move_prev_long_word_start: motions.createWordBackwardHandler(whitespaceWordRanges),
-  move_next_word_end: motions.createWordEndHandler(wordRanges, Direction.Right),
-  move_next_long_word_end: motions.createWordEndHandler(whitespaceWordRanges, Direction.Right),
+  move_next_word_end: motions.createWordEndHandler(wordRanges),
+  move_next_long_word_end: motions.createWordEndHandler(whitespaceWordRanges),
 
   goto_next_paragraph: (vimState, editor) => {
     motions.execMotion(
